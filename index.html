@@ -6,7 +6,7 @@
   <title>Menú & Pedidos | Dark Kitchen</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 pb-24">
+<body class="bg-gray-100 text-gray-800 pb-32">
 
   <!-- Encabezado -->
   <header class="bg-black text-white py-6 text-center shadow-md">
@@ -34,8 +34,10 @@
       <span id="total-price" class="font-extrabold text-xl text-green-600">$0 CLP</span>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+    <!-- Campos de datos del cliente (Nombre, Teléfono y Dirección) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
       <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
+      <input type="tel" id="telefono" placeholder="Tu Teléfono (ej: +56912345678)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
       <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
     </div>
 
@@ -55,7 +57,7 @@
         nombre: "Hamburguesa Doble Smash", 
         precio: 5500, 
         desc: "Doble carne, doble queso cheddar y salsa secreta.",
-        imagen: "SmashDobleQues.jpeg" // Tu foto subida a GitHub
+        imagen: "SmashDobleQues.jpeg"
       },
       { 
         id: 2, 
@@ -159,19 +161,21 @@
 
     function enviarWhatsApp() {
       const nombre = document.getElementById('nombre').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
 
       if (Object.keys(carrito).length === 0) {
         alert("Por favor selecciona al menos un producto.");
         return;
       }
-      if (!nombre || !direccion) {
-        alert("Por favor completa tu nombre y dirección/modalidad de entrega.");
+      if (!nombre || !telefono || !direccion) {
+        alert("Por favor completa tu nombre, teléfono y dirección/modalidad de entrega.");
         return;
       }
 
       let mensaje = `*¡Nuevo Pedido!*%0A`;
       mensaje += `*Cliente:* ${nombre}%0A`;
+      mensaje += `*Teléfono:* ${telefono}%0A`;
       mensaje += `*Dirección/Entrega:* ${direccion}%0A%0A`;
       mensaje += `*Detalle del pedido:*%0A`;
 
