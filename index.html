@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100 text-gray-800 pb-32">
 
-  <!-- Encabezado Principal con Navegación de 4 Pestañas -->
+  <!-- Encabezado Principal con Navegación -->
   <header class="relative bg-[#0d2f1f] text-white py-8 text-center shadow-2xl overflow-hidden sticky top-0 z-50">
     
     <!-- Textura/Patrón de Grabado Dorado -->
@@ -16,7 +16,7 @@
          style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' viewBox=\'0 0 100 100\' fill=\'none\' stroke=\'%23d4af37\' stroke-width=\'1.2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><g transform=\'scale(0.85)\'><path d=\'M10 25 C10 15 35 15 35 25 L35 28 L10 28 Z\'/><path d=\'M8 32 L37 32\'/><path d=\'M10 36 C10 42 35 42 35 36 L35 32 L10 32 Z\'/><path d=\'M60 15 L75 15 L70 42 L65 42 Z\'/><path d=\'M62 15 L58 5\'/><path d=\'M67 15 L67 3\'/><path d=\'M72 15 L76 5\'/><path d=\'M20 70 C10 70 10 90 20 90 L30 90 C40 90 40 70 30 70 Z\'/><path d=\'M25 65 L25 70\'/><path d=\'M70 70 L80 90 M80 70 L70 90\'/><circle cx=\'50\' cy=\'50\' r=\'8\'/><path d=\'M46 50 L54 50 M50 46 L50 54\'/></g></svg>'); background-repeat: repeat;">
     </div>
 
-    <!-- Contenido y Navegación -->
+    <!-- Contenido y Navegación Principal -->
     <div class="relative z-10 max-w-2xl mx-auto px-4">
       <h1 class="text-3xl sm:text-4xl font-black tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
         BURGER KITCHEN
@@ -25,19 +25,13 @@
         Sabor Gourmet • Pedidos a Domicilio / Retiro
       </p>
 
-      <!-- Menú Superior con 4 Pestañas -->
-      <nav class="flex justify-center flex-wrap gap-2 sm:gap-3 mt-5 px-2">
-        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-4 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105">
+      <!-- Menú Superior con 2 Pestañas Principales -->
+      <nav class="flex justify-center gap-3 mt-5 px-2">
+        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105">
           🏠 Inicio
         </button>
-        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-4 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105">
+        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105">
           🍔 Ver Menú
-        </button>
-        <button onclick="cambiarPestana('equipo')" id="btn-pestana-equipo" class="px-4 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105">
-          👥 Nuestro Equipo
-        </button>
-        <button onclick="cambiarPestana('clientes')" id="btn-pestana-clientes" class="px-4 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105">
-          📸 Clientes Felices
         </button>
       </nav>
     </div>
@@ -50,8 +44,9 @@
       🔄 Sincronizando stock disponible...
     </div>
 
-    <!-- PESTAÑA 1: INICIO -->
-    <section id="seccion-inicio" class="space-y-8">
+    <!-- PESTAÑA 1: INICIO (CON TODA LA INFORMACIÓN DEL LOCAL AL FINAL) -->
+    <section id="seccion-inicio" class="space-y-12">
+      
       <!-- Banner Hero -->
       <div class="relative bg-black rounded-2xl overflow-hidden shadow-xl text-white">
         <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=1000&q=80" alt="Hamburguesa gourmet" class="w-full h-72 sm:h-96 object-cover opacity-60">
@@ -99,6 +94,34 @@
           <p class="text-xs text-gray-500 mt-1">Entrega eficiente para que disfrutes tu comida siempre caliente.</p>
         </div>
       </div>
+
+      <!-- SECCIÓN AL FINAL: CLIENTES FELICES -->
+      <div class="pt-6 border-t border-gray-200">
+        <h2 class="text-2xl font-black mb-2 text-gray-900 text-center">Comunidad Burger Kitchen 📸</h2>
+        <p class="text-sm text-gray-600 mb-6 text-center">
+          ¡Gracias por elegirnos! Aquí compartimos algunos momentos de nuestros clientes disfrutando sus pedidos.
+        </p>
+
+        <div id="contenedor-clientes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+      </div>
+
+      <!-- SECCIÓN AL FINAL: NUESTRO EQUIPO Y LOCAL -->
+      <div class="pt-6 border-t border-gray-200">
+        <h2 class="text-2xl font-black mb-4 text-gray-900 text-center">Conoce Nuestro Local 🏬</h2>
+        
+        <!-- Carrusel del local -->
+        <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-xl shadow-md mb-8 bg-black">
+          <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
+          <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full">❮</button>
+          <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full">❯</button>
+          <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
+        </div>
+
+        <!-- Integrantes del equipo -->
+        <h3 class="text-xl font-bold mb-4 text-gray-800 text-center">Nuestro Equipo de Trabajo 👥</h3>
+        <div id="contenedor-equipo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+      </div>
+
     </section>
 
     <!-- PESTAÑA 2: MENÚ DE PRODUCTOS -->
@@ -108,33 +131,6 @@
 
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
       <div id="menu-extras" class="space-y-4"></div>
-    </section>
-
-    <!-- PESTAÑA 3: NUESTRO EQUIPO Y LOCAL -->
-    <section id="seccion-equipo" class="hidden">
-      <!-- Carrusel del local -->
-      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Conoce Nuestro Local</h2>
-      <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-lg shadow-md mb-8 bg-black">
-        <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
-        <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full">❮</button>
-        <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full">❯</button>
-        <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
-      </div>
-
-      <!-- Integrantes del equipo -->
-      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Nuestro Equipo</h2>
-      <div id="contenedor-equipo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-    </section>
-
-    <!-- PESTAÑA 4: CLIENTES FELICES (NUEVA SECCIÓN) -->
-    <section id="seccion-clientes" class="hidden">
-      <h2 class="text-xl font-bold mb-2 border-b pb-2 text-gray-700">Comunidad Burger Kitchen</h2>
-      <p class="text-sm text-gray-600 mb-6">
-        ¡Gracias por elegirnos! Aquí compartimos algunos de los mejores momentos de nuestros clientes disfrutando sus pedidos. 🍔❤️
-      </p>
-
-      <!-- Galería de Fotos de Clientes -->
-      <div id="contenedor-clientes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
     </section>
 
   </main>
@@ -158,10 +154,9 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbz12NbHeGFEmyodf6s5_KC5b5YB6T8jmchSE6GPh49v82T_ZZLdaTO2NQDParJ4MNg5vg/exec";
+    const API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT";
     const TELEFONO_WHATSAPP = "56912345678"; 
 
-    // LISTA DE FOTOS DE CLIENTES FELICES (Puedes agregar más o cambiar por imágenes subidas a GitHub)
     const clientesFelices = [
       {
         nombre: "@camila_burgerlove",
@@ -177,11 +172,6 @@
         nombre: "@felipe.gourmet",
         comentario: "La mejor salsa de la ciudad. Totalmente recomendados.",
         foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80"
-      },
-      {
-        nombre: "Grupo de Amigos",
-        comentario: "Combo completo perfecto para compartir la previa.",
-        foto: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&q=80"
       }
     ];
 
@@ -197,7 +187,7 @@
     let hamburguesas = [
       { id: 1, nombre: "Hamburguesa Doble Smash", precio: 5500, desc: "Doble carne y queso cheddar.", imagen: "SmashDobleQues.jpeg", stock: 10 },
       { id: 2, nombre: "Hamburguesa Gourmet", precio: 7500, desc: "Carne 180g y tocino.", imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&q=80", stock: 8 },
-      { id: 3, nombre: "Hamburguesa BBQ Bacon", precio: 6800, desc: "Queso, tocino y BBQ.", imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80", stock: 5 },
+      { id: 3, nombre: "Hamburguesa BBQ Bacon", precio: 6800, desc: "Queso, tocino y BBQ.", imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80", stock: 2 },
       { id: 4, nombre: "Hamburguesa Veggie", precio: 6200, desc: "Medallón vegetal.", imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&q=80", stock: 4 },
       { id: 5, nombre: "Combo Smash Completo", precio: 8500, desc: "Smash + Papas + Bebida.", imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=300&q=80", stock: 12 }
     ];
@@ -226,9 +216,10 @@
       }
       cargarMenu();
     }
-function crearTarjetaProducto(p) {
+
+    function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
-      const critico = p.stock > 0 && p.stock <= 3; // Activo para 3, 2 y 1 unidad
+      const critico = p.stock > 0 && p.stock <= 3;
 
       let badgeStock = '';
       if (agotado) {
@@ -236,7 +227,6 @@ function crearTarjetaProducto(p) {
       } else if (critico) {
         badgeStock = `<span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold animate-pulse">¡Últimas ${p.stock} unids!</span>`;
       }
-      // Si el stock es mayor a 3, badgeStock permanece vacío y no muestra cantidad.
 
       return `
         <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
@@ -257,7 +247,6 @@ function crearTarjetaProducto(p) {
         </div>
       `;
     }
-    
 
     function cargarMenu() {
       document.getElementById('menu-hamburguesas').innerHTML = hamburguesas.map(p => crearTarjetaProducto(p)).join('');
@@ -352,44 +341,27 @@ function crearTarjetaProducto(p) {
     function cambiarPestana(p) {
       const secInicio = document.getElementById('seccion-inicio');
       const secMenu = document.getElementById('seccion-menu');
-      const secEquipo = document.getElementById('seccion-equipo');
-      const secClientes = document.getElementById('seccion-clientes');
       const carrito = document.getElementById('carrito-flotante');
 
       const btnInicio = document.getElementById('btn-pestana-inicio');
       const btnMenu = document.getElementById('btn-pestana-menu');
-      const btnEquipo = document.getElementById('btn-pestana-equipo');
-      const btnClientes = document.getElementById('btn-pestana-clientes');
 
-      // Ocultar todas las secciones
-      secInicio.classList.add('hidden');
-      secMenu.classList.add('hidden');
-      secEquipo.classList.add('hidden');
-      secClientes.classList.add('hidden');
-      carrito.classList.add('hidden');
-
-      // Estilos de botones
-      const estiloInactivo = "px-4 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105";
-      const estiloActivo = "px-4 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105";
+      const estiloInactivo = "px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105";
+      const estiloActivo = "px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105";
 
       btnInicio.className = estiloInactivo;
       btnMenu.className = estiloInactivo;
-      btnEquipo.className = estiloInactivo;
-      btnClientes.className = estiloInactivo;
 
       if (p === 'inicio') {
         secInicio.classList.remove('hidden');
+        secMenu.classList.add('hidden');
+        carrito.classList.add('hidden');
         btnInicio.className = estiloActivo;
       } else if (p === 'menu') {
+        secInicio.classList.add('hidden');
         secMenu.classList.remove('hidden');
         carrito.classList.remove('hidden');
         btnMenu.className = estiloActivo;
-      } else if (p === 'equipo') {
-        secEquipo.classList.remove('hidden');
-        btnEquipo.className = estiloActivo;
-      } else if (p === 'clientes') {
-        secClientes.classList.remove('hidden');
-        btnClientes.className = estiloActivo;
       }
     }
 
