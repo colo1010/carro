@@ -13,7 +13,7 @@
     <h1 class="text-3xl font-bold tracking-wide">BURGER KITCHEN</h1>
     <p class="text-emerald-200 text-sm mt-1">Sabor Gourmet • Pedidos a Domicilio / Retiro</p>
 
-    <!-- Barra de Pestañas / Navegación -->
+    <!-- Navegación -->
     <nav class="flex justify-center gap-4 mt-6">
       <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-5 py-2 font-bold rounded-full bg-white text-emerald-900 shadow transition">
         🍔 Ver Menú
@@ -26,263 +26,158 @@
 
   <main class="max-w-2xl mx-auto p-4">
 
-    <!-- PESTAÑA 1: MENÚ DE PRODUCTOS -->
-    <section id="seccion-menu">
-      <!-- Sección Hamburguesas -->
+    <!-- Indicador de Carga -->
+    <div id="loading-stock" class="text-center py-4 text-emerald-800 font-bold">
+      🔄 Sincronizando stock disponible...
+    </div>
+
+    <!-- PESTAÑA 1: MENÚ -->
+    <section id="seccion-menu" class="hidden">
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas</h2>
       <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
 
-      <!-- Sección Extras -->
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
       <div id="menu-extras" class="space-y-4"></div>
     </section>
 
     <!-- PESTAÑA 2: NUESTRO EQUIPO Y LOCAL -->
     <section id="seccion-equipo" class="hidden">
-      
-      <!-- Carrusel de Fotos del Local -->
+      <!-- Carrusel -->
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Conoce Nuestro Local</h2>
-      <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-lg shadow-md mb-8 group bg-black">
+      <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-lg shadow-md mb-8 bg-black">
         <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
-        
-        <!-- Botón Anterior -->
-        <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition">
-          ❮
-        </button>
-        <!-- Botón Siguiente -->
-        <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition">
-          ❯
-        </button>
-
-        <!-- Indicador de foto actual -->
+        <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full">❮</button>
+        <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full">❯</button>
         <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
       </div>
 
-      <!-- Sección Integrantes del Equipo -->
+      <!-- Integrantes -->
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Nuestro Equipo</h2>
-      <p class="text-sm text-gray-600 mb-6 text-center">
-        Detrás de cada hamburguesa hay un equipo apasionado por la gastronomía y la calidad.
-      </p>
-
       <div id="contenedor-equipo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
     </section>
 
   </main>
 
-  <!-- Carrito / Formulario de Envío (Flotante) -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto">
+  <!-- Carrito / Formulario de Envío -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto hidden">
     <div class="flex justify-between items-center mb-3">
       <span class="font-bold text-lg">Total:</span>
       <span id="total-price" class="font-extrabold text-xl text-green-600">$0 CLP</span>
     </div>
     
-    <!-- Campos de datos del cliente -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
-      <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800">
-      <input type="tel" id="telefono" placeholder="Tu Teléfono (ej: +56912345678)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800">
-      <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800">
+      <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm">
+      <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2 rounded w-full text-sm">
+      <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm">
     </div>
 
-    <button onclick="enviarWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+    <button onclick="enviarWhatsApp()" id="btn-confirmar" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
       <span>Confirmar Pedido por WhatsApp</span>
     </button>
   </div>
 
   <script>
+    // PEGA AQUÍ LA URL GENERADA POR TU GOOGLE APPS SCRIPT
+    const API_URL = "https://script.google.com/macros/s/AKfycbz12NbHeGFEmyodf6s5_KC5b5YB6T8jmchSE6GPh49v82T_ZZLdaTO2NQDParJ4MNg5vg/exec";
     const TELEFONO_WHATSAPP = "56912345678"; 
 
-    // Lista de Fotos del Local (Puedes cambiar por enlaces de tus fotos o nombres de archivos subidos a GitHub)
     const fotosLocal = [
       "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
-      "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80"
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
     ];
 
-    let indiceFotoActual = 0;
-    let intervaloCarrusel = null;
-
-    // Integrantes del Equipo
     const equipo = [
-      {
-        nombre: "Carlos Gómez",
-        cargo: "Chef Principal & Fundador",
-        foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80",
-        bio: "Especialista en parrilla y creador de nuestras recetas exclusivas."
-      },
-      {
-        nombre: "Sofía Martínez",
-        cargo: "Jefa de Cocina",
-        foto: "https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=300&q=80",
-        bio: "Encargada del control de calidad e insumos frescos todos los días."
-      },
-      {
-        nombre: "Mateo Silva",
-        cargo: "Encargado de Logística",
-        foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80",
-        bio: "Asegura que cada pedido llegue caliente y a tiempo a tu puerta."
-      }
+      { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en parrilla." }
     ];
 
-    // Productos
-    const hamburguesas = [
-      { 
-        id: 1, 
-        nombre: "Hamburguesa Doble Smash", 
-        precio: 5500, 
-        desc: "Doble carne, doble queso cheddar y salsa secreta.",
-        imagen: "SmashDobleQues.jpeg"
-      },
-      { 
-        id: 2, 
-        nombre: "Hamburguesa Gourmet", 
-        precio: 7500, 
-        desc: "Carne 180g, tocino crocante, cebolla caramelizada y queso gouda.",
-        imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&q=80"
-      },
-      { 
-        id: 3, 
-        nombre: "Hamburguesa BBQ Bacon", 
-        precio: 6800, 
-        desc: "Carne 150g, queso cheddar, tocino ahumado, aros de cebolla y salsa BBQ.",
-        imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80"
-      },
-      { 
-        id: 4, 
-        nombre: "Hamburguesa Veggie", 
-        precio: 6200, 
-        desc: "Medallón de garbanzo y lentejas, queso, lechuga, tomate y palta.",
-        imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&q=80"
-      },
-      { 
-        id: 5, 
-        nombre: "Combo Smash Completo", 
-        precio: 8500, 
-        desc: "Doble smash con papas fritas medianas y lata de bebida a elección.",
-        imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=300&q=80"
-      }
+    let hamburguesas = [
+      { id: 1, nombre: "Hamburguesa Doble Smash", precio: 5500, desc: "Doble carne y queso cheddar.", imagen: "SmashDobleQues.jpeg", stock: 0 },
+      { id: 2, nombre: "Hamburguesa Gourmet", precio: 7500, desc: "Carne 180g y tocino.", imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&q=80", stock: 0 },
+      { id: 3, nombre: "Hamburguesa BBQ Bacon", precio: 6800, desc: "Queso, tocino y BBQ.", imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80", stock: 0 },
+      { id: 4, nombre: "Hamburguesa Veggie", precio: 6200, desc: "Medallón vegetal.", imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&q=80", stock: 0 },
+      { id: 5, nombre: "Combo Smash Completo", precio: 8500, desc: "Smash + Papas + Bebida.", imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=300&q=80", stock: 0 }
     ];
 
-    const extras = [
-      { 
-        id: 101, 
-        nombre: "Papas Fritas Artesanales", 
-        precio: 2500, 
-        desc: "Porción de papas fritas crujientes con sal de mar.",
-        imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=80"
-      },
-      { 
-        id: 102, 
-        nombre: "Aros de Cebolla (8 uds)", 
-        precio: 3000, 
-        desc: "Crujientes aros de cebolla empanizados acompañados de salsa BBQ.",
-        imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=300&q=80"
-      },
-      { 
-        id: 103, 
-        nombre: "Nuggets de Pollo (6 uds)", 
-        precio: 3200, 
-        desc: "Nuggets de pechuga de pollo crujientes con salsa a elección.",
-        imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80"
-      }
+    let extras = [
+      { id: 101, nombre: "Papas Fritas Artesanales", precio: 2500, desc: "Porción grande.", imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=80", stock: 0 },
+      { id: 102, nombre: "Aros de Cebolla (8 uds)", precio: 3000, desc: "Con salsa BBQ.", imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=300&q=80", stock: 0 },
+      { id: 103, nombre: "Nuggets de Pollo (6 uds)", precio: 3200, desc: "Crujientes.", imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80", stock: 0 }
     ];
 
-    const todosLosProductos = [...hamburguesas, ...extras];
     let carrito = {};
 
-    // Lógica del Carrusel
-    function actualizarCarrusel() {
-      const img = document.getElementById('carrusel-img');
-      img.src = fotosLocal[indiceFotoActual];
+    // Obtener Stock desde Google Sheets
+    async function obtenerStockBD() {
+      try {
+        const res = await fetch(API_URL);
+        const stockBD = await res.json();
 
-      const contenedorIndicadores = document.getElementById('carrusel-indicadores');
-      contenedorIndicadores.innerHTML = fotosLocal.map((_, i) => `
-        <span class="w-2.5 h-2.5 rounded-full ${i === indiceFotoActual ? 'bg-white' : 'bg-white/50'}"></span>
-      `).join('');
-    }
+        stockBD.forEach(item => {
+          let p = hamburguesas.find(x => x.id == item.id) || extras.find(x => x.id == item.id);
+          if (p) p.stock = item.stock;
+        });
 
-    function moverCarrusel(direccion) {
-      indiceFotoActual = (indiceFotoActual + direccion + fotosLocal.length) % fotosLocal.length;
-      actualizarCarrusel();
-      reiniciarAutoCarrusel();
-    }
-
-    function iniciarAutoCarrusel() {
-      intervaloCarrusel = setInterval(() => {
-        indiceFotoActual = (indiceFotoActual + 1) % fotosLocal.length;
-        actualizarCarrusel();
-      }, 4000);
-    }
-
-    function reiniciarAutoCarrusel() {
-      clearInterval(intervaloCarrusel);
-      iniciarAutoCarrusel();
-    }
-
-    // Cambiar entre Pestaña Menú y Pestaña Equipo
-    function cambiarPestana(pestana) {
-      const secMenu = document.getElementById('seccion-menu');
-      const secEquipo = document.getElementById('seccion-equipo');
-      const carrito = document.getElementById('carrito-flotante');
-      const btnMenu = document.getElementById('btn-pestana-menu');
-      const btnEquipo = document.getElementById('btn-pestana-equipo');
-
-      if (pestana === 'menu') {
-        secMenu.classList.remove('hidden');
-        secEquipo.classList.add('hidden');
-        carrito.classList.remove('hidden');
-
-        btnMenu.className = "px-5 py-2 font-bold rounded-full bg-white text-emerald-900 shadow transition";
-        btnEquipo.className = "px-5 py-2 font-bold rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition";
-      } else {
-        secMenu.classList.add('hidden');
-        secEquipo.classList.remove('hidden');
-        carrito.classList.add('hidden');
-
-        btnEquipo.className = "px-5 py-2 font-bold rounded-full bg-white text-emerald-900 shadow transition";
-        btnMenu.className = "px-5 py-2 font-bold rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition";
+        document.getElementById('loading-stock').classList.add('hidden');
+        document.getElementById('seccion-menu').classList.remove('hidden');
+        document.getElementById('carrito-flotante').classList.remove('hidden');
+        cargarMenu();
+      } catch (err) {
+        document.getElementById('loading-stock').innerText = " Error al cargar el stock. Mostrando menú de respaldo.";
+        document.getElementById('seccion-menu').classList.remove('hidden');
+        document.getElementById('carrito-flotante').classList.remove('hidden');
+        cargarMenu();
       }
-    }
-
-    function cargarEquipo() {
-      const container = document.getElementById('contenedor-equipo');
-      container.innerHTML = equipo.map(member => `
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-center">
-          <img src="${member.foto}" alt="${member.nombre}" class="w-24 h-24 object-cover rounded-full mx-auto mb-3 border-2 border-emerald-800">
-          <h3 class="font-bold text-base text-gray-900">${member.nombre}</h3>
-          <p class="text-xs font-semibold text-emerald-700 mb-2">${member.cargo}</p>
-          <p class="text-xs text-gray-500">${member.bio}</p>
-        </div>
-      `).join('');
     }
 
     function crearTarjetaProducto(p) {
+      const agotado = p.stock <= 0;
+      const critico = p.stock > 0 && p.stock < 3;
+
+      let badgeStock = '';
+      if (agotado) {
+        badgeStock = `<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">Agotado</span>`;
+      } else if (critico) {
+        badgeStock = `<span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold animate-pulse">¡Últimas ${p.stock} unids!</span>`;
+      } else {
+        badgeStock = `<span class="text-xs text-gray-500">Disp: ${p.stock}</span>`;
+      }
+
       return `
-        <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3">
+        <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
           <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md flex-shrink-0">
           <div class="flex-grow pr-2">
-            <h3 class="font-bold text-sm sm:text-base text-gray-900">${p.nombre}</h3>
+            <div class="flex items-center gap-2 mb-1">
+              <h3 class="font-bold text-sm sm:text-base text-gray-900">${p.nombre}</h3>
+              ${badgeStock}
+            </div>
             <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
             <span class="font-bold text-sm sm:text-base text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
           </div>
           <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-            <button onclick="cambiarCantidad(${p.id}, -1)" class="bg-gray-200 text-gray-700 px-3 py-1 rounded font-bold hover:bg-gray-300">-</button>
+            <button onclick="cambiarCantidad(${p.id}, -1)" ${agotado ? 'disabled' : ''} class="bg-gray-200 text-gray-700 px-3 py-1 rounded font-bold disabled:opacity-50">-</button>
             <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">0</span>
-            <button onclick="cambiarCantidad(${p.id}, 1)" class="bg-black text-white px-3 py-1 rounded font-bold hover:bg-gray-800">+</button>
+            <button onclick="cambiarCantidad(${p.id}, 1)" ${agotado ? 'disabled' : ''} class="bg-black text-white px-3 py-1 rounded font-bold hover:bg-gray-800 disabled:opacity-50">+</button>
           </div>
         </div>
       `;
     }
 
     function cargarMenu() {
-      const containerBurgers = document.getElementById('menu-hamburguesas');
-      const containerExtras = document.getElementById('menu-extras');
-
-      containerBurgers.innerHTML = hamburguesas.map(p => crearTarjetaProducto(p)).join('');
-      containerExtras.innerHTML = extras.map(p => crearTarjetaProducto(p)).join('');
+      document.getElementById('menu-hamburguesas').innerHTML = hamburguesas.map(p => crearTarjetaProducto(p)).join('');
+      document.getElementById('menu-extras').innerHTML = extras.map(p => crearTarjetaProducto(p)).join('');
     }
 
     function cambiarCantidad(id, cambio) {
-      carrito[id] = (carrito[id] || 0) + cambio;
+      let p = [...hamburguesas, ...extras].find(prod => prod.id == id);
+      let actual = carrito[id] || 0;
+      let nuevo = actual + cambio;
+
+      if (nuevo > p.stock) {
+        alert(`Lo sentimos, solo quedan ${p.stock} unidades disponibles de ${p.nombre}.`);
+        return;
+      }
+
+      carrito[id] = nuevo;
       if (carrito[id] <= 0) delete carrito[id];
       document.getElementById(`cant-${id}`).innerText = carrito[id] || 0;
       actualizarTotal();
@@ -290,14 +185,15 @@
 
     function actualizarTotal() {
       let total = 0;
+      let todos = [...hamburguesas, ...extras];
       for (let id in carrito) {
-        let p = todosLosProductos.find(prod => prod.id == id);
+        let p = todos.find(prod => prod.id == id);
         if (p) total += p.precio * carrito[id];
       }
       document.getElementById('total-price').innerText = `$${total.toLocaleString('es-CL')} CLP`;
     }
 
-    function enviarWhatsApp() {
+    async function enviarWhatsApp() {
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
@@ -307,9 +203,17 @@
         return;
       }
       if (!nombre || !telefono || !direccion) {
-        alert("Por favor completa tu nombre, teléfono y dirección/modalidad de entrega.");
+        alert("Por favor completa tu nombre, teléfono y dirección.");
         return;
       }
+
+      const btn = document.getElementById('btn-confirmar');
+      btn.innerText = "Procesando pedido...";
+      btn.disabled = true;
+
+      // Descontar Stock en Google Sheets
+      let itemsParaDescontar = [];
+      let todos = [...hamburguesas, ...extras];
 
       let mensaje = `*¡Nuevo Pedido!*%0A`;
       mensaje += `*Cliente:* ${nombre}%0A`;
@@ -319,25 +223,60 @@
 
       let total = 0;
       for (let id in carrito) {
-        let p = todosLosProductos.find(prod => prod.id == id);
+        let p = todos.find(prod => prod.id == id);
         if (p) {
           let subtotal = p.precio * carrito[id];
           total += subtotal;
           mensaje += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
+          itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
         }
       }
-
       mensaje += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          body: JSON.stringify({ items: itemsParaDescontar })
+        });
+      } catch (err) {
+        console.error("Error al descontar stock:", err);
+      }
+
+      btn.innerText = "Confirmar Pedido por WhatsApp";
+      btn.disabled = false;
 
       const url = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensaje}`;
       window.open(url, '_blank');
+      location.reload(); 
+    }
+
+    // Funciones Pestañas y Carrusel
+    let indiceFotoActual = 0;
+    function actualizarCarrusel() {
+      document.getElementById('carrusel-img').src = fotosLocal[indiceFotoActual];
+      document.getElementById('carrusel-indicadores').innerHTML = fotosLocal.map((_, i) => `
+        <span class="w-2.5 h-2.5 rounded-full ${i === indiceFotoActual ? 'bg-white' : 'bg-white/50'}"></span>
+      `).join('');
+    }
+    function moverCarrusel(dir) {
+      indiceFotoActual = (indiceFotoActual + dir + fotosLocal.length) % fotosLocal.length;
+      actualizarCarrusel();
+    }
+    function cambiarPestana(p) {
+      if (p === 'menu') {
+        document.getElementById('seccion-menu').classList.remove('hidden');
+        document.getElementById('seccion-equipo').classList.add('hidden');
+        document.getElementById('carrito-flotante').classList.remove('hidden');
+      } else {
+        document.getElementById('seccion-menu').classList.add('hidden');
+        document.getElementById('seccion-equipo').classList.remove('hidden');
+        document.getElementById('carrito-flotante').classList.add('hidden');
+      }
     }
 
     // Inicializar
-    cargarMenu();
-    cargarEquipo();
+    obtenerStockBD();
     actualizarCarrusel();
-    iniciarAutoCarrusel();
   </script>
 </body>
 </html>
