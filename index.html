@@ -16,8 +16,15 @@
 
   <!-- Menú de Productos -->
   <main class="max-w-2xl mx-auto p-4">
-    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Selecciona tu Pedido</h2>
-    <div id="menu" class="space-y-4"></div>
+    
+    <!-- Sección Hamburguesas -->
+    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas</h2>
+    <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
+
+    <!-- Sección Extras -->
+    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
+    <div id="menu-extras" class="space-y-4"></div>
+
   </main>
 
   <!-- Carrito / Formulario de Envío (Flotante) -->
@@ -38,16 +45,17 @@
   </div>
 
   <script>
-    const TELEFONO_WHATSAPP = "56963762462"; 
+    // Configuración: pon aquí tu número de WhatsApp real con código de país
+    const TELEFONO_WHATSAPP = "56912345678"; 
 
-    // Listado de Productos con enlaces de imagen (puedes reemplazar con tus propias URLs de imagen)
-    const productos = [
+    // 5 Hamburguesas
+    const hamburguesas = [
       { 
         id: 1, 
         nombre: "Hamburguesa Doble Smash", 
         precio: 5500, 
-        desc: "Doble carne, doble queso cheddar, tocino y pepinillos.",
-        imagen: "SmashDobleQues.jpeg"
+        desc: "Doble carne, doble queso cheddar y salsa secreta.",
+        imagen: "SmashDobleQues.jpeg" // Tu foto subida a GitHub
       },
       { 
         id: 2, 
@@ -58,42 +66,79 @@
       },
       { 
         id: 3, 
-        nombre: "Combo Smash (Hamburguesa + Papas + Bebida)", 
-        precio: 8500, 
-        desc: "Doble smash con papas fritas medianas y lata a elección.",
-        imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=300&q=80"
+        nombre: "Hamburguesa BBQ Bacon", 
+        precio: 6800, 
+        desc: "Carne 150g, queso cheddar, tocino ahumado, aros de cebolla y salsa BBQ.",
+        imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80"
       },
       { 
         id: 4, 
-        nombre: "Papas Fritas Extra", 
-        precio: 2500, 
-        desc: "Porción de papas fritas artesanales.",
-        imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=80"
+        nombre: "Hamburguesa Veggie", 
+        precio: 6200, 
+        desc: "Medallón de garbanzo y lentejas, queso, lechuga, tomate y palta.",
+        imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&q=80"
+      },
+      { 
+        id: 5, 
+        nombre: "Combo Smash Completo", 
+        precio: 8500, 
+        desc: "Doble smash con papas fritas medianas y lata de bebida a elección.",
+        imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=300&q=80"
       }
     ];
 
+    // 3 Extras
+    const extras = [
+      { 
+        id: 101, 
+        nombre: "Papas Fritas Artesanales", 
+        precio: 2500, 
+        desc: "Porción de papas fritas crujientes con sal de mar.",
+        imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=80"
+      },
+      { 
+        id: 102, 
+        nombre: "Aros de Cebolla (8 uds)", 
+        precio: 3000, 
+        desc: "Crujientes aros de cebolla empanizados acompañados de salsa BBQ.",
+        imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=300&q=80"
+      },
+      { 
+        id: 103, 
+        nombre: "Nuggets de Pollo (6 uds)", 
+        precio: 3200, 
+        desc: "Nuggets de pechuga de pollo crujientes con salsa a elección.",
+        imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80"
+      }
+    ];
+
+    const todosLosProductos = [...hamburguesas, ...extras];
     let carrito = {};
 
-    function cargarMenu() {
-      const menuContainer = document.getElementById('menu');
-      menuContainer.innerHTML = '';
-      productos.forEach(p => {
-        menuContainer.innerHTML += `
-          <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3">
-            <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md flex-shrink-0">
-            <div class="flex-grow pr-2">
-              <h3 class="font-bold text-sm sm:text-base text-gray-900">${p.nombre}</h3>
-              <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
-              <span class="font-bold text-sm sm:text-base text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
-            </div>
-            <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-              <button onclick="cambiarCantidad(${p.id}, -1)" class="bg-gray-200 text-gray-700 px-3 py-1 rounded font-bold hover:bg-gray-300">-</button>
-              <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">0</span>
-              <button onclick="cambiarCantidad(${p.id}, 1)" class="bg-black text-white px-3 py-1 rounded font-bold hover:bg-gray-800">+</button>
-            </div>
+    function crearTarjetaProducto(p) {
+      return `
+        <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3">
+          <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md flex-shrink-0">
+          <div class="flex-grow pr-2">
+            <h3 class="font-bold text-sm sm:text-base text-gray-900">${p.nombre}</h3>
+            <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
+            <span class="font-bold text-sm sm:text-base text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
           </div>
-        `;
-      });
+          <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
+            <button onclick="cambiarCantidad(${p.id}, -1)" class="bg-gray-200 text-gray-700 px-3 py-1 rounded font-bold hover:bg-gray-300">-</button>
+            <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">0</span>
+            <button onclick="cambiarCantidad(${p.id}, 1)" class="bg-black text-white px-3 py-1 rounded font-bold hover:bg-gray-800">+</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function cargarMenu() {
+      const containerBurgers = document.getElementById('menu-hamburguesas');
+      const containerExtras = document.getElementById('menu-extras');
+
+      containerBurgers.innerHTML = hamburguesas.map(p => crearTarjetaProducto(p)).join('');
+      containerExtras.innerHTML = extras.map(p => crearTarjetaProducto(p)).join('');
     }
 
     function cambiarCantidad(id, cambio) {
@@ -106,8 +151,8 @@
     function actualizarTotal() {
       let total = 0;
       for (let id in carrito) {
-        let p = productos.find(prod => prod.id == id);
-        total += p.precio * carrito[id];
+        let p = todosLosProductos.find(prod => prod.id == id);
+        if (p) total += p.precio * carrito[id];
       }
       document.getElementById('total-price').innerText = `$${total.toLocaleString('es-CL')} CLP`;
     }
@@ -132,10 +177,12 @@
 
       let total = 0;
       for (let id in carrito) {
-        let p = productos.find(prod => prod.id == id);
-        let subtotal = p.precio * carrito[id];
-        total += subtotal;
-        mensaje += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
+        let p = todosLosProductos.find(prod => prod.id == id);
+        if (p) {
+          let subtotal = p.precio * carrito[id];
+          total += subtotal;
+          mensaje += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
+        }
       }
 
       mensaje += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
