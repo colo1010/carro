@@ -8,23 +8,30 @@
 </head>
 <body class="bg-gray-100 text-gray-800 pb-32">
 
-  <!-- Encabezado Principal con Navegación -->
-  <header class="bg-emerald-900 text-white py-6 text-center shadow-md sticky top-0 z-50">
-    <h1 class="text-3xl font-extrabold tracking-wide">BURGER KITCHEN</h1>
-    <p class="text-emerald-200 text-xs sm:text-sm mt-1">Sabor Gourmet • Pedidos a Domicilio / Retiro</p>
+ <!-- Encabezado con Fondo Verde Oscuro y Dibujos Lineales (Doodles) -->
+  <header class="relative bg-emerald-900 text-white py-8 text-center shadow-lg overflow-hidden sticky top-0 z-50">
+    
+    <!-- Capa de Patrón SVG de Dibujos Lineales (Comida Rápida) -->
+    <div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' fill=\'none\' stroke=\'white\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><g transform=\'scale(0.8)\'><path d=\'M10 25 C10 15 35 15 35 25 L35 28 L10 28 Z\'/><path d=\'M8 32 L37 32\'/><path d=\'M10 36 C10 42 35 42 35 36 L35 32 L10 32 Z\'/><path d=\'M60 15 L75 15 L70 42 L65 42 Z\'/><path d=\'M62 15 L58 5\'/><path d=\'M67 15 L67 3\'/><path d=\'M72 15 L76 5\'/><path d=\'M20 70 C10 70 10 90 20 90 L30 90 C40 90 40 70 30 70 Z\'/><path d=\'M25 65 L25 70\'/><path d=\'M70 70 L80 90 M80 70 L70 90\'/></g></svg>'); background-repeat: repeat;"></div>
 
-    <!-- Menú Superior con 3 Pestañas -->
-    <nav class="flex justify-center flex-wrap gap-2 sm:gap-4 mt-5 px-2">
-      <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-4 py-2 font-bold text-sm sm:text-base rounded-full bg-white text-emerald-900 shadow transition">
-        🏠 Inicio
-      </button>
-      <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-4 py-2 font-bold text-sm sm:text-base rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition">
-        🍔 Ver Menú
-      </button>
-      <button onclick="cambiarPestana('equipo')" id="btn-pestana-equipo" class="px-4 py-2 font-bold text-sm sm:text-base rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition">
-        👥 Nuestro Equipo
-      </button>
-    </nav>
+    <!-- Contenido del Encabezado (Encima del patrón) -->
+    <div class="relative z-10">
+      <h1 class="text-3xl sm:text-4xl font-black tracking-wider drop-shadow-md">BURGER KITCHEN</h1>
+      <p class="text-emerald-200 text-xs sm:text-sm mt-1 font-medium tracking-wide">Sabor Gourmet • Pedidos a Domicilio / Retiro</p>
+
+      <!-- Menú Superior con 3 Pestañas -->
+      <nav class="flex justify-center flex-wrap gap-2 sm:gap-4 mt-5 px-2">
+        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-4 py-2 font-bold text-sm sm:text-base rounded-full bg-white text-emerald-900 shadow-md transition transform hover:scale-105">
+          🏠 Inicio
+        </button>
+        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-4 py-2 font-bold text-sm sm:text-base rounded-full bg-emerald-800/80 backdrop-blur-sm text-emerald-100 hover:bg-emerald-700 transition transform hover:scale-105">
+          🍔 Ver Menú
+        </button>
+        <button onclick="cambiarPestana('equipo')" id="btn-pestana-equipo" class="px-4 py-2 font-bold text-sm sm:text-base rounded-full bg-emerald-800/80 backdrop-blur-sm text-emerald-100 hover:bg-emerald-700 transition transform hover:scale-105">
+          👥 Nuestro Equipo
+        </button>
+      </nav>
+    </div>
   </header>
 
   <main class="max-w-3xl mx-auto p-4">
