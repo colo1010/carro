@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menú & Pedidos | Dark Kitchen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800 pb-24">
+
+  <!-- Encabezado -->
+  <header class="bg-black text-white py-6 text-center shadow-md">
+    <h1 class="text-3xl font-bold tracking-wide">BURGER KITCHEN</h1>
+    <p class="text-gray-400 text-sm mt-1">Sabor Gourmet • Pedidos a Domicilio / Retiro</p>
+  </header>
+
+  <!-- Menú de Productos -->
+  <main class="max-w-2xl mx-auto p-4">
+    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Selecciona tu Pedido</h2>
+    <div id="menu" class="space-y-4"></div>
+  </main>
+
+  <!-- Carrito / Formulario de Envío (Flotante) -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto">
+    <div class="flex justify-between items-center mb-3">
+      <span class="font-bold text-lg">Total:</span>
+      <span id="total-price" class="font-extrabold text-xl text-green-600">$0 CLP</span>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3">
+      <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
+      <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
+    </div>
+
+    <button onclick="enviarWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+      <span>Confirmar Pedido por WhatsApp</span>
+    </button>
+  </div>
+
+  <script>
+    // Configuración: Coloca aquí tu número de WhatsApp con código de país (ejemplo para Chile: +569...)
+    const TELEFONO_WHATSAPP = "56912345678"; 
+
+    // Listado de Productos (Adaptado a precios de hamburguesas)
+    const productos = [
+      { id: 1, nombre: "Hamburguesa Doble Smash", precio: 5500, desc: "Doble carne, doble queso cheddar y salsa secreta." },
+      { id: 2, nombre: "Hamburguesa Gourmet", precio: 7500, desc: "Carne 180g, tocino crocante, cebolla caramelizada y queso gouda." },
+      { id: 3, nombre: "Combo Smash (Hamburguesa + Papas + Bebida)", precio: 8500, desc: "Doble smash con papas fritas medianas y lata a elección." },
+      { id: 4, nombre: "Papas Fritas Extra", precio: 2500, desc: "Porción de papas fritas artesanales." }
+    ];
+
+    let carrito = {};
+
+    // Renderizar productos en pantalla
+    function cargarMenu() {
+      const menuContainer = document.getElementById('menu');
+      menuContainer.innerHTML = '';
+      productos.forEach(p => {
+        menuContainer.innerHTML += `
+          <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
+            <div class="pr-2">
+              <h3 class="font-bold text-base text-gray-900">${p.nombre}</h3>
+              <p class="text-xs text-gray-500 mb-1">${p.desc}</p>
+              <span class="font-bold text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="cambiarCantidad(${p.id}, -1)" class="bg-gray-200 text-gray-700 px-3 py-1 rounded font-bold hover:bg-gray-300">-</button>
+              <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">0</span>
+              <button onclick="cambiarCantidad(${p.id}, 1)" class="bg-black text-white px-3 py-1 rounded font-bold hover:bg-gray-800">+</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // Gestionar cantidades del carrito
+    function cambiarCantidad(id, cambio) {
+      carrito[id] = (carrito[id] || 0) + cambio;
+      if (carrito[id] <= 0) delete carrito[id];
+      document.getElementById(`cant-${id}`).innerText = carrito[id] || 0;
+      actualizarTotal();
+    }
+
+    // Actualizar el monto total
+    function actualizarTotal() {
+      let total = 0;
+      for (let id in carrito) {
+        let p = productos.find(prod => prod.id == id);
+        total += p.precio * carrito[id];
+      }
+      document.getElementById('total-price').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+    }
+
+    // Generar enlace estructurado para WhatsApp
+    function enviarWhatsApp() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const direccion = document.getElementById('direccion').value.trim();
+
+      if (Object.keys(carrito).length === 0) {
+        alert("Por favor selecciona al menos un producto.");
+        return;
+      }
+      if (!nombre || !direccion) {
+        alert("Por favor completa tu nombre y dirección/modalidad de entrega.");
+        return;
+      }
+
+      let mensaje = `*¡Nuevo Pedido!*%0A`;
+      mensaje += `*Cliente:* ${nombre}%0A`;
+      mensaje += `*Dirección/Entrega:* ${direccion}%0A%0A`;
+      mensaje += `*Detalle del pedido:*%0A`;
+
+      let total = 0;
+      for (let id in carrito) {
+        let p = productos.find(prod => prod.id == id);
+        let subtotal = p.precio * carrito[id];
+        total += subtotal;
+        mensaje += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
+      }
+
+      mensaje += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
+
+      const url = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensaje}`;
+      window.open(url, '_blank');
+    }
+
+    // Inicializar
+    cargarMenu();
+  </script>
+</body>
+</html>
