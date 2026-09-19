@@ -8,37 +8,59 @@
 </head>
 <body class="bg-gray-100 text-gray-800 pb-32">
 
-  <!-- Encabezado -->
-  <header class="bg-green-900 text-white py-6 text-center shadow-md">
+  <!-- Encabezado con Fondo Verde Oscuro -->
+  <header class="bg-emerald-900 text-white py-6 text-center shadow-md">
     <h1 class="text-3xl font-bold tracking-wide">BURGER KITCHEN</h1>
     <p class="text-emerald-200 text-sm mt-1">Sabor Gourmet • Pedidos a Domicilio / Retiro</p>
+
+    <!-- Barra de Pestañas / Navegación -->
+    <nav class="flex justify-center gap-4 mt-6">
+      <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-5 py-2 font-bold rounded-full bg-white text-emerald-900 shadow transition">
+        🍔 Ver Menú
+      </button>
+      <button onclick="cambiarPestana('equipo')" id="btn-pestana-equipo" class="px-5 py-2 font-bold rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition">
+        👥 Nuestro Equipo
+      </button>
+    </nav>
   </header>
 
-  <!-- Menú de Productos -->
   <main class="max-w-2xl mx-auto p-4">
-    
-    <!-- Sección Hamburguesas -->
-    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas</h2>
-    <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
 
-    <!-- Sección Extras -->
-    <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
-    <div id="menu-extras" class="space-y-4"></div>
+    <!-- PESTAÑA 1: MENÚ DE PRODUCTOS -->
+    <section id="seccion-menu">
+      <!-- Sección Hamburguesas -->
+      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas</h2>
+      <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
+
+      <!-- Sección Extras -->
+      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
+      <div id="menu-extras" class="space-y-4"></div>
+    </section>
+
+    <!-- PESTAÑA 2: NUESTRO EQUIPO -->
+    <section id="seccion-equipo" class="hidden">
+      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Conoce a Nuestro Equipo</h2>
+      <p class="text-sm text-gray-600 mb-6 text-center">
+        Detrás de cada hamburguesa hay un equipo apasionado por la gastronomía y la calidad.
+      </p>
+
+      <div id="contenedor-equipo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+    </section>
 
   </main>
 
   <!-- Carrito / Formulario de Envío (Flotante) -->
-  <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto">
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto">
     <div class="flex justify-between items-center mb-3">
       <span class="font-bold text-lg">Total:</span>
       <span id="total-price" class="font-extrabold text-xl text-green-600">$0 CLP</span>
     </div>
     
-    <!-- Campos de datos del cliente (Nombre, Teléfono y Dirección) -->
+    <!-- Campos de datos del cliente -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
-      <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
-      <input type="tel" id="telefono" placeholder="Tu Teléfono (ej: +56912345678)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
-      <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-black">
+      <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800">
+      <input type="tel" id="telefono" placeholder="Tu Teléfono (ej: +56912345678)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800">
+      <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-800">
     </div>
 
     <button onclick="enviarWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
@@ -47,10 +69,31 @@
   </div>
 
   <script>
-    // Configuración: pon aquí tu número de WhatsApp real con código de país
     const TELEFONO_WHATSAPP = "56912345678"; 
 
-    // 5 Hamburguesas
+    // Integrantes del Equipo (Puedes cambiar nombres, cargos e imágenes)
+    const equipo = [
+      {
+        nombre: "Carlos Gómez",
+        cargo: "Chef Principal & Fundador",
+        foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80",
+        bio: "Especialista en parrilla y creador de nuestras recetas exclusivas."
+      },
+      {
+        nombre: "Sofía Martínez",
+        cargo: "Jefa de Cocina",
+        foto: "https://images.unsplash.com/photo-1581299894007-aaa50297cf16?w=300&q=80",
+        bio: "Encargada del control de calidad e insumos frescos todos los días."
+      },
+      {
+        nombre: "Mateo Silva",
+        cargo: "Encargado de Logística",
+        foto: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80",
+        bio: "Asegura que cada pedido llegue caliente y a tiempo a tu puerta."
+      }
+    ];
+
+    // Productos
     const hamburguesas = [
       { 
         id: 1, 
@@ -61,17 +104,17 @@
       },
       { 
         id: 2, 
-        nombre: "Hamburguesa BBQ-Tocino", 
+        nombre: "Hamburguesa Gourmet", 
         precio: 7500, 
-        desc: "Carne 180g, tocino crocante, Aros cebolla y Salsa BBQ.",
-        imagen: "BBQ_Toci_ACebo.jpeg"
+        desc: "Carne 180g, tocino crocante, cebolla caramelizada y queso gouda.",
+        imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&q=80"
       },
       { 
         id: 3, 
-        nombre: "Hamburguesa Campestre", 
+        nombre: "Hamburguesa BBQ Bacon", 
         precio: 6800, 
         desc: "Carne 150g, queso cheddar, tocino ahumado, aros de cebolla y salsa BBQ.",
-        imagen: "lechu_Toma_cebo.jpeg"
+        imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80"
       },
       { 
         id: 4, 
@@ -89,7 +132,6 @@
       }
     ];
 
-    // 3 Extras
     const extras = [
       { 
         id: 101, 
@@ -116,6 +158,43 @@
 
     const todosLosProductos = [...hamburguesas, ...extras];
     let carrito = {};
+
+    // Cambiar entre la pestaña Menú y Pestaña Equipo
+    function cambiarPestana(pestana) {
+      const secMenu = document.getElementById('seccion-menu');
+      const secEquipo = document.getElementById('seccion-equipo');
+      const carrito = document.getElementById('carrito-flotante');
+      const btnMenu = document.getElementById('btn-pestana-menu');
+      const btnEquipo = document.getElementById('btn-pestana-equipo');
+
+      if (pestana === 'menu') {
+        secMenu.classList.remove('hidden');
+        secEquipo.classList.add('hidden');
+        carrito.classList.remove('hidden');
+
+        btnMenu.className = "px-5 py-2 font-bold rounded-full bg-white text-emerald-900 shadow transition";
+        btnEquipo.className = "px-5 py-2 font-bold rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition";
+      } else {
+        secMenu.classList.add('hidden');
+        secEquipo.classList.remove('hidden');
+        carrito.classList.add('hidden');
+
+        btnEquipo.className = "px-5 py-2 font-bold rounded-full bg-white text-emerald-900 shadow transition";
+        btnMenu.className = "px-5 py-2 font-bold rounded-full bg-emerald-800 text-emerald-100 hover:bg-emerald-700 transition";
+      }
+    }
+
+    function cargarEquipo() {
+      const container = document.getElementById('contenedor-equipo');
+      container.innerHTML = equipo.map(member => `
+        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-center">
+          <img src="${member.foto}" alt="${member.nombre}" class="w-24 h-24 object-cover rounded-full mx-auto mb-3 border-2 border-emerald-800">
+          <h3 class="font-bold text-base text-gray-900">${member.nombre}</h3>
+          <p class="text-xs font-semibold text-emerald-700 mb-2">${member.cargo}</p>
+          <p class="text-xs text-gray-500">${member.bio}</p>
+        </div>
+      `).join('');
+    }
 
     function crearTarjetaProducto(p) {
       return `
@@ -195,7 +274,9 @@
       window.open(url, '_blank');
     }
 
+    // Inicializar
     cargarMenu();
+    cargarEquipo();
   </script>
 </body>
 </html>
