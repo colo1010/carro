@@ -37,9 +37,29 @@
       <div id="menu-extras" class="space-y-4"></div>
     </section>
 
-    <!-- PESTAÑA 2: NUESTRO EQUIPO -->
+    <!-- PESTAÑA 2: NUESTRO EQUIPO Y LOCAL -->
     <section id="seccion-equipo" class="hidden">
-      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Conoce a Nuestro Equipo</h2>
+      
+      <!-- Carrusel de Fotos del Local -->
+      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Conoce Nuestro Local</h2>
+      <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-lg shadow-md mb-8 group bg-black">
+        <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
+        
+        <!-- Botón Anterior -->
+        <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition">
+          ❮
+        </button>
+        <!-- Botón Siguiente -->
+        <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 text-white p-2 rounded-full transition">
+          ❯
+        </button>
+
+        <!-- Indicador de foto actual -->
+        <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
+      </div>
+
+      <!-- Sección Integrantes del Equipo -->
+      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Nuestro Equipo</h2>
       <p class="text-sm text-gray-600 mb-6 text-center">
         Detrás de cada hamburguesa hay un equipo apasionado por la gastronomía y la calidad.
       </p>
@@ -71,7 +91,17 @@
   <script>
     const TELEFONO_WHATSAPP = "56912345678"; 
 
-    // Integrantes del Equipo (Puedes cambiar nombres, cargos e imágenes)
+    // Lista de Fotos del Local (Puedes cambiar por enlaces de tus fotos o nombres de archivos subidos a GitHub)
+    const fotosLocal = [
+      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80",
+      "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800&q=80"
+    ];
+
+    let indiceFotoActual = 0;
+    let intervaloCarrusel = null;
+
+    // Integrantes del Equipo
     const equipo = [
       {
         nombre: "Carlos Gómez",
@@ -159,7 +189,36 @@
     const todosLosProductos = [...hamburguesas, ...extras];
     let carrito = {};
 
-    // Cambiar entre la pestaña Menú y Pestaña Equipo
+    // Lógica del Carrusel
+    function actualizarCarrusel() {
+      const img = document.getElementById('carrusel-img');
+      img.src = fotosLocal[indiceFotoActual];
+
+      const contenedorIndicadores = document.getElementById('carrusel-indicadores');
+      contenedorIndicadores.innerHTML = fotosLocal.map((_, i) => `
+        <span class="w-2.5 h-2.5 rounded-full ${i === indiceFotoActual ? 'bg-white' : 'bg-white/50'}"></span>
+      `).join('');
+    }
+
+    function moverCarrusel(direccion) {
+      indiceFotoActual = (indiceFotoActual + direccion + fotosLocal.length) % fotosLocal.length;
+      actualizarCarrusel();
+      reiniciarAutoCarrusel();
+    }
+
+    function iniciarAutoCarrusel() {
+      intervaloCarrusel = setInterval(() => {
+        indiceFotoActual = (indiceFotoActual + 1) % fotosLocal.length;
+        actualizarCarrusel();
+      }, 4000);
+    }
+
+    function reiniciarAutoCarrusel() {
+      clearInterval(intervaloCarrusel);
+      iniciarAutoCarrusel();
+    }
+
+    // Cambiar entre Pestaña Menú y Pestaña Equipo
     function cambiarPestana(pestana) {
       const secMenu = document.getElementById('seccion-menu');
       const secEquipo = document.getElementById('seccion-equipo');
@@ -277,6 +336,8 @@
     // Inicializar
     cargarMenu();
     cargarEquipo();
+    actualizarCarrusel();
+    iniciarAutoCarrusel();
   </script>
 </body>
 </html>
