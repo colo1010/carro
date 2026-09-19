@@ -226,19 +226,17 @@
       }
       cargarMenu();
     }
-
-    function crearTarjetaProducto(p) {
+function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
-      const critico = p.stock > 0 && p.stock < 3;
+      const critico = p.stock > 0 && p.stock <= 3; // Activo para 3, 2 y 1 unidad
 
       let badgeStock = '';
       if (agotado) {
         badgeStock = `<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">Agotado</span>`;
       } else if (critico) {
         badgeStock = `<span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold animate-pulse">¡Últimas ${p.stock} unids!</span>`;
-      } else {
-        badgeStock = `<span class="text-xs text-gray-500">Disp: ${p.stock}</span>`;
       }
+      // Si el stock es mayor a 3, badgeStock permanece vacío y no muestra cantidad.
 
       return `
         <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
@@ -259,6 +257,7 @@
         </div>
       `;
     }
+    
 
     function cargarMenu() {
       document.getElementById('menu-hamburguesas').innerHTML = hamburguesas.map(p => crearTarjetaProducto(p)).join('');
