@@ -169,8 +169,8 @@
     </div>
   </div>
 
-  <!-- BARRA Y CARRITO DE COMPRA FLOTANTE -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-30 max-h-[85vh] overflow-y-auto">
+  <!-- BARRA Y CARRITO DE COMPRA FLOTANTE (Oculto en Inicio por defecto con la clase 'hidden') -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-30 max-h-[85vh] overflow-y-auto hidden">
     <div class="flex justify-between items-center mb-2">
       <button onclick="toggleDetalleCarrito()" class="flex items-center gap-2 text-gray-800 font-bold hover:text-emerald-800 transition">
         <span>🛒 Mi Carrito (<span id="cantidad-items">0</span>)</span>
@@ -348,7 +348,7 @@
       cargarMenu();
     }
 
-    // TARJETA DE PRODUCTO (CON NAVEGACIÓN A MODAL AL HACER CLIC)
+    // TARJETA DE PRODUCTO
     function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
       const critico = p.stock > 0 && p.stock <= 3;
@@ -582,9 +582,11 @@
       location.reload(); 
     }
 
+    // CONTROL DE NAVEGACIÓN Y VISIBILIDAD DEL CARRITO
     function cambiarPestana(p) {
       const secInicio = document.getElementById('seccion-inicio');
       const secMenu = document.getElementById('seccion-menu');
+      const carritoFlotante = document.getElementById('carrito-flotante');
 
       const btnInicio = document.getElementById('btn-pestana-inicio');
       const btnMenu = document.getElementById('btn-pestana-menu');
@@ -598,10 +600,12 @@
       if (p === 'inicio') {
         secInicio.classList.remove('hidden');
         secMenu.classList.add('hidden');
+        carritoFlotante.classList.add('hidden'); // Se oculta el carrito en Inicio
         btnInicio.className = estiloActivo;
       } else if (p === 'menu') {
         secInicio.classList.add('hidden');
         secMenu.classList.remove('hidden');
+        carritoFlotante.classList.remove('hidden'); // Se muestra el carrito en el Menú
         btnMenu.className = estiloActivo;
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
