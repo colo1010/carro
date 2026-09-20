@@ -7,18 +7,14 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<!-- Ajustado pb-52 en móvil y sm:pb-60 en pantallas grandes para que el contenido no quede oculto tras el carrito -->
 <body class="bg-gray-100 text-gray-800 pb-52 sm:pb-60">
 
   <!-- Encabezado Principal con Patrón Dorado en SVG -->
-  <header class="relative bg-[#0d2f1f] text-white py-8 text-center shadow-2xl overflow-hidden sticky top-0 z-50">
-    
-    <!-- Textura/Patrón de Grabado Dorado Integrado -->
+  <header class="relative bg-[#0d2f1f] text-white py-8 text-center shadow-2xl overflow-hidden sticky top-0 z-40">
     <div class="absolute inset-0 opacity-30 pointer-events-none" 
          style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' viewBox=\'0 0 100 100\' fill=\'none\' stroke=\'%23d4af37\' stroke-width=\'1.2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><g transform=\'scale(0.85)\'><path d=\'M10 25 C10 15 35 15 35 25 L35 28 L10 28 Z\'/><path d=\'M8 32 L37 32\'/><path d=\'M10 36 C10 42 35 42 35 36 L35 32 L10 32 Z\'/><path d=\'M60 15 L75 15 L70 42 L65 42 Z\'/><path d=\'M62 15 L58 5\'/><path d=\'M67 15 L67 3\'/><path d=\'M72 15 L76 5\'/><path d=\'M20 70 C10 70 10 90 20 90 L30 90 C40 90 40 70 30 70 Z\'/><path d=\'M25 65 L25 70\'/><path d=\'M70 70 L80 90 M80 70 L70 90\'/><circle cx=\'50\' cy=\'50\' r=\'8\'/><path d=\'M46 50 L54 50 M50 46 L50 54\'/></g></svg>'); background-repeat: repeat;">
     </div>
 
-    <!-- Navegación Principal -->
     <div class="relative z-10 max-w-2xl mx-auto px-4">
       <h1 class="text-3xl sm:text-4xl font-black tracking-widest text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
         BURGER KITCHEN
@@ -27,7 +23,6 @@
         Sabor Gourmet • Pedidos a Domicilio / Retiro
       </p>
 
-      <!-- Botones de Navegación -->
       <nav class="flex justify-center gap-3 mt-5 px-2">
         <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105">
           🏠 Inicio
@@ -48,8 +43,6 @@
 
     <!-- SECCIÓN 1: INICIO -->
     <section id="seccion-inicio" class="space-y-12">
-      
-      <!-- Banner Hero -->
       <div class="relative bg-black rounded-2xl overflow-hidden shadow-xl text-white">
         <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=1000&q=80" alt="Hamburguesa gourmet" class="w-full h-72 sm:h-96 object-cover opacity-60">
         <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/80 via-black/30 to-transparent">
@@ -64,10 +57,10 @@
 
       <!-- Tarjeta Destacada -->
       <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 flex flex-col sm:flex-row items-center gap-6">
-        <img src="SmashDobleQues.jpeg" alt="Especialidad" class="w-full sm:w-1/2 h-48 object-cover rounded-lg shadow" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80'">
+        <img src="SmashDobleQues.jpeg" alt="Especialidad" class="w-full sm:w-1/2 h-48 object-cover rounded-lg shadow cursor-pointer" onclick="abrirModal(1)" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80'">
         <div class="sm:w-1/2 text-center sm:text-left">
           <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">La Favorita de la Casa</span>
-          <h3 class="text-2xl font-black mt-2 text-gray-900">Doble Smash Burger</h3>
+          <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700" onclick="abrirModal(1)">Doble Smash Burger</h3>
           <p class="text-sm text-gray-600 my-2">Doble medallón de carne aplastada a la plancha, doble queso cheddar fundido y nuestra salsa especial de la casa.</p>
           <div class="flex items-center justify-between mt-4">
             <span class="text-xl font-extrabold text-emerald-800">$5.500 CLP</span>
@@ -106,11 +99,9 @@
         <div id="contenedor-clientes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
       </div>
 
-      <!-- NUESTRO EQUIPO Y LOCAL -->
+      <!-- LOCAL Y EQUIPO -->
       <div class="pt-8 border-t border-gray-200">
         <h2 class="text-2xl font-black mb-4 text-gray-900 text-center">Conoce Nuestro Local 🏬</h2>
-        
-        <!-- Carrusel -->
         <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-xl shadow-md mb-8 bg-black">
           <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
           <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/80">❮</button>
@@ -118,30 +109,68 @@
           <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
         </div>
 
-        <!-- Equipo -->
         <h3 class="text-xl font-bold mb-4 text-gray-800 text-center">Nuestro Equipo de Trabajo 👥</h3>
         <div id="contenedor-equipo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
       </div>
-
     </section>
 
     <!-- SECCIÓN 2: MENÚ DE PRODUCTOS -->
     <section id="seccion-menu" class="hidden">
+      <p class="text-xs text-gray-500 mb-4 bg-emerald-50 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
+        💡 <span><strong>Tip:</strong> Haz clic sobre la foto o el nombre de cualquier producto para ver sus detalles e ingredientes completos.</span>
+      </p>
+
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas</h2>
       <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
 
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
-      <!-- Agregado mb-12 para dar espacio al final del listado -->
       <div id="menu-extras" class="space-y-4 mb-12"></div>
     </section>
 
   </main>
 
+  <!-- VENTANA MODAL (DETALLE DE PRODUCTO) -->
+  <div id="modal-producto" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all relative max-h-[90vh] flex flex-col">
+      <!-- Botón de Cierre -->
+      <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg z-10 transition">
+        ✕
+      </button>
+
+      <!-- Imagen Ampliada -->
+      <div class="relative h-64 sm:h-72 w-full bg-gray-100 flex-shrink-0">
+        <img id="modal-img" src="" alt="Detalle producto" class="w-full h-full object-cover">
+        <span id="modal-badge" class="absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow"></span>
+      </div>
+
+      <!-- Información del Producto -->
+      <div class="p-5 overflow-y-auto space-y-4 flex-grow">
+        <div class="flex justify-between items-start">
+          <h3 id="modal-titulo" class="text-2xl font-black text-gray-900 leading-tight"></h3>
+          <span id="modal-precio" class="text-xl font-extrabold text-emerald-800 ml-2 whitespace-nowrap"></span>
+        </div>
+
+        <p id="modal-desc" class="text-sm text-gray-600"></p>
+
+        <!-- Sección Ingredientes -->
+        <div class="border-t border-gray-100 pt-3">
+          <h4 class="text-xs uppercase font-extrabold tracking-wider text-gray-400 mb-2">🌿 Ingredientes Principales:</h4>
+          <ul id="modal-ingredientes" class="grid grid-cols-2 gap-2 text-xs font-medium text-gray-700"></ul>
+        </div>
+      </div>
+
+      <!-- Pie del Modal con Acción de Compra -->
+      <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-3">
+        <span class="text-xs text-gray-500 font-semibold">¿Te tienta? Agrégalo directo:</span>
+        <button id="modal-btn-agregar" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
+          <span>+ Agregar al Carrito</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- BARRA Y CARRITO DE COMPRA FLOTANTE -->
-  <!-- Se añade max-h-[85vh] u overflow-y-auto para evitar que tape pantallas móviles si el carrito se expande -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-40 max-h-[85vh] overflow-y-auto">
-    
-    <!-- Encabezado del Carrito (Resumen desplegable) -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-30 max-h-[85vh] overflow-y-auto">
     <div class="flex justify-between items-center mb-2">
       <button onclick="toggleDetalleCarrito()" class="flex items-center gap-2 text-gray-800 font-bold hover:text-emerald-800 transition">
         <span>🛒 Mi Carrito (<span id="cantidad-items">0</span>)</span>
@@ -153,13 +182,11 @@
       </div>
     </div>
 
-    <!-- Detalle de Productos en el Carrito (Oculto por defecto) -->
     <div id="detalle-carrito" class="hidden my-3 max-h-40 overflow-y-auto border-t border-b border-gray-100 py-2 divide-y divide-gray-100">
       <p id="carrito-vacio-msj" class="text-xs text-gray-400 italic text-center py-2">Tu carrito está vacío</p>
       <div id="lista-items-carrito" class="space-y-2"></div>
     </div>
 
-    <!-- Selección de Tipo de Entrega -->
     <div class="mb-3">
       <span class="text-xs font-bold text-gray-600 mb-1 block">Tipo de Entrega:</span>
       <div class="grid grid-cols-2 gap-2">
@@ -172,12 +199,9 @@
       </div>
     </div>
 
-    <!-- Formulario de Pedido -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
       <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm">
       <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2 rounded w-full text-sm">
-      
-      <!-- Campo Dirección (se muestra solo cuando tipoEntrega sea 'delivery') -->
       <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2 rounded w-full text-sm sm:col-span-2 hidden">
     </div>
 
@@ -187,27 +211,13 @@
   </div>
 
   <script>
-    // CONFIGURACIÓN PRINCIPAL
     const API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT"; 
     const TELEFONO_WHATSAPP = "56912345678"; 
 
-    // DATOS DE CLIENTES Y EQUIPO
     const clientesFelices = [
-      {
-        nombre: "@camila_burgerlove",
-        comentario: "¡La Doble Smash estuvo increíble! Llegó súper caliente.",
-        foto: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80"
-      },
-      {
-        nombre: "Familia Silva",
-        comentario: "Noche de hamburguesas en casa. ¡Las papas artesanales un 10/10!",
-        foto: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&q=80"
-      },
-      {
-        nombre: "@felipe.gourmet",
-        comentario: "La mejor salsa de la ciudad. Totalmente recomendados.",
-        foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80"
-      }
+      { nombre: "@camila_burgerlove", comentario: "¡La Doble Smash estuvo increíble! Llegó súper caliente.", foto: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80" },
+      { nombre: "Familia Silva", comentario: "Noche de hamburguesas en casa. ¡Las papas artesanales un 10/10!", foto: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&q=80" },
+      { nombre: "@felipe.gourmet", comentario: "La mejor salsa de la ciudad. Totalmente recomendados.", foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" }
     ];
 
     const fotosLocal = [
@@ -219,25 +229,88 @@
       { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas smash y parrilla." }
     ];
 
-    // INVENTARIO BASE
+    // INVENTARIO CON INGREDIENTES
     let hamburguesas = [
-      { id: 1, nombre: "Hamburguesa Doble Smash", precio: 5500, desc: "Doble carne y queso cheddar.", imagen: "SmashDobleQues.jpeg", stock: 10 },
-      { id: 2, nombre: "Hamburguesa Gourmet", precio: 7500, desc: "Carne 180g y tocino.", imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=300&q=80", stock: 8 },
-      { id: 3, nombre: "Hamburguesa BBQ Bacon", precio: 6800, desc: "Queso, tocino y BBQ.", imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=300&q=80", stock: 2 },
-      { id: 4, nombre: "Hamburguesa Veggie", precio: 6200, desc: "Medallón vegetal.", imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=300&q=80", stock: 4 },
-      { id: 5, nombre: "Combo Smash Completo", precio: 8500, desc: "Smash + Papas + Bebida.", imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=300&q=80", stock: 12 }
+      { 
+        id: 1, 
+        nombre: "Hamburguesa Doble Smash", 
+        precio: 5500, 
+        desc: "Doble medallón de carne smash de vacuno, queso cheddar fundido y pepinillos.", 
+        imagen: "SmashDobleQues.jpeg", 
+        stock: 10,
+        ingredientes: ["2 Medallones de carne vacuno (90g c/u)", "Doble Queso Cheddar fundido", "Pan Brioche tostado en mantequilla", "Salsa secreta BK", "Pepinillos artesanos"]
+      },
+      { 
+        id: 2, 
+        nombre: "Hamburguesa Gourmet", 
+        precio: 7500, 
+        desc: "Carne Premium 180g, tocino crujiente, cebolla caramelizada y queso mantecoso.", 
+        imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&q=80", 
+        stock: 8,
+        ingredientes: ["Medallón de carne vacuno (180g)", "Tocino ahumado en tiras", "Cebolla caramelizada al vino tinto", "Queso mantecoso artesanal", "Lechuga hidropónica", "Pan Brioche"]
+      },
+      { 
+        id: 3, 
+        nombre: "Hamburguesa BBQ Bacon", 
+        precio: 6800, 
+        desc: "Jugosa carne con salsa BBQ ahumada, aros de cebolla empanizados y cheddar.", 
+        imagen: "https://images.unsplash.com/photo-1553979459-d2229ba7433b?w=600&q=80", 
+        stock: 2,
+        ingredientes: ["Medallón de carne vacuno (150g)", "Salsa BBQ estilo Tejas", "Aros de cebolla crujientes", "Queso Cheddar", "Tocino ahumado"]
+      },
+      { 
+        id: 4, 
+        nombre: "Hamburguesa Veggie", 
+        precio: 6200, 
+        desc: "Medallón de lentejas y champiñones, palta fresca, tomate y lactonesa de ajo.", 
+        imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=600&q=80", 
+        stock: 4,
+        ingredientes: ["Medallón vegetal (Lentejas + Champiñón)", "Palta hass laminada", "Tomate fresco", "Rúcula", "Lactonesa casera de ajo"]
+      },
+      { 
+        id: 5, 
+        nombre: "Combo Smash Completo", 
+        precio: 8500, 
+        desc: "Nuestra clásica Smash Burger acompañada de papas fritas medianas y bebida 350ml.", 
+        imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=600&q=80", 
+        stock: 12,
+        ingredientes: ["Doble Smash Burger", "Porción mediana de papas fritas", "Bebida en lata 350ml a elección"]
+      }
     ];
 
     let extras = [
-      { id: 101, nombre: "Papas Fritas Artesanales", precio: 2500, desc: "Porción grande.", imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300&q=80", stock: 15 },
-      { id: 102, nombre: "Aros de Cebolla (8 uds)", precio: 3000, desc: "Con salsa BBQ.", imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=300&q=80", stock: 10 },
-      { id: 103, nombre: "Nuggets de Pollo (6 uds)", precio: 3200, desc: "Crujientes.", imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=300&q=80", stock: 10 }
+      { 
+        id: 101, 
+        nombre: "Papas Fritas Artesanales", 
+        precio: 2500, 
+        desc: "Papas rústicas cortadas a mano con sazón especial de la casa.", 
+        imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80", 
+        stock: 15,
+        ingredientes: ["Papas nativas seleccionadas", "Sal de mar", "Especias rústicas", "Salsa a elección"]
+      },
+      { 
+        id: 102, 
+        nombre: "Aros de Cebolla (8 uds)", 
+        precio: 3000, 
+        desc: "Anillos de cebolla dulce empanizados con panko extra crujiente.", 
+        imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=600&q=80", 
+        stock: 10,
+        ingredientes: ["Cebolla dulce", "Empanizado Panko", "Salsa BBQ para acompañar"]
+      },
+      { 
+        id: 103, 
+        nombre: "Nuggets de Pollo (6 uds)", 
+        precio: 3200, 
+        desc: "Bocados de pechuga de pollo 100% real sazonados y apanados.", 
+        imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80", 
+        stock: 10,
+        ingredientes: ["Pechuga de pollo seleccionada", "Rebozado crujiente dorado", "Salsa Mostaza Miel"]
+      }
     ];
 
     let carrito = {};
     let tipoEntrega = 'retiro';
 
-    // CAMBIAR TIPO DE ENTREGA (RETIRO / DELIVERY)
     function seleccionarTipoEntrega(tipo) {
       tipoEntrega = tipo;
       const btnRetiro = document.getElementById('btn-tipo-retiro');
@@ -258,7 +331,6 @@
       }
     }
 
-    // STOCK BASE DE DATOS
     async function obtenerStockBD() {
       try {
         if (!API_URL || API_URL.includes("PEGA_AQUI")) throw new Error("API no configurada");
@@ -276,7 +348,7 @@
       cargarMenu();
     }
 
-    // TARJETA DE PRODUCTO
+    // TARJETA DE PRODUCTO (CON NAVEGACIÓN A MODAL AL HACER CLIC)
     function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
       const critico = p.stock > 0 && p.stock <= 3;
@@ -289,20 +361,29 @@
       }
 
       return `
-        <div class="bg-white p-3 sm:p-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
-          <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-md flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'">
-          <div class="flex-grow pr-2">
+        <div class="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
+          
+          <!-- Foto Clickeable para abrir Modal -->
+          <div class="relative cursor-pointer overflow-hidden rounded-lg group flex-shrink-0" onclick="abrirModal(${p.id})">
+            <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover transform transition duration-300 group-hover:scale-110" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'">
+            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold">🔍 Ver</div>
+          </div>
+
+          <!-- Nombre y Detalle Clickeable -->
+          <div class="flex-grow pr-2 cursor-pointer" onclick="abrirModal(${p.id})">
             <div class="flex items-center gap-2 mb-1">
-              <h3 class="font-bold text-sm sm:text-base text-gray-900">${p.nombre}</h3>
+              <h3 class="font-bold text-sm sm:text-base text-gray-900 hover:text-emerald-700 transition">${p.nombre}</h3>
               ${badgeStock}
             </div>
             <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
             <span class="font-bold text-sm sm:text-base text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
           </div>
+
+          <!-- Controles de Cantidad -->
           <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-            <button onclick="cambiarCantidad(${p.id}, -1)" ${agotado ? 'disabled' : ''} class="bg-gray-200 text-gray-700 px-3 py-1 rounded font-bold disabled:opacity-50">-</button>
-            <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">0</span>
-            <button onclick="cambiarCantidad(${p.id}, 1)" ${agotado ? 'disabled' : ''} class="bg-black text-white px-3 py-1 rounded font-bold hover:bg-gray-800 disabled:opacity-50">+</button>
+            <button onclick="cambiarCantidad(${p.id}, -1)" ${agotado ? 'disabled' : ''} class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg font-bold hover:bg-gray-300 disabled:opacity-50">-</button>
+            <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">${carrito[p.id] || 0}</span>
+            <button onclick="cambiarCantidad(${p.id}, 1)" ${agotado ? 'disabled' : ''} class="bg-black text-white px-3 py-1 rounded-lg font-bold hover:bg-gray-800 disabled:opacity-50">+</button>
           </div>
         </div>
       `;
@@ -313,7 +394,54 @@
       document.getElementById('menu-extras').innerHTML = extras.map(p => crearTarjetaProducto(p)).join('');
     }
 
-    // MODIFICAR CARRITO
+    // FUNCIONES DEL MODAL
+    function abrirModal(id) {
+      let p = [...hamburguesas, ...extras].find(item => item.id == id);
+      if (!p) return;
+
+      document.getElementById('modal-img').src = p.imagen;
+      document.getElementById('modal-titulo').innerText = p.nombre;
+      document.getElementById('modal-precio').innerText = `$${p.precio.toLocaleString('es-CL')} CLP`;
+      document.getElementById('modal-desc').innerText = p.desc;
+      
+      const badge = document.getElementById('modal-badge');
+      if (p.stock <= 0) {
+        badge.innerText = "Agotado";
+        badge.className = "absolute bottom-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
+      } else {
+        badge.innerText = `Disponible (${p.stock} unids)`;
+        badge.className = "absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
+      }
+
+      // Renderizar Ingredientes
+      const listaIng = document.getElementById('modal-ingredientes');
+      if (p.ingredientes && p.ingredientes.length > 0) {
+        listaIng.innerHTML = p.ingredientes.map(ing => `<li class="flex items-center gap-1.5"><span class="text-emerald-600">✔</span> ${ing}</li>`).join('');
+      } else {
+        listaIng.innerHTML = `<li class="text-gray-400 italic col-span-2">No se detallan ingredientes específicos.</li>`;
+      }
+
+      // Configurar botón dentro del modal
+      const btnAgregar = document.getElementById('modal-btn-agregar');
+      if (p.stock <= 0) {
+        btnAgregar.disabled = true;
+        btnAgregar.className = "bg-gray-400 text-white font-bold px-5 py-2.5 rounded-xl cursor-not-allowed text-sm";
+      } else {
+        btnAgregar.disabled = false;
+        btnAgregar.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2 cursor-pointer";
+        btnAgregar.onclick = function() {
+          cambiarCantidad(p.id, 1);
+          cerrarModal();
+        };
+      }
+
+      document.getElementById('modal-producto').classList.remove('hidden');
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-producto').classList.add('hidden');
+    }
+
     function cambiarCantidad(id, cambio) {
       let p = [...hamburguesas, ...extras].find(prod => prod.id == id);
       let actual = carrito[id] || 0;
@@ -333,7 +461,6 @@
       actualizarCarrito();
     }
 
-    // ACTUALIZAR RESUMEN Y DETALLE DEL CARRITO
     function actualizarCarrito() {
       let total = 0;
       let cantidadTotal = 0;
@@ -377,7 +504,6 @@
       }
     }
 
-    // DESPLEGAR / OCULTAR DETALLE DEL CARRITO
     function toggleDetalleCarrito() {
       const detalle = document.getElementById('detalle-carrito');
       const flecha = document.getElementById('flecha-carrito');
@@ -391,7 +517,6 @@
       }
     }
 
-    // ENVIAR WHATSAPP
     async function enviarWhatsApp() {
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
@@ -457,7 +582,6 @@
       location.reload(); 
     }
 
-    // PESTAÑAS
     function cambiarPestana(p) {
       const secInicio = document.getElementById('seccion-inicio');
       const secMenu = document.getElementById('seccion-menu');
@@ -483,7 +607,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // CARGAS COMPLEMENTARIAS
     function cargarClientes() {
       const container = document.getElementById('contenedor-clientes');
       container.innerHTML = clientesFelices.map(c => `
@@ -520,6 +643,14 @@
           <p class="text-xs text-gray-500">${member.bio}</p>
         </div>
       `).join('');
+    }
+
+    // Cierre al presionar fuera del modal
+    window.onclick = function(event) {
+      const modal = document.getElementById('modal-producto');
+      if (event.target === modal) {
+        cerrarModal();
+      }
     }
 
     // INICIALIZACIÓN
