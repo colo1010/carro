@@ -45,7 +45,7 @@
       🔄 Sincronizando disponibilidad de stock...
     </div>
 
-    <!-- SECCIÓN 1: INICIO (PORTADA, CLIENTES Y EQUIPO) -->
+    <!-- SECCIÓN 1: INICIO -->
     <section id="seccion-inicio" class="space-y-12">
       
       <!-- Banner Hero -->
@@ -96,7 +96,7 @@
         </div>
       </div>
 
-      <!-- CLIENTES FELICES (UBICADO AL FINAL) -->
+      <!-- CLIENTES FELICES -->
       <div class="pt-8 border-t border-gray-200">
         <h2 class="text-2xl font-black mb-2 text-gray-900 text-center">Comunidad Burger Kitchen 📸</h2>
         <p class="text-sm text-gray-600 mb-6 text-center">
@@ -105,7 +105,7 @@
         <div id="contenedor-clientes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
       </div>
 
-      <!-- NUESTRO EQUIPO Y LOCAL (UBICADO AL FINAL) -->
+      <!-- NUESTRO EQUIPO Y LOCAL -->
       <div class="pt-8 border-t border-gray-200">
         <h2 class="text-2xl font-black mb-4 text-gray-900 text-center">Conoce Nuestro Local 🏬</h2>
         
@@ -135,28 +135,43 @@
 
   </main>
 
-  <!-- Carrito / Formulario Flotante de Compra -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto hidden z-40">
-    <div class="flex justify-between items-center mb-3">
-      <span class="font-bold text-lg">Total del Pedido:</span>
-      <span id="total-price" class="font-extrabold text-xl text-green-600">$0 CLP</span>
-    </div>
+  <!-- BARRA Y CARRITO DE COMPRA FLOTANTE -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-40">
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
+    <!-- Encabezado del Carrito (Resumen desplegable) -->
+    <div class="flex justify-between items-center mb-2">
+      <button onclick="toggleDetalleCarrito()" class="flex items-center gap-2 text-gray-800 font-bold hover:text-emerald-800 transition">
+        <span>🛒 Mi Carrito (<span id="cantidad-items">0</span>)</span>
+        <span id="flecha-carrito" class="text-xs transition-transform transform">▲</span>
+      </button>
+      <div class="text-right">
+        <span class="text-xs text-gray-500 block">Total:</span>
+        <span id="total-price" class="font-extrabold text-xl text-emerald-700">$0 CLP</span>
+      </div>
+    </div>
+
+    <!-- Detalle de Productos en el Carrito (Oculto por defecto) -->
+    <div id="detalle-carrito" class="hidden my-3 max-h-48 overflow-y-auto border-t border-b border-gray-100 py-2 divide-y divide-gray-100">
+      <p id="carrito-vacio-msj" class="text-xs text-gray-400 italic text-center py-2">Tu carrito está vacío</p>
+      <div id="lista-items-carrito" class="space-y-2"></div>
+    </div>
+
+    <!-- Formulario de Pedido -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3 mt-2">
       <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm">
       <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2 rounded w-full text-sm">
       <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm">
     </div>
 
-    <button onclick="enviarWhatsApp()" id="btn-confirmar" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
-      <span>Confirmar Pedido por WhatsApp</span>
+    <button onclick="enviarWhatsApp()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+      <span>Confirmar Pedido por WhatsApp 📲</span>
     </button>
   </div>
 
   <script>
     // CONFIGURACIÓN PRINCIPAL
-    const API_URL = "https://script.google.com/macros/s/AKfycbz12NbHeGFEmyodf6s5_KC5b5YB6T8jmchSE6GPh49v82T_ZZLdaTO2NQDParJ4MNg5vg/exec"; 
-    const TELEFONO_WHATSAPP = "56912345678"; // Reemplazar con el número real de WhatsApp del local
+    const API_URL = "PEGA_AQUI_TU_URL_DE_APPS_SCRIPT"; 
+    const TELEFONO_WHATSAPP = "56912345678"; 
 
     // DATOS DE CLIENTES Y EQUIPO
     const clientesFelices = [
@@ -203,7 +218,7 @@
 
     let carrito = {};
 
-    // OBTENER STOCK DESDE GOOGLE SHEETS
+    // STOCK BASE DE DATOS
     async function obtenerStockBD() {
       try {
         if (!API_URL || API_URL.includes("PEGA_AQUI")) throw new Error("API no configurada");
@@ -221,10 +236,10 @@
       cargarMenu();
     }
 
-    // TARJETA DE PRODUCTO CON LOGICA DE VISIBILIDAD DE STOCK (<= 3)
+    // TARJETA DE PRODUCTO
     function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
-      const critico = p.stock > 0 && p.stock <= 3; // Mostrar únicamente cuando sea 3, 2 o 1 unidad
+      const critico = p.stock > 0 && p.stock <= 3;
 
       let badgeStock = '';
       if (agotado) {
@@ -258,6 +273,7 @@
       document.getElementById('menu-extras').innerHTML = extras.map(p => crearTarjetaProducto(p)).join('');
     }
 
+    // MODIFICAR CARRITO
     function cambiarCantidad(id, cambio) {
       let p = [...hamburguesas, ...extras].find(prod => prod.id == id);
       let actual = carrito[id] || 0;
@@ -270,21 +286,73 @@
 
       carrito[id] = nuevo;
       if (carrito[id] <= 0) delete carrito[id];
-      document.getElementById(`cant-${id}`).innerText = carrito[id] || 0;
-      actualizarTotal();
+
+      // Actualizar vista del menú
+      const elemCant = document.getElementById(`cant-${id}`);
+      if (elemCant) elemCant.innerText = carrito[id] || 0;
+
+      actualizarCarrito();
     }
 
-    function actualizarTotal() {
+    // ACTUALIZAR RESUMEN Y DETALLE DEL CARRITO
+    function actualizarCarrito() {
       let total = 0;
+      let cantidadTotal = 0;
       let todos = [...hamburguesas, ...extras];
+      let htmlLista = '';
+
       for (let id in carrito) {
         let p = todos.find(prod => prod.id == id);
-        if (p) total += p.precio * carrito[id];
+        if (p) {
+          let subtotal = p.precio * carrito[id];
+          total += subtotal;
+          cantidadTotal += carrito[id];
+
+          htmlLista += `
+            <div class="flex justify-between items-center text-xs py-1">
+              <div class="flex-grow">
+                <span class="font-bold text-gray-800">${p.nombre}</span>
+                <span class="text-gray-500 block">$${p.precio.toLocaleString('es-CL')} x ${carrito[id]}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-gray-900">$${subtotal.toLocaleString('es-CL')}</span>
+                <button onclick="cambiarCantidad(${p.id}, -1)" class="text-red-500 hover:text-red-700 font-bold px-1">✕</button>
+              </div>
+            </div>
+          `;
+        }
       }
+
       document.getElementById('total-price').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+      document.getElementById('cantidad-items').innerText = cantidadTotal;
+
+      const msjVacio = document.getElementById('carrito-vacio-msj');
+      const contenedorLista = document.getElementById('lista-items-carrito');
+
+      if (cantidadTotal === 0) {
+        msjVacio.classList.remove('hidden');
+        contenedorLista.innerHTML = '';
+      } else {
+        msjVacio.classList.add('hidden');
+        contenedorLista.innerHTML = htmlLista;
+      }
     }
 
-    // ENVÍO DE PEDIDO A WHATSAPP Y DESCUENTO DE STOCK EN BASE DE DATOS
+    // DESPLEGAR / OCULTAR DETALLE DEL CARRITO
+    function toggleDetalleCarrito() {
+      const detalle = document.getElementById('detalle-carrito');
+      const flecha = document.getElementById('flecha-carrito');
+
+      if (detalle.classList.contains('hidden')) {
+        detalle.classList.remove('hidden');
+        flecha.classList.add('rotate-180');
+      } else {
+        detalle.classList.add('hidden');
+        flecha.classList.remove('rotate-180');
+      }
+    }
+
+    // ENVIAR WHATSAPP
     async function enviarWhatsApp() {
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
@@ -335,7 +403,7 @@
         console.error("Error al descontar stock:", err);
       }
 
-      btn.innerText = "Confirmar Pedido por WhatsApp";
+      btn.innerText = "Confirmar Pedido por WhatsApp 📲";
       btn.disabled = false;
 
       const url = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensaje}`;
@@ -343,11 +411,10 @@
       location.reload(); 
     }
 
-    // NAVEGACIÓN Y CAMBIO DE VISTAS
+    // PESTAÑAS
     function cambiarPestana(p) {
       const secInicio = document.getElementById('seccion-inicio');
       const secMenu = document.getElementById('seccion-menu');
-      const carrito = document.getElementById('carrito-flotante');
 
       const btnInicio = document.getElementById('btn-pestana-inicio');
       const btnMenu = document.getElementById('btn-pestana-menu');
@@ -361,19 +428,16 @@
       if (p === 'inicio') {
         secInicio.classList.remove('hidden');
         secMenu.classList.add('hidden');
-        carrito.classList.add('hidden');
         btnInicio.className = estiloActivo;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (p === 'menu') {
         secInicio.classList.add('hidden');
         secMenu.classList.remove('hidden');
-        carrito.classList.remove('hidden');
         btnMenu.className = estiloActivo;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // CARGA DE CLIENTES Y EQUIPO EN EL DOM
+    // CARGAS COMPLEMENTARIAS
     function cargarClientes() {
       const container = document.getElementById('contenedor-clientes');
       container.innerHTML = clientesFelices.map(c => `
@@ -412,7 +476,7 @@
       `).join('');
     }
 
-    // INICIALIZACIÓN GENERAL
+    // INICIALIZACIÓN
     obtenerStockBD();
     cargarEquipo();
     cargarClientes();
