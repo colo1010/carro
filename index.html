@@ -6,30 +6,6 @@
   <title>Burger Kitchen | Sabor Gourmet a Domicilio</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <style>
-    /* Estilos especiales para impresión de comandas en cocina */
-    @media print {
-      body * {
-        visibility: hidden;
-      }
-      #ticket-cocina-impresion, #ticket-cocina-impresion * {
-        visibility: visible;
-      }
-      #ticket-cocina-impresion {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        padding: 10px;
-        color: black !important;
-        background: white !important;
-      }
-      .no-print {
-        display: none !important;
-      }
-    }
-  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 pb-52 sm:pb-60">
 
@@ -188,15 +164,15 @@
     </div>
   </div>
 
-  <!-- MODAL DE COMANDA DE COCINA (IMPRESIÓN) -->
+  <!-- MODAL DE RESUMEN DE PEDIDO / COMANDA -->
   <div id="modal-comanda" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-2xl border border-gray-300 relative text-gray-900">
       
-      <!-- Contenido del Ticket para Cocina -->
-      <div id="ticket-cocina-impresion" class="font-mono text-xs leading-tight space-y-3">
+      <!-- Contenido del resumen -->
+      <div class="font-mono text-xs leading-tight space-y-3">
         <div class="text-center border-b pb-2">
           <h2 class="text-xl font-black uppercase tracking-wider">BURGER KITCHEN</h2>
-          <p class="text-xs font-bold text-gray-700 mt-1">COMANDA DE COCINA</p>
+          <p class="text-xs font-bold text-gray-700 mt-1">RESUMEN DEL PEDIDO</p>
           <div class="mt-2 text-base font-extrabold bg-black text-white py-1 px-2 rounded inline-block" id="ticket-num-pedido">
             #BK-1001
           </div>
@@ -220,12 +196,9 @@
         </div>
       </div>
 
-      <!-- Botones de Acción (No salen en la impresión) -->
-      <div class="mt-6 flex flex-col gap-2 no-print">
-        <button onclick="imprimirComanda()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2">
-          <span>🖨️ Imprimir Comanda</span>
-        </button>
-        <button onclick="completarYEnviarWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2">
+      <!-- Único Botón de Acción -->
+      <div class="mt-6 flex flex-col gap-2">
+        <button onclick="completarYEnviarWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex items-center justify-center gap-2 text-sm">
           <span>📲 Continuar a WhatsApp</span>
         </button>
       </div>
@@ -374,7 +347,6 @@
     let tipoEntrega = 'retiro';
     let urlWhatsAppFinal = '';
 
-    // GESTIÓN DE NÚMERO DE PEDIDO CORRELATIVO
     function obtenerSiguienteNumeroPedido() {
       let ultimo = localStorage.getItem('bk_num_pedido');
       let Siguiente = ultimo ? parseInt(ultimo) + 1 : 1001;
@@ -580,7 +552,6 @@
       }
     }
 
-    // GENERACIÓN DE COMANDA E IDENTIFICADOR DE PEDIDO
     async function generarComandaYPedido() {
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
@@ -636,7 +607,6 @@
       }
       mensajeWA += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
 
-      // Cargar los datos en el ticket modal
       document.getElementById('ticket-num-pedido').innerText = numPedido;
       document.getElementById('ticket-fecha').innerText = fechaActual;
       document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
@@ -654,10 +624,8 @@
       document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
       document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
 
-      // Guardar URL de WhatsApp para enviar después
       urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensajeWA}`;
 
-      // Descontar stock en Google Sheets
       try {
         if (API_URL && !API_URL.includes("PEGA_AQUI")) {
           await fetch(API_URL, {
@@ -669,12 +637,7 @@
         console.error("Error al descontar stock:", err);
       }
 
-      // Mostrar Modal Comanda
       document.getElementById('modal-comanda').classList.remove('hidden');
-    }
-
-    function imprimirComanda() {
-      window.print();
     }
 
     function completarYEnviarWhatsApp() {
