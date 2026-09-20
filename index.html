@@ -6,10 +6,34 @@
   <title>Burger Kitchen | Sabor Gourmet a Domicilio</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    /* Estilos especiales para impresión de comandas en cocina */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #ticket-cocina-impresion, #ticket-cocina-impresion * {
+        visibility: visible;
+      }
+      #ticket-cocina-impresion {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 10px;
+        color: black !important;
+        background: white !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body class="bg-gray-100 text-gray-800 pb-52 sm:pb-60">
 
-  <!-- Encabezado Principal con Patrón Dorado en SVG -->
+  <!-- Encabezado Principal -->
   <header class="relative bg-[#0d2f1f] text-white py-8 text-center shadow-2xl overflow-hidden sticky top-0 z-40">
     <div class="absolute inset-0 opacity-30 pointer-events-none" 
          style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'180\' viewBox=\'0 0 100 100\' fill=\'none\' stroke=\'%23d4af37\' stroke-width=\'1.2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'><g transform=\'scale(0.85)\'><path d=\'M10 25 C10 15 35 15 35 25 L35 28 L10 28 Z\'/><path d=\'M8 32 L37 32\'/><path d=\'M10 36 C10 42 35 42 35 36 L35 32 L10 32 Z\'/><path d=\'M60 15 L75 15 L70 42 L65 42 Z\'/><path d=\'M62 15 L58 5\'/><path d=\'M67 15 L67 3\'/><path d=\'M72 15 L76 5\'/><path d=\'M20 70 C10 70 10 90 20 90 L30 90 C40 90 40 70 30 70 Z\'/><path d=\'M25 65 L25 70\'/><path d=\'M70 70 L80 90 M80 70 L70 90\'/><circle cx=\'50\' cy=\'50\' r=\'8\'/><path d=\'M46 50 L54 50 M50 46 L50 54\'/></g></svg>'); background-repeat: repeat;">
@@ -132,18 +156,15 @@
   <!-- VENTANA MODAL (DETALLE DE PRODUCTO) -->
   <div id="modal-producto" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all relative max-h-[90vh] flex flex-col">
-      <!-- Botón de Cierre -->
       <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg z-10 transition">
         ✕
       </button>
 
-      <!-- Imagen Ampliada -->
       <div class="relative h-64 sm:h-72 w-full bg-gray-100 flex-shrink-0">
         <img id="modal-img" src="" alt="Detalle producto" class="w-full h-full object-cover">
         <span id="modal-badge" class="absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow"></span>
       </div>
 
-      <!-- Información del Producto -->
       <div class="p-5 overflow-y-auto space-y-4 flex-grow">
         <div class="flex justify-between items-start">
           <h3 id="modal-titulo" class="text-2xl font-black text-gray-900 leading-tight"></h3>
@@ -152,14 +173,12 @@
 
         <p id="modal-desc" class="text-sm text-gray-600"></p>
 
-        <!-- Sección Ingredientes -->
         <div class="border-t border-gray-100 pt-3">
           <h4 class="text-xs uppercase font-extrabold tracking-wider text-gray-400 mb-2">🌿 Ingredientes Principales:</h4>
           <ul id="modal-ingredientes" class="grid grid-cols-2 gap-2 text-xs font-medium text-gray-700"></ul>
         </div>
       </div>
 
-      <!-- Pie del Modal con Acción de Compra -->
       <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-3">
         <span class="text-xs text-gray-500 font-semibold">¿Te tienta? Agrégalo directo:</span>
         <button id="modal-btn-agregar" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
@@ -169,7 +188,51 @@
     </div>
   </div>
 
-  <!-- BARRA Y CARRITO DE COMPRA FLOTANTE (Oculto en Inicio por defecto con la clase 'hidden') -->
+  <!-- MODAL DE COMANDA DE COCINA (IMPRESIÓN) -->
+  <div id="modal-comanda" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-2xl border border-gray-300 relative text-gray-900">
+      
+      <!-- Contenido del Ticket para Cocina -->
+      <div id="ticket-cocina-impresion" class="font-mono text-xs leading-tight space-y-3">
+        <div class="text-center border-b pb-2">
+          <h2 class="text-xl font-black uppercase tracking-wider">BURGER KITCHEN</h2>
+          <p class="text-xs font-bold text-gray-700 mt-1">COMANDA DE COCINA</p>
+          <div class="mt-2 text-base font-extrabold bg-black text-white py-1 px-2 rounded inline-block" id="ticket-num-pedido">
+            #BK-1001
+          </div>
+        </div>
+
+        <div class="border-b pb-2 space-y-1">
+          <p><strong>Fecha/Hora:</strong> <span id="ticket-fecha"></span></p>
+          <p><strong>Tipo:</strong> <span id="ticket-tipo" class="uppercase font-bold"></span></p>
+          <p><strong>Cliente:</strong> <span id="ticket-cliente"></span></p>
+          <p><strong>Teléfono:</strong> <span id="ticket-telefono"></span></p>
+          <p id="ticket-direccion-contenedor" class="hidden"><strong>Dirección:</strong> <span id="ticket-direccion"></span></p>
+        </div>
+
+        <div>
+          <p class="font-bold border-b pb-1 mb-2">DETALLE DEL PEDIDO:</p>
+          <div id="ticket-items" class="space-y-1 text-sm font-bold"></div>
+        </div>
+
+        <div class="border-t pt-2 text-right text-sm">
+          <p><strong>TOTAL:</strong> <span id="ticket-total" class="font-extrabold"></span></p>
+        </div>
+      </div>
+
+      <!-- Botones de Acción (No salen en la impresión) -->
+      <div class="mt-6 flex flex-col gap-2 no-print">
+        <button onclick="imprimirComanda()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2">
+          <span>🖨️ Imprimir Comanda</span>
+        </button>
+        <button onclick="completarYEnviarWhatsApp()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg shadow transition flex items-center justify-center gap-2">
+          <span>📲 Continuar a WhatsApp</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BARRA Y CARRITO DE COMPRA FLOTANTE -->
   <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-30 max-h-[85vh] overflow-y-auto hidden">
     <div class="flex justify-between items-center mb-2">
       <button onclick="toggleDetalleCarrito()" class="flex items-center gap-2 text-gray-800 font-bold hover:text-emerald-800 transition">
@@ -205,8 +268,8 @@
       <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2 rounded w-full text-sm sm:col-span-2 hidden">
     </div>
 
-    <button onclick="enviarWhatsApp()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
-      <span>Confirmar Pedido por WhatsApp 📲</span>
+    <button onclick="generarComandaYPedido()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
+      <span>Confirmar y Generar Comanda 📋</span>
     </button>
   </div>
 
@@ -229,7 +292,6 @@
       { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas smash y parrilla." }
     ];
 
-    // INVENTARIO CON INGREDIENTES
     let hamburguesas = [
       { 
         id: 1, 
@@ -310,6 +372,15 @@
 
     let carrito = {};
     let tipoEntrega = 'retiro';
+    let urlWhatsAppFinal = '';
+
+    // GESTIÓN DE NÚMERO DE PEDIDO CORRELATIVO
+    function obtenerSiguienteNumeroPedido() {
+      let ultimo = localStorage.getItem('bk_num_pedido');
+      let Siguiente = ultimo ? parseInt(ultimo) + 1 : 1001;
+      localStorage.setItem('bk_num_pedido', Siguiente);
+      return `#BK-${Siguiente}`;
+    }
 
     function seleccionarTipoEntrega(tipo) {
       tipoEntrega = tipo;
@@ -348,7 +419,6 @@
       cargarMenu();
     }
 
-    // TARJETA DE PRODUCTO
     function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
       const critico = p.stock > 0 && p.stock <= 3;
@@ -362,14 +432,11 @@
 
       return `
         <div class="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
-          
-          <!-- Foto Clickeable para abrir Modal -->
           <div class="relative cursor-pointer overflow-hidden rounded-lg group flex-shrink-0" onclick="abrirModal(${p.id})">
             <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover transform transition duration-300 group-hover:scale-110" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'">
             <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold">🔍 Ver</div>
           </div>
 
-          <!-- Nombre y Detalle Clickeable -->
           <div class="flex-grow pr-2 cursor-pointer" onclick="abrirModal(${p.id})">
             <div class="flex items-center gap-2 mb-1">
               <h3 class="font-bold text-sm sm:text-base text-gray-900 hover:text-emerald-700 transition">${p.nombre}</h3>
@@ -379,7 +446,6 @@
             <span class="font-bold text-sm sm:text-base text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
           </div>
 
-          <!-- Controles de Cantidad -->
           <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
             <button onclick="cambiarCantidad(${p.id}, -1)" ${agotado ? 'disabled' : ''} class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg font-bold hover:bg-gray-300 disabled:opacity-50">-</button>
             <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">${carrito[p.id] || 0}</span>
@@ -394,7 +460,6 @@
       document.getElementById('menu-extras').innerHTML = extras.map(p => crearTarjetaProducto(p)).join('');
     }
 
-    // FUNCIONES DEL MODAL
     function abrirModal(id) {
       let p = [...hamburguesas, ...extras].find(item => item.id == id);
       if (!p) return;
@@ -413,7 +478,6 @@
         badge.className = "absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
       }
 
-      // Renderizar Ingredientes
       const listaIng = document.getElementById('modal-ingredientes');
       if (p.ingredientes && p.ingredientes.length > 0) {
         listaIng.innerHTML = p.ingredientes.map(ing => `<li class="flex items-center gap-1.5"><span class="text-emerald-600">✔</span> ${ing}</li>`).join('');
@@ -421,7 +485,6 @@
         listaIng.innerHTML = `<li class="text-gray-400 italic col-span-2">No se detallan ingredientes específicos.</li>`;
       }
 
-      // Configurar botón dentro del modal
       const btnAgregar = document.getElementById('modal-btn-agregar');
       if (p.stock <= 0) {
         btnAgregar.disabled = true;
@@ -517,7 +580,8 @@
       }
     }
 
-    async function enviarWhatsApp() {
+    // GENERACIÓN DE COMANDA E IDENTIFICADOR DE PEDIDO
+    async function generarComandaYPedido() {
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
@@ -535,21 +599,21 @@
         return;
       }
 
-      const btn = document.getElementById('btn-confirmar');
-      btn.innerText = "Procesando pedido...";
-      btn.disabled = true;
+      const numPedido = obtenerSiguienteNumeroPedido();
+      const fechaActual = new Date().toLocaleString('es-CL');
 
       let itemsParaDescontar = [];
       let todos = [...hamburguesas, ...extras];
 
-      let mensaje = `*¡Nuevo Pedido Burger Kitchen!*%0A`;
-      mensaje += `*Modalidad:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}%0A`;
-      mensaje += `*Cliente:* ${nombre}%0A`;
-      mensaje += `*Teléfono:* ${telefono}%0A`;
+      let htmlItemsTicket = '';
+      let mensajeWA = `*¡Nuevo Pedido ${numPedido}!*%0A`;
+      mensajeWA += `*Modalidad:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}%0A`;
+      mensajeWA += `*Cliente:* ${nombre}%0A`;
+      mensajeWA += `*Teléfono:* ${telefono}%0A`;
       if (tipoEntrega === 'delivery') {
-        mensaje += `*Dirección:* ${direccion}%0A`;
+        mensajeWA += `*Dirección:* ${direccion}%0A`;
       }
-      mensaje += `%0A*Detalle del pedido:*%0A`;
+      mensajeWA += `%0A*Detalle del pedido:*%0A`;
 
       let total = 0;
       for (let id in carrito) {
@@ -557,12 +621,43 @@
         if (p) {
           let subtotal = p.precio * carrito[id];
           total += subtotal;
-          mensaje += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
+          
+          mensajeWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
+          
+          htmlItemsTicket += `
+            <div class="flex justify-between">
+              <span>${carrito[id]}x ${p.nombre}</span>
+              <span>$${subtotal.toLocaleString('es-CL')}</span>
+            </div>
+          `;
+
           itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
         }
       }
-      mensaje += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
+      mensajeWA += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
 
+      // Cargar los datos en el ticket modal
+      document.getElementById('ticket-num-pedido').innerText = numPedido;
+      document.getElementById('ticket-fecha').innerText = fechaActual;
+      document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
+      document.getElementById('ticket-cliente').innerText = nombre;
+      document.getElementById('ticket-telefono').innerText = telefono;
+      
+      const contDir = document.getElementById('ticket-direccion-contenedor');
+      if (tipoEntrega === 'delivery') {
+        document.getElementById('ticket-direccion').innerText = direccion;
+        contDir.classList.remove('hidden');
+      } else {
+        contDir.classList.add('hidden');
+      }
+
+      document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
+      document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+
+      // Guardar URL de WhatsApp para enviar después
+      urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensajeWA}`;
+
+      // Descontar stock en Google Sheets
       try {
         if (API_URL && !API_URL.includes("PEGA_AQUI")) {
           await fetch(API_URL, {
@@ -574,15 +669,19 @@
         console.error("Error al descontar stock:", err);
       }
 
-      btn.innerText = "Confirmar Pedido por WhatsApp 📲";
-      btn.disabled = false;
-
-      const url = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensaje}`;
-      window.open(url, '_blank');
-      location.reload(); 
+      // Mostrar Modal Comanda
+      document.getElementById('modal-comanda').classList.remove('hidden');
     }
 
-    // CONTROL DE NAVEGACIÓN Y VISIBILIDAD DEL CARRITO
+    function imprimirComanda() {
+      window.print();
+    }
+
+    function completarYEnviarWhatsApp() {
+      window.open(urlWhatsAppFinal, '_blank');
+      location.reload();
+    }
+
     function cambiarPestana(p) {
       const secInicio = document.getElementById('seccion-inicio');
       const secMenu = document.getElementById('seccion-menu');
@@ -600,12 +699,12 @@
       if (p === 'inicio') {
         secInicio.classList.remove('hidden');
         secMenu.classList.add('hidden');
-        carritoFlotante.classList.add('hidden'); // Se oculta el carrito en Inicio
+        carritoFlotante.classList.add('hidden');
         btnInicio.className = estiloActivo;
       } else if (p === 'menu') {
         secInicio.classList.add('hidden');
         secMenu.classList.remove('hidden');
-        carritoFlotante.classList.remove('hidden'); // Se muestra el carrito en el Menú
+        carritoFlotante.classList.remove('hidden');
         btnMenu.className = estiloActivo;
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -649,7 +748,6 @@
       `).join('');
     }
 
-    // Cierre al presionar fuera del modal
     window.onclick = function(event) {
       const modal = document.getElementById('modal-producto');
       if (event.target === modal) {
