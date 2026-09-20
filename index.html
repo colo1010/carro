@@ -156,11 +156,26 @@
       <div id="lista-items-carrito" class="space-y-2"></div>
     </div>
 
+    <!-- Selección de Tipo de Entrega -->
+    <div class="mb-3">
+      <span class="text-xs font-bold text-gray-600 mb-1 block">Tipo de Entrega:</span>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" onclick="seleccionarTipoEntrega('retiro')" id="btn-tipo-retiro" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition flex items-center justify-center gap-1">
+          🛍️ Retiro en Local
+        </button>
+        <button type="button" onclick="seleccionarTipoEntrega('delivery')" id="btn-tipo-delivery" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center justify-center gap-1">
+          🛵 Delivery
+        </button>
+      </div>
+    </div>
+
     <!-- Formulario de Pedido -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3 mt-2">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
       <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm">
       <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2 rounded w-full text-sm">
-      <input type="text" id="direccion" placeholder="Dirección / Sector (o Retiro)" class="border p-2 rounded w-full text-sm">
+      
+      <!-- Campo Dirección (se muestra solo cuando tipoEntrega sea 'delivery') -->
+      <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2 rounded w-full text-sm sm:col-span-2 hidden">
     </div>
 
     <button onclick="enviarWhatsApp()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
@@ -217,6 +232,28 @@
     ];
 
     let carrito = {};
+    let tipoEntrega = 'retiro'; // Estado inicial
+
+    // CAMBIAR TIPO DE ENTREGA (RETIRO / DELIVERY)
+    function seleccionarTipoEntrega(tipo) {
+      tipoEntrega = tipo;
+      const btnRetiro = document.getElementById('btn-tipo-retiro');
+      const btnDelivery = document.getElementById('btn-tipo-delivery');
+      const inputDireccion = document.getElementById('direccion');
+
+      const estiloActivo = "py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition flex items-center justify-center gap-1";
+      const estiloInactivo = "py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center justify-center gap-1";
+
+      if (tipo === 'retiro') {
+        btnRetiro.className = estiloActivo;
+        btnDelivery.className = estiloInactivo;
+        inputDireccion.classList.add('hidden');
+      } else {
+        btnRetiro.className = estiloInactivo;
+        btnDelivery.className = estiloActivo;
+        inputDireccion.classList.remove('hidden');
+      }
+    }
 
     // STOCK BASE DE DATOS
     async function obtenerStockBD() {
@@ -287,7 +324,6 @@
       carrito[id] = nuevo;
       if (carrito[id] <= 0) delete carrito[id];
 
-      // Actualizar vista del menú
       const elemCant = document.getElementById(`cant-${id}`);
       if (elemCant) elemCant.innerText = carrito[id] || 0;
 
@@ -362,8 +398,12 @@
         alert("Por favor selecciona al menos un producto.");
         return;
       }
-      if (!nombre || !telefono || !direccion) {
-        alert("Por favor completa tu nombre, teléfono y dirección.");
+      if (!nombre || !telefono) {
+        alert("Por favor ingresa tu nombre y teléfono de contacto.");
+        return;
+      }
+      if (tipoEntrega === 'delivery' && !direccion) {
+        alert("Por favor ingresa tu dirección de envío para el Delivery.");
         return;
       }
 
@@ -375,10 +415,13 @@
       let todos = [...hamburguesas, ...extras];
 
       let mensaje = `*¡Nuevo Pedido Burger Kitchen!*%0A`;
+      mensaje += `*Modalidad:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}%0A`;
       mensaje += `*Cliente:* ${nombre}%0A`;
       mensaje += `*Teléfono:* ${telefono}%0A`;
-      mensaje += `*Dirección/Entrega:* ${direccion}%0A%0A`;
-      mensaje += `*Detalle del pedido:*%0A`;
+      if (tipoEntrega === 'delivery') {
+        mensaje += `*Dirección:* ${direccion}%0A`;
+      }
+      mensaje += `%0A*Detalle del pedido:*%0A`;
 
       let total = 0;
       for (let id in carrito) {
