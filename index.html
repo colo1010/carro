@@ -7,7 +7,8 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 pb-32">
+<!-- Ajustado pb-52 en móvil y sm:pb-60 en pantallas grandes para que el contenido no quede oculto tras el carrito -->
+<body class="bg-gray-100 text-gray-800 pb-52 sm:pb-60">
 
   <!-- Encabezado Principal con Patrón Dorado en SVG -->
   <header class="relative bg-[#0d2f1f] text-white py-8 text-center shadow-2xl overflow-hidden sticky top-0 z-50">
@@ -130,13 +131,15 @@
       <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
 
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
-      <div id="menu-extras" class="space-y-4"></div>
+      <!-- Agregado mb-12 para dar espacio al final del listado -->
+      <div id="menu-extras" class="space-y-4 mb-12"></div>
     </section>
 
   </main>
 
   <!-- BARRA Y CARRITO DE COMPRA FLOTANTE -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-40">
+  <!-- Se añade max-h-[85vh] u overflow-y-auto para evitar que tape pantallas móviles si el carrito se expande -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-40 max-h-[85vh] overflow-y-auto">
     
     <!-- Encabezado del Carrito (Resumen desplegable) -->
     <div class="flex justify-between items-center mb-2">
@@ -151,7 +154,7 @@
     </div>
 
     <!-- Detalle de Productos en el Carrito (Oculto por defecto) -->
-    <div id="detalle-carrito" class="hidden my-3 max-h-48 overflow-y-auto border-t border-b border-gray-100 py-2 divide-y divide-gray-100">
+    <div id="detalle-carrito" class="hidden my-3 max-h-40 overflow-y-auto border-t border-b border-gray-100 py-2 divide-y divide-gray-100">
       <p id="carrito-vacio-msj" class="text-xs text-gray-400 italic text-center py-2">Tu carrito está vacío</p>
       <div id="lista-items-carrito" class="space-y-2"></div>
     </div>
@@ -232,7 +235,7 @@
     ];
 
     let carrito = {};
-    let tipoEntrega = 'retiro'; // Estado inicial
+    let tipoEntrega = 'retiro';
 
     // CAMBIAR TIPO DE ENTREGA (RETIRO / DELIVERY)
     function seleccionarTipoEntrega(tipo) {
