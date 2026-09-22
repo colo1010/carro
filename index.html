@@ -583,6 +583,26 @@
       mensajeWA += `*Teléfono:* ${telefono}%0A`;
       if (tipoEntrega === 'delivery') {
         mensajeWA += `*Dirección:* ${direccion}%0A`;
+        // Agregar dentro de generarComandaYPedido() en la página del cliente:
+const nuevoPedidoCocina = {
+  id: numPedido,
+  fecha: fechaActual,
+  hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
+  tipo: tipoEntrega,
+  cliente: nombre,
+  telefono: telefono,
+  direccion: direccion,
+  items: Object.keys(carrito).map(id => {
+    let prod = [...hamburguesas, ...extras].find(p => p.id == id);
+    return { cant: carrito[id], nombre: prod.nombre };
+  }),
+  estado: 'pendiente' // Estados: 'pendiente' -> 'preparacion' -> 'entregado'
+};
+
+// Guardar en la base local compartida
+let listaPedidos = JSON.parse(localStorage.getItem('bk_pedidos_cocina')) || [];
+listaPedidos.unshift(nuevoPedidoCocina);
+localStorage.setItem('bk_pedidos_cocina', JSON.stringify(listaPedidos));
       }
       mensajeWA += `%0A*Detalle del pedido:*%0A`;
 
