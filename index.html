@@ -6,6 +6,10 @@
   <title>Burger Kitchen | Sabor Gourmet a Domicilio</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- AGREGAR AQUÍ: SDKs de Firebase Realtime Database -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
 <body class="bg-gray-100 text-gray-800 pb-52 sm:pb-60">
 
@@ -247,6 +251,20 @@
   </div>
 
   <script>
+    // AGREGAR AQUÍ: Inicializar Firebase Database
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "tu-proyecto.firebaseapp.com",
+      databaseURL: "https://tu-proyecto-default-rtdb.firebaseio.com",
+      projectId: "tu-proyecto",
+      storageBucket: "tu-proyecto.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "1:123456789:web:abcdef"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
     const API_URL = "https://script.google.com/macros/s/AKfycbz12NbHeGFEmyodf6s5_KC5b5YB6T8jmchSE6GPh49v82T_ZZLdaTO2NQDParJ4MNg5vg/exec"; 
     const TELEFONO_WHATSAPP = "56963762462"; 
 
@@ -552,7 +570,7 @@
       }
     }
 
-    async function generarComandaYPedido() {
+  async function generarComandaYPedido() {
       const nombre = document.getElementById('nombre').value.trim();
       const telefono = document.getElementById('telefono').value.trim();
       const direccion = document.getElementById('direccion').value.trim();
@@ -572,8 +590,10 @@
 
       const numPedido = obtenerSiguienteNumeroPedido();
       const fechaActual = new Date().toLocaleString('es-CL');
+      const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
       let itemsParaDescontar = [];
+      let itemsParaCocina = [];
       let todos = [...hamburguesas, ...extras];
 
       let htmlItemsTicket = '';
@@ -583,26 +603,6 @@
       mensajeWA += `*Teléfono:* ${telefono}%0A`;
       if (tipoEntrega === 'delivery') {
         mensajeWA += `*Dirección:* ${direccion}%0A`;
-        // Agregar dentro de generarComandaYPedido() en la página del cliente:
-const nuevoPedidoCocina = {
-  id: numPedido,
-  fecha: fechaActual,
-  hora: new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }),
-  tipo: tipoEntrega,
-  cliente: nombre,
-  telefono: telefono,
-  direccion: direccion,
-  items: Object.keys(carrito).map(id => {
-    let prod = [...hamburguesas, ...extras].find(p => p.id == id);
-    return { cant: carrito[id], nombre: prod.nombre };
-  }),
-  estado: 'pendiente' // Estados: 'pendiente' -> 'preparacion' -> 'entregado'
-};
-
-// Guardar en la base local compartida
-let listaPedidos = JSON.parse(localStorage.getItem('bk_pedidos_cocina')) || [];
-listaPedidos.unshift(nuevoPedidoCocina);
-localStorage.setItem('bk_pedidos_cocina', JSON.stringify(listaPedidos));
       }
       mensajeWA += `%0A*Detalle del pedido:*%0A`;
 
@@ -623,9 +623,33 @@ localStorage.setItem('bk_pedidos_cocina', JSON.stringify(listaPedidos));
           `;
 
           itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
+          itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
         }
       }
       mensajeWA += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
+
+      // -------------------------------------------------------------
+      // NUEVO: ENVIAR COMANDA A FIREBASE PARA LA PANTALLA DE COCINA
+      // -------------------------------------------------------------
+      const nuevoPedidoCocina = {
+        id: numPedido,
+        fecha: fechaActual,
+        hora: horaActual,
+        tipo: tipoEntrega,
+        cliente: nombre,
+        telefono: telefono,
+        direccion: direccion || '',
+        items: itemsParaCocina,
+        estado: 'pendiente',
+        timestamp: Date.now()
+      };
+
+      try {
+        db.ref('pedidos/' + numPedido.replace('#', '')).set(nuevoPedidoCocina);
+      } catch (e) {
+        console.error("Error al enviar a Firebase:", e);
+      }
+      // -------------------------------------------------------------
 
       document.getElementById('ticket-num-pedido').innerText = numPedido;
       document.getElementById('ticket-fecha').innerText = fechaActual;
