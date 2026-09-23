@@ -571,120 +571,122 @@
       }
     }
 
-  async function generarComandaYPedido() {
-      const nombre = document.getElementById('nombre').value.trim();
-      const telefono = document.getElementById('telefono').value.trim();
-      const direccion = document.getElementById('direccion').value.trim();
+    async function generarComandaYPedido() {
+  const nombre = document.getElementById('nombre').value.trim();
+  const telefono = document.getElementById('telefono').value.trim();
+  const direccion = document.getElementById('direccion').value.trim();
 
-      if (Object.keys(carrito).length === 0) {
-        alert("Por favor selecciona al menos un producto.");
-        return;
-      }
-      if (!nombre || !telefono) {
-        alert("Por favor ingresa tu nombre y teléfono de contacto.");
-        return;
-      }
-      if (tipoEntrega === 'delivery' && !direccion) {
-        alert("Por favor ingresa tu dirección de envío para el Delivery.");
-        return;
-      }
+  if (Object.keys(carrito).length === 0) {
+    alert("Por favor selecciona al menos un producto.");
+    return;
+  }
+  if (!nombre || !telefono) {
+    alert("Por favor ingresa tu nombre y teléfono de contacto.");
+    return;
+  }
+  if (tipoEntrega === 'delivery' && !direccion) {
+    alert("Por favor ingresa tu dirección de envío para el Delivery.");
+    return;
+  }
 
-      const numPedido = obtenerSiguienteNumeroPedido();
-      const fechaActual = new Date().toLocaleString('es-CL');
-      const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  const numPedido = obtenerSiguienteNumeroPedido();
+  const fechaActual = new Date().toLocaleString('es-CL');
+  const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
-      let itemsParaDescontar = [];
-      let itemsParaCocina = [];
-      let todos = [...hamburguesas, ...extras];
+  let itemsParaDescontar = [];
+  let itemsParaCocina = [];
+  let todos = [...hamburguesas, ...extras];
 
-      let htmlItemsTicket = '';
-      let mensajeWA = `*¡Nuevo Pedido ${numPedido}!*%0A`;
-      mensajeWA += `*Modalidad:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}%0A`;
-      mensajeWA += `*Cliente:* ${nombre}%0A`;
-      mensajeWA += `*Teléfono:* ${telefono}%0A`;
-      if (tipoEntrega === 'delivery') {
-        mensajeWA += `*Dirección:* ${direccion}%0A`;
-      }
-      mensajeWA += `%0A*Detalle del pedido:*%0A`;
+  let htmlItemsTicket = '';
+  
+  // 1. Construir el texto en formato normal con saltos de línea estándar (\n)
+  let textoWA = `¡Nuevo Pedido ${numPedido}!\n`;
+  textoWA += `Modalidad: ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
+  textoWA += `Cliente: ${nombre}\n`;
+  textoWA += `Teléfono: ${telefono}\n`;
+  if (tipoEntrega === 'delivery') {
+    textoWA += `Dirección: ${direccion}\n`;
+  }
+  textoWA += `\nDetalle del pedido:\n`;
 
-      let total = 0;
-      for (let id in carrito) {
-        let p = todos.find(prod => prod.id == id);
-        if (p) {
-          let subtotal = p.precio * carrito[id];
-          total += subtotal;
-          
-          mensajeWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})%0A`;
-          
-          htmlItemsTicket += `
-            <div class="flex justify-between">
-              <span>${carrito[id]}x ${p.nombre}</span>
-              <span>$${subtotal.toLocaleString('es-CL')}</span>
-            </div>
-          `;
-
-          itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
-          itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
-        }
-      }
-      mensajeWA += `%0A*Total a Pagar:* $${total.toLocaleString('es-CL')} CLP`;
-
-      // -------------------------------------------------------------
-      // NUEVO: ENVIAR COMANDA A FIREBASE PARA LA PANTALLA DE COCINA
-      // -------------------------------------------------------------
-      const nuevoPedidoCocina = {
-        id: numPedido,
-        fecha: fechaActual,
-        hora: horaActual,
-        tipo: tipoEntrega,
-        cliente: nombre,
-        telefono: telefono,
-        direccion: direccion || '',
-        items: itemsParaCocina,
-        estado: 'pendiente',
-        timestamp: Date.now()
-      };
-
-      try {
-        db.ref('pedidos/' + numPedido.replace('#', '')).set(nuevoPedidoCocina);
-      } catch (e) {
-        console.error("Error al enviar a Firebase:", e);
-      }
-      // -------------------------------------------------------------
-
-      document.getElementById('ticket-num-pedido').innerText = numPedido;
-      document.getElementById('ticket-fecha').innerText = fechaActual;
-      document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
-      document.getElementById('ticket-cliente').innerText = nombre;
-      document.getElementById('ticket-telefono').innerText = telefono;
+  let total = 0;
+  for (let id in carrito) {
+    let p = todos.find(prod => prod.id == id);
+    if (p) {
+      let subtotal = p.precio * carrito[id];
+      total += subtotal;
       
-      const contDir = document.getElementById('ticket-direccion-contenedor');
-      if (tipoEntrega === 'delivery') {
-        document.getElementById('ticket-direccion').innerText = direccion;
-        contDir.classList.remove('hidden');
-      } else {
-        contDir.classList.add('hidden');
-      }
+      textoWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})\n`;
+      
+      htmlItemsTicket += `
+        <div class="flex justify-between">
+          <span>${carrito[id]}x ${p.nombre}</span>
+          <span>$${subtotal.toLocaleString('es-CL')}</span>
+        </div>
+      `;
 
-      document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
-      document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
-
-      urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${mensajeWA}`;
-
-      try {
-        if (API_URL && !API_URL.includes("PEGA_AQUI")) {
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ items: itemsParaDescontar })
-          });
-        }
-      } catch (err) {
-        console.error("Error al descontar stock:", err);
-      }
-
-      document.getElementById('modal-comanda').classList.remove('hidden');
+      itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
+      itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
     }
+  }
+  textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
 
+  // 2. ENVIAR COMANDA A FIREBASE PARA LA COCINA
+  const nuevoPedidoCocina = {
+    id: numPedido,
+    fecha: fechaActual,
+    hora: horaActual,
+    tipo: tipoEntrega,
+    cliente: nombre,
+    telefono: telefono,
+    direccion: direccion || '',
+    items: itemsParaCocina,
+    estado: 'pendiente',
+    timestamp: Date.now()
+  };
+
+  try {
+    if (typeof db !== 'undefined') {
+      db.ref('pedidos/' + numPedido.replace('#', '')).set(nuevoPedidoCocina);
+    }
+  } catch (e) {
+    console.error("Error al enviar comanda a Firebase:", e);
+  }
+
+  // 3. Mostrar resumen en el modal del cliente
+  document.getElementById('ticket-num-pedido').innerText = numPedido;
+  document.getElementById('ticket-fecha').innerText = fechaActual;
+  document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
+  document.getElementById('ticket-cliente').innerText = nombre;
+  document.getElementById('ticket-telefono').innerText = telefono;
+  
+  const contDir = document.getElementById('ticket-direccion-contenedor');
+  if (tipoEntrega === 'delivery') {
+    document.getElementById('ticket-direccion').innerText = direccion;
+    contDir.classList.remove('hidden');
+  } else {
+    contDir.classList.add('hidden');
+  }
+
+  document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
+  document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+
+  // 4. Codificar la URL de WhatsApp correctamente usando encodeURIComponent
+  urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
+
+  try {
+    if (API_URL && !API_URL.includes("PEGA_AQUI")) {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ items: itemsParaDescontar })
+      });
+    }
+  } catch (err) {
+    console.error("Error al descontar stock:", err);
+  }
+
+  document.getElementById('modal-comanda').classList.remove('hidden');
+}
     function completarYEnviarWhatsApp() {
       window.open(urlWhatsAppFinal, '_blank');
       location.reload();
