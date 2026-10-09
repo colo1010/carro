@@ -7,7 +7,7 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- AGREGAR AQUÍ: SDKs de Firebase Realtime Database -->
+  <!-- SDKs de Firebase Realtime Database -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
@@ -251,17 +251,17 @@
   </div>
 
   <script>
-    // AGREGAR AQUÍ: Inicializar Firebase Database
+    // Inicializar Firebase Database
     const firebaseConfig = {
-  apiKey: "AIzaSyCI3CWPBGqBsq30CC3AouVu3p4uhkNOkrw",
-  authDomain: "comandas-114cc.firebaseapp.com",
-  databaseURL: "https://comandas-114cc-default-rtdb.firebaseio.com",
-  projectId: "comandas-114cc",
-  storageBucket: "comandas-114cc.firebasestorage.app",
-  messagingSenderId: "852269899168",
-  appId: "1:852269899168:web:e05fef229b9a8db29158c5",
-  measurementId: "G-JGJWWQLVZ1"
-  };
+      apiKey: "AIzaSyCI3CWPBGqBsq30CC3AouVu3p4uhkNOkrw",
+      authDomain: "comandas-114cc.firebaseapp.com",
+      databaseURL: "https://comandas-114cc-default-rtdb.firebaseio.com",
+      projectId: "comandas-114cc",
+      storageBucket: "comandas-114cc.firebasestorage.app",
+      messagingSenderId: "852269899168",
+      appId: "1:852269899168:web:e05fef229b9a8db29158c5",
+      measurementId: "G-JGJWWQLVZ1"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -571,128 +571,138 @@
       }
     }
 
+    // FUNCIÓN DE GENERACIÓN DE COMANDA CON BLOQUEO DE DOBLE CLIC Y CLAVE ÚNICA EN FIREBASE
+    async function generarComandaYPedido() {
+      const btnConfirmar = document.getElementById('btn-confirmar');
 
-    textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
+      // PREVENIR MÚLTIPLES CLICS
+      if (btnConfirmar.disabled) return;
 
-    // 3. ENVIAR COMANDA A FIREBASE (UNA SOLA VEZ)
-    const nuevoPedidoCocina = {
-      id: numPedido,
-      fecha: fechaActual,
-      hora: horaActual,
-      tipo: tipoEntrega,
-      cliente: nombre,
-      telefono: telefono,
-      direccion: direccion || '',
-      items: itemsParaCocina,
-      estado: 'pendiente',
-      timestamp: Date.now()
-    };
+      const nombre = document.getElementById('nombre').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const direccion = document.getElementById('direccion').value.trim();
 
-    if (typeof db !== 'undefined') {
-      await db.ref('pedidos/' + numPedido.replace('#', '')).set(nuevoPedidoCocina);
+      if (Object.keys(carrito).length === 0) {
+        alert("Por favor selecciona al menos un producto.");
+        return;
+      }
+      if (!nombre || !telefono) {
+        alert("Por favor ingresa tu nombre y teléfono de contacto.");
+        return;
+      }
+      if (tipoEntrega === 'delivery' && !direccion) {
+        alert("Por favor ingresa tu dirección de envío para el Delivery.");
+        return;
+      }
+
+      // Bloquear botón inmediatamente
+      btnConfirmar.disabled = true;
+      btnConfirmar.classList.add('opacity-50', 'cursor-not-allowed');
+      btnConfirmar.innerHTML = '<span>⏳ Generando comanda...</span>';
+
+      try {
+        const numPedido = obtenerSiguienteNumeroPedido();
+        const fechaActual = new Date().toLocaleString('es-CL');
+        const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+
+        let itemsParaDescontar = [];
+        let itemsParaCocina = [];
+        let todos = [...hamburguesas, ...extras];
+
+        let htmlItemsTicket = '';
+        
+        let textoWA = `¡Nuevo Pedido ${numPedido}!\n`;
+        textoWA += `Modalidad: ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
+        textoWA += `Cliente: ${nombre}\n`;
+        textoWA += `Teléfono: ${telefono}\n`;
+        if (tipoEntrega === 'delivery') {
+          textoWA += `Dirección: ${direccion}\n`;
+        }
+        textoWA += `\nDetalle del pedido:\n`;
+
+        let total = 0;
+        for (let id in carrito) {
+          let p = todos.find(prod => prod.id == id);
+          if (p) {
+            let subtotal = p.precio * carrito[id];
+            total += subtotal;
+            
+            textoWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})\n`;
+            
+            htmlItemsTicket += `
+              <div class="flex justify-between">
+                <span>${carrito[id]}x ${p.nombre}</span>
+                <span>$${subtotal.toLocaleString('es-CL')}</span>
+              </div>
+            `;
+
+            itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
+            itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
+          }
+        }
+        textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
+
+        // Crear una referencia única mediante .push() para evitar duplicados en Firebase
+        const nuevoRef = db.ref('pedidos').push();
+        const keyUnica = nuevoRef.key;
+
+        const nuevoPedidoCocina = {
+          key: keyUnica,
+          id: numPedido,
+          fecha: fechaActual,
+          hora: horaActual,
+          tipo: tipoEntrega,
+          cliente: nombre,
+          telefono: telefono,
+          direccion: direccion || '',
+          items: itemsParaCocina,
+          estado: 'pendiente',
+          timestamp: Date.now()
+        };
+
+        if (typeof db !== 'undefined') {
+          await nuevoRef.set(nuevoPedidoCocina);
+        }
+
+        // Cargar datos en el Modal del Ticket
+        document.getElementById('ticket-num-pedido').innerText = numPedido;
+        document.getElementById('ticket-fecha').innerText = fechaActual;
+        document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
+        document.getElementById('ticket-cliente').innerText = nombre;
+        document.getElementById('ticket-telefono').innerText = telefono;
+        
+        const contDir = document.getElementById('ticket-direccion-contenedor');
+        if (tipoEntrega === 'delivery') {
+          document.getElementById('ticket-direccion').innerText = direccion;
+          contDir.classList.remove('hidden');
+        } else {
+          contDir.classList.add('hidden');
+        }
+
+        document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
+        document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+
+        urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
+
+        if (API_URL && !API_URL.includes("PEGA_AQUI")) {
+          await fetch(API_URL, {
+            method: "POST",
+            body: JSON.stringify({ items: itemsParaDescontar })
+          });
+        }
+
+        document.getElementById('modal-comanda').classList.remove('hidden');
+
+      } catch (err) {
+        console.error("Error al procesar el pedido:", err);
+        alert("Ocurrió un error al procesar el pedido. Intenta nuevamente.");
+      } finally {
+        btnConfirmar.disabled = false;
+        btnConfirmar.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnConfirmar.innerHTML = '<span>Confirmar y Generar Comanda 📋</span>';
+      }
     }
 
-    // 4. MOSTRAR EL TICKET AL CLIENTE
-    document.getElementById('ticket-num-pedido').innerText = numPedido;
-    document.getElementById('ticket-fecha').innerText = fechaActual;
-    document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
-    document.getElementById('ticket-cliente').innerText = nombre;
-    document.getElementById('ticket-telefono').innerText = telefono;
-    
-    const contDir = document.getElementById('ticket-direccion-contenedor');
-    if (tipoEntrega === 'delivery') {
-      document.getElementById('ticket-direccion').innerText = direccion;
-      contDir.classList.remove('hidden');
-    } else {
-      contDir.classList.add('hidden');
-    }
-
-    document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
-    document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
-
-    urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
-
-    if (API_URL && !API_URL.includes("PEGA_AQUI")) {
-      await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ items: itemsParaDescontar })
-      });
-    }
-
-    document.getElementById('modal-comanda').classList.remove('hidden');
-
-  } catch (err) {
-    console.error("Error al procesar el pedido:", err);
-    alert("Ocurrió un error al procesar el pedido. Intenta nuevamente.");
-  } finally {
-    // 5. RESTAURAR EL BOTÓN SI OCURRE UN ERROR
-    btnConfirmar.disabled = false;
-    btnConfirmar.classList.remove('opacity-50', 'cursor-not-allowed');
-    btnConfirmar.innerHTML = '<span>Confirmar y Generar Comanda 📋</span>';
-  }
-}
-  textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
-
- // 2. ENVIAR COMANDA A FIREBASE CON ID ÚNICO (EVITA REPETICIONES)
-  const nuevoRef = db.ref('pedidos').push(); // Genera una clave única en Firebase
-  const keyUnica = nuevoRef.key;
-
-  const nuevoPedidoCocina = {
-    key: keyUnica,
-    id: numPedido,
-    fecha: fechaActual,
-    hora: horaActual,
-    tipo: tipoEntrega,
-    cliente: nombre,
-    telefono: telefono,
-    direccion: direccion || '',
-    items: itemsParaCocina,
-    estado: 'pendiente',
-    timestamp: Date.now()
-  };
-
-  try {
-    if (typeof db !== 'undefined') {
-      nuevoRef.set(nuevoPedidoCocina);
-    }
-  } catch (e) {
-    console.error("Error al enviar comanda a Firebase:", e);
-  }
-
-  // 3. Mostrar resumen en el modal del cliente
-  document.getElementById('ticket-num-pedido').innerText = numPedido;
-  document.getElementById('ticket-fecha').innerText = fechaActual;
-  document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
-  document.getElementById('ticket-cliente').innerText = nombre;
-  document.getElementById('ticket-telefono').innerText = telefono;
-  
-  const contDir = document.getElementById('ticket-direccion-contenedor');
-  if (tipoEntrega === 'delivery') {
-    document.getElementById('ticket-direccion').innerText = direccion;
-    contDir.classList.remove('hidden');
-  } else {
-    contDir.classList.add('hidden');
-  }
-
-  document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
-  document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
-
-  // 4. Codificar la URL de WhatsApp correctamente usando encodeURIComponent
-  urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
-
-  try {
-    if (API_URL && !API_URL.includes("PEGA_AQUI")) {
-      await fetch(API_URL, {
-        method: "POST",
-        body: JSON.stringify({ items: itemsParaDescontar })
-      });
-    }
-  } catch (err) {
-    console.error("Error al descontar stock:", err);
-  }
-
-  document.getElementById('modal-comanda').classList.remove('hidden');
-}
     function completarYEnviarWhatsApp() {
       window.open(urlWhatsAppFinal, '_blank');
       location.reload();
