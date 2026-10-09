@@ -214,7 +214,7 @@
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
         <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2.5 rounded-lg w-full text-sm">
-        <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2.5 rounded-lg w-full text-sm">
+        <input type="tel" id="telefono" placeholder="Ej: +56912345678" class="border p-2.5 rounded-lg w-full text-sm">
         <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2.5 rounded-lg w-full text-sm sm:col-span-2 hidden">
       </div>
 
@@ -592,10 +592,18 @@
         alert("Por favor selecciona al menos un producto.");
         return;
       }
-      if (!nombre || !telefono) {
-        alert("Por favor ingresa tu nombre y teléfono de contacto.");
+      if (!nombre) {
+        alert("Por favor ingresa tu nombre de contacto.");
         return;
       }
+
+      // Validación Regex para número telefónico (+ opcional, entre 8 y 15 dígitos)
+      const regexTelefono = /^\+?[0-9]{8,15}$/;
+      if (!regexTelefono.test(telefono.replace(/\s+/g, ''))) {
+        alert("Por favor ingresa un número de teléfono válido (mínimo 8 dígitos numéricos).");
+        return;
+      }
+
       if (tipoEntrega === 'delivery' && !direccion) {
         alert("Por favor ingresa tu dirección de envío para el Delivery.");
         return;
