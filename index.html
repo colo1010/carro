@@ -631,8 +631,12 @@
   }
   textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
 
-  // 2. ENVIAR COMANDA A FIREBASE PARA LA COCINA
+ // 2. ENVIAR COMANDA A FIREBASE CON ID ÚNICO (EVITA REPETICIONES)
+  const nuevoRef = db.ref('pedidos').push(); // Genera una clave única en Firebase
+  const keyUnica = nuevoRef.key;
+
   const nuevoPedidoCocina = {
+    key: keyUnica,
     id: numPedido,
     fecha: fechaActual,
     hora: horaActual,
@@ -647,7 +651,7 @@
 
   try {
     if (typeof db !== 'undefined') {
-      db.ref('pedidos/' + numPedido.replace('#', '')).set(nuevoPedidoCocina);
+      nuevoRef.set(nuevoPedidoCocina);
     }
   } catch (e) {
     console.error("Error al enviar comanda a Firebase:", e);
