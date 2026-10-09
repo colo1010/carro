@@ -571,75 +571,7 @@
       }
     }
 
-async function generarComandaYPedido() {
-  const btnConfirmar = document.getElementById('btn-confirmar');
 
-  // PROTECCIÓN: Si el botón ya está deshabilitado, ignora nuevos clics
-  if (btnConfirmar.disabled) return;
-
-  const nombre = document.getElementById('nombre').value.trim();
-  const telefono = document.getElementById('telefono').value.trim();
-  const direccion = document.getElementById('direccion').value.trim();
-
-  if (Object.keys(carrito).length === 0) {
-    alert("Por favor selecciona al menos un producto.");
-    return;
-  }
-  if (!nombre || !telefono) {
-    alert("Por favor ingresa tu nombre y teléfono de contacto.");
-    return;
-  }
-  if (tipoEntrega === 'delivery' && !direccion) {
-    alert("Por favor ingresa tu dirección de envío para el Delivery.");
-    return;
-  }
-
-  // 1. DESHABILITAR EL BOTÓN DE INMEDIATO
-  btnConfirmar.disabled = true;
-  btnConfirmar.classList.add('opacity-50', 'cursor-not-allowed');
-  btnConfirmar.innerHTML = '<span>⏳ Generando comanda...</span>';
-
-  try {
-    const numPedido = obtenerSiguienteNumeroPedido();
-    const fechaActual = new Date().toLocaleString('es-CL');
-    const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
-
-    let itemsParaDescontar = [];
-    let itemsParaCocina = [];
-    let todos = [...hamburguesas, ...extras];
-
-    let htmlItemsTicket = '';
-    
-    // 2. Construir el texto formateado para WhatsApp
-    let textoWA = `¡Nuevo Pedido ${numPedido}!\n`;
-    textoWA += `Modalidad: ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
-    textoWA += `Cliente: ${nombre}\n`;
-    textoWA += `Teléfono: ${telefono}\n`;
-    if (tipoEntrega === 'delivery') {
-      textoWA += `Dirección: ${direccion}\n`;
-    }
-    textoWA += `\nDetalle del pedido:\n`;
-
-    let total = 0;
-    for (let id in carrito) {
-      let p = todos.find(prod => prod.id == id);
-      if (p) {
-        let subtotal = p.precio * carrito[id];
-        total += subtotal;
-        
-        textoWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})\n`;
-        
-        htmlItemsTicket += `
-          <div class="flex justify-between">
-            <span>${carrito[id]}x ${p.nombre}</span>
-            <span>$${subtotal.toLocaleString('es-CL')}</span>
-          </div>
-        `;
-
-        itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
-        itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
-      }
-    }
     textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
 
     // 3. ENVIAR COMANDA A FIREBASE (UNA SOLA VEZ)
