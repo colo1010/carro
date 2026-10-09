@@ -672,7 +672,7 @@
 
         textoWA += `\n💰 *TOTAL:* $${totalPedido.toLocaleString('es-CL')} CLP`;
 
-        // Llenar Modal de Comanda
+        // Llenar Modal de Comanda (Resumen Ticket)
         document.getElementById('ticket-num-pedido').innerText = numPedido;
         document.getElementById('ticket-fecha').innerText = fechaActual;
         document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
@@ -693,7 +693,7 @@
         // Generar URL de WhatsApp Encoded
         urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
 
-        // Cerrar carrito y abrir modal comanda
+        // Cerrar modal carrito y mostrar modal comanda
         cerrarModalCarrito();
         document.getElementById('modal-comanda').classList.remove('hidden');
 
