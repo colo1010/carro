@@ -571,7 +571,12 @@
       }
     }
 
-    async function generarComandaYPedido() {
+async function generarComandaYPedido() {
+  const btnConfirmar = document.getElementById('btn-confirmar');
+
+  // PROTECCIÓN: Si el botón ya está deshabilitado, ignora nuevos clics
+  if (btnConfirmar.disabled) return;
+
   const nombre = document.getElementById('nombre').value.trim();
   const telefono = document.getElementById('telefono').value.trim();
   const direccion = document.getElementById('direccion').value.trim();
@@ -589,46 +594,111 @@
     return;
   }
 
-  const numPedido = obtenerSiguienteNumeroPedido();
-  const fechaActual = new Date().toLocaleString('es-CL');
-  const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  // 1. DESHABILITAR EL BOTÓN DE INMEDIATO
+  btnConfirmar.disabled = true;
+  btnConfirmar.classList.add('opacity-50', 'cursor-not-allowed');
+  btnConfirmar.innerHTML = '<span>⏳ Generando comanda...</span>';
 
-  let itemsParaDescontar = [];
-  let itemsParaCocina = [];
-  let todos = [...hamburguesas, ...extras];
+  try {
+    const numPedido = obtenerSiguienteNumeroPedido();
+    const fechaActual = new Date().toLocaleString('es-CL');
+    const horaActual = new Date().toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
 
-  let htmlItemsTicket = '';
-  
-  // 1. Construir el texto en formato normal con saltos de línea estándar (\n)
-  let textoWA = `¡Nuevo Pedido ${numPedido}!\n`;
-  textoWA += `Modalidad: ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
-  textoWA += `Cliente: ${nombre}\n`;
-  textoWA += `Teléfono: ${telefono}\n`;
-  if (tipoEntrega === 'delivery') {
-    textoWA += `Dirección: ${direccion}\n`;
-  }
-  textoWA += `\nDetalle del pedido:\n`;
+    let itemsParaDescontar = [];
+    let itemsParaCocina = [];
+    let todos = [...hamburguesas, ...extras];
 
-  let total = 0;
-  for (let id in carrito) {
-    let p = todos.find(prod => prod.id == id);
-    if (p) {
-      let subtotal = p.precio * carrito[id];
-      total += subtotal;
-      
-      textoWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})\n`;
-      
-      htmlItemsTicket += `
-        <div class="flex justify-between">
-          <span>${carrito[id]}x ${p.nombre}</span>
-          <span>$${subtotal.toLocaleString('es-CL')}</span>
-        </div>
-      `;
-
-      itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
-      itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
+    let htmlItemsTicket = '';
+    
+    // 2. Construir el texto formateado para WhatsApp
+    let textoWA = `¡Nuevo Pedido ${numPedido}!\n`;
+    textoWA += `Modalidad: ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
+    textoWA += `Cliente: ${nombre}\n`;
+    textoWA += `Teléfono: ${telefono}\n`;
+    if (tipoEntrega === 'delivery') {
+      textoWA += `Dirección: ${direccion}\n`;
     }
+    textoWA += `\nDetalle del pedido:\n`;
+
+    let total = 0;
+    for (let id in carrito) {
+      let p = todos.find(prod => prod.id == id);
+      if (p) {
+        let subtotal = p.precio * carrito[id];
+        total += subtotal;
+        
+        textoWA += `- ${carrito[id]}x ${p.nombre} ($${subtotal.toLocaleString('es-CL')})\n`;
+        
+        htmlItemsTicket += `
+          <div class="flex justify-between">
+            <span>${carrito[id]}x ${p.nombre}</span>
+            <span>$${subtotal.toLocaleString('es-CL')}</span>
+          </div>
+        `;
+
+        itemsParaDescontar.push({ id: p.id, cantidad: carrito[id] });
+        itemsParaCocina.push({ cant: carrito[id], nombre: p.nombre });
+      }
+    }
+    textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
+
+    // 3. ENVIAR COMANDA A FIREBASE (UNA SOLA VEZ)
+    const nuevoPedidoCocina = {
+      id: numPedido,
+      fecha: fechaActual,
+      hora: horaActual,
+      tipo: tipoEntrega,
+      cliente: nombre,
+      telefono: telefono,
+      direccion: direccion || '',
+      items: itemsParaCocina,
+      estado: 'pendiente',
+      timestamp: Date.now()
+    };
+
+    if (typeof db !== 'undefined') {
+      await db.ref('pedidos/' + numPedido.replace('#', '')).set(nuevoPedidoCocina);
+    }
+
+    // 4. MOSTRAR EL TICKET AL CLIENTE
+    document.getElementById('ticket-num-pedido').innerText = numPedido;
+    document.getElementById('ticket-fecha').innerText = fechaActual;
+    document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
+    document.getElementById('ticket-cliente').innerText = nombre;
+    document.getElementById('ticket-telefono').innerText = telefono;
+    
+    const contDir = document.getElementById('ticket-direccion-contenedor');
+    if (tipoEntrega === 'delivery') {
+      document.getElementById('ticket-direccion').innerText = direccion;
+      contDir.classList.remove('hidden');
+    } else {
+      contDir.classList.add('hidden');
+    }
+
+    document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
+    document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+
+    urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
+
+    if (API_URL && !API_URL.includes("PEGA_AQUI")) {
+      await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ items: itemsParaDescontar })
+      });
+    }
+
+    document.getElementById('modal-comanda').classList.remove('hidden');
+
+  } catch (err) {
+    console.error("Error al procesar el pedido:", err);
+    alert("Ocurrió un error al procesar el pedido. Intenta nuevamente.");
+  } finally {
+    // 5. RESTAURAR EL BOTÓN SI OCURRE UN ERROR
+    btnConfirmar.disabled = false;
+    btnConfirmar.classList.remove('opacity-50', 'cursor-not-allowed');
+    btnConfirmar.innerHTML = '<span>Confirmar y Generar Comanda 📋</span>';
   }
+}
   textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
 
  // 2. ENVIAR COMANDA A FIREBASE CON ID ÚNICO (EVITA REPETICIONES)
