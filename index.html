@@ -11,7 +11,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 pb-52 sm:pb-60">
+<body class="bg-gray-100 text-gray-800 pb-28 sm:pb-32">
 
   <!-- Encabezado Principal -->
   <header class="relative bg-[#0d2f1f] text-white py-8 text-center shadow-2xl overflow-hidden sticky top-0 z-40">
@@ -168,11 +168,65 @@
     </div>
   </div>
 
+  <!-- BARRA COMPACTA DEL CARRITO (FIJA ABAJO) -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl p-3 z-30 hidden">
+    <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🛒</span>
+        <div>
+          <span class="text-xs text-gray-500 block font-semibold"><span id="cantidad-items">0</span> productos</span>
+          <span id="total-price" class="font-extrabold text-lg text-emerald-800">$0 CLP</span>
+        </div>
+      </div>
+      <button onclick="abrirModalCarrito()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
+        <span>Ver Carrito / Pedir 📋</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MODAL EMERGENTE DEL CARRITO DE COMPRA -->
+  <div id="modal-carrito" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] flex flex-col">
+      <button onclick="cerrarModalCarrito()" class="absolute top-3 right-3 bg-gray-100 hover:bg-gray-200 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">
+        ✕
+      </button>
+
+      <h2 class="text-xl font-black text-gray-900 mb-3 flex items-center gap-2 border-b pb-2">
+        <span>🛒</span> Mi Carrito de Pedido
+      </h2>
+
+      <div class="overflow-y-auto my-2 max-h-48 border-b border-gray-100 pb-2 divide-y divide-gray-100">
+        <p id="carrito-vacio-msj" class="text-xs text-gray-400 italic text-center py-4">Tu carrito está vacío</p>
+        <div id="lista-items-carrito" class="space-y-2"></div>
+      </div>
+
+      <div class="my-3">
+        <span class="text-xs font-bold text-gray-600 mb-1.5 block">Tipo de Entrega:</span>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" onclick="seleccionarTipoEntrega('retiro')" id="btn-tipo-retiro" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition flex items-center justify-center gap-1">
+            🛍️ Retiro en Local
+          </button>
+          <button type="button" onclick="seleccionarTipoEntrega('delivery')" id="btn-tipo-delivery" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center justify-center gap-1">
+            🛵 Delivery
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+        <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2.5 rounded-lg w-full text-sm">
+        <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2.5 rounded-lg w-full text-sm">
+        <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2.5 rounded-lg w-full text-sm sm:col-span-2 hidden">
+      </div>
+
+      <button onclick="generarComandaYPedido()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center gap-2 text-sm">
+        <span>Confirmar y Generar Comanda 📋</span>
+      </button>
+    </div>
+  </div>
+
   <!-- MODAL DE RESUMEN DE PEDIDO / COMANDA -->
   <div id="modal-comanda" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-2xl border border-gray-300 relative text-gray-900">
-      
-      <!-- Contenido del resumen -->
       <div class="font-mono text-xs leading-tight space-y-3">
         <div class="text-center border-b pb-2">
           <h2 class="text-xl font-black uppercase tracking-wider">BURGER KITCHEN</h2>
@@ -200,7 +254,6 @@
         </div>
       </div>
 
-      <!-- Único Botón de Acción -->
       <div class="mt-6 flex flex-col gap-2">
         <button onclick="completarYEnviarWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex items-center justify-center gap-2 text-sm">
           <span>📲 Continuar a WhatsApp</span>
@@ -209,49 +262,8 @@
     </div>
   </div>
 
-  <!-- BARRA Y CARRITO DE COMPRA FLOTANTE -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-2xl p-4 max-w-2xl mx-auto z-30 max-h-[85vh] overflow-y-auto hidden">
-    <div class="flex justify-between items-center mb-2">
-      <button onclick="toggleDetalleCarrito()" class="flex items-center gap-2 text-gray-800 font-bold hover:text-emerald-800 transition">
-        <span>🛒 Mi Carrito (<span id="cantidad-items">0</span>)</span>
-        <span id="flecha-carrito" class="text-xs transition-transform transform">▲</span>
-      </button>
-      <div class="text-right">
-        <span class="text-xs text-gray-500 block">Total:</span>
-        <span id="total-price" class="font-extrabold text-xl text-emerald-700">$0 CLP</span>
-      </div>
-    </div>
-
-    <div id="detalle-carrito" class="hidden my-3 max-h-40 overflow-y-auto border-t border-b border-gray-100 py-2 divide-y divide-gray-100">
-      <p id="carrito-vacio-msj" class="text-xs text-gray-400 italic text-center py-2">Tu carrito está vacío</p>
-      <div id="lista-items-carrito" class="space-y-2"></div>
-    </div>
-
-    <div class="mb-3">
-      <span class="text-xs font-bold text-gray-600 mb-1 block">Tipo de Entrega:</span>
-      <div class="grid grid-cols-2 gap-2">
-        <button type="button" onclick="seleccionarTipoEntrega('retiro')" id="btn-tipo-retiro" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition flex items-center justify-center gap-1">
-          🛍️ Retiro en Local
-        </button>
-        <button type="button" onclick="seleccionarTipoEntrega('delivery')" id="btn-tipo-delivery" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center justify-center gap-1">
-          🛵 Delivery
-        </button>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
-      <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2 rounded w-full text-sm">
-      <input type="tel" id="telefono" placeholder="Tu Teléfono" class="border p-2 rounded w-full text-sm">
-      <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2 rounded w-full text-sm sm:col-span-2 hidden">
-    </div>
-
-    <button onclick="generarComandaYPedido()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex justify-center items-center gap-2">
-      <span>Confirmar y Generar Comanda 📋</span>
-    </button>
-  </div>
-
   <script>
-    // Inicializar Firebase Database
+    // Inicialización de Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCI3CWPBGqBsq30CC3AouVu3p4uhkNOkrw",
       authDomain: "comandas-114cc.firebaseapp.com",
@@ -496,6 +508,14 @@
       document.getElementById('modal-producto').classList.add('hidden');
     }
 
+    function abrirModalCarrito() {
+      document.getElementById('modal-carrito').classList.remove('hidden');
+    }
+
+    function cerrarModalCarrito() {
+      document.getElementById('modal-carrito').classList.add('hidden');
+    }
+
     function cambiarCantidad(id, cambio) {
       let p = [...hamburguesas, ...extras].find(prod => prod.id == id);
       let actual = carrito[id] || 0;
@@ -558,24 +578,9 @@
       }
     }
 
-    function toggleDetalleCarrito() {
-      const detalle = document.getElementById('detalle-carrito');
-      const flecha = document.getElementById('flecha-carrito');
-
-      if (detalle.classList.contains('hidden')) {
-        detalle.classList.remove('hidden');
-        flecha.classList.add('rotate-180');
-      } else {
-        detalle.classList.add('hidden');
-        flecha.classList.remove('rotate-180');
-      }
-    }
-
-    // FUNCIÓN DE GENERACIÓN DE COMANDA CON BLOQUEO DE DOBLE CLIC Y CLAVE ÚNICA EN FIREBASE
     async function generarComandaYPedido() {
       const btnConfirmar = document.getElementById('btn-confirmar');
 
-      // PREVENIR MÚLTIPLES CLICS
       if (btnConfirmar.disabled) return;
 
       const nombre = document.getElementById('nombre').value.trim();
@@ -595,7 +600,6 @@
         return;
       }
 
-      // Bloquear botón inmediatamente
       btnConfirmar.disabled = true;
       btnConfirmar.classList.add('opacity-50', 'cursor-not-allowed');
       btnConfirmar.innerHTML = '<span>⏳ Generando comanda...</span>';
@@ -642,7 +646,6 @@
         }
         textoWA += `\nTotal a Pagar: $${total.toLocaleString('es-CL')} CLP`;
 
-        // Crear una referencia única mediante .push() para evitar duplicados en Firebase
         const nuevoRef = db.ref('pedidos').push();
         const keyUnica = nuevoRef.key;
 
@@ -664,7 +667,6 @@
           await nuevoRef.set(nuevoPedidoCocina);
         }
 
-        // Cargar datos en el Modal del Ticket
         document.getElementById('ticket-num-pedido').innerText = numPedido;
         document.getElementById('ticket-fecha').innerText = fechaActual;
         document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
@@ -680,112 +682,3 @@
         }
 
         document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
-        document.getElementById('ticket-total').innerText = `$${total.toLocaleString('es-CL')} CLP`;
-
-        urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
-
-        if (API_URL && !API_URL.includes("PEGA_AQUI")) {
-          await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ items: itemsParaDescontar })
-          });
-        }
-
-        document.getElementById('modal-comanda').classList.remove('hidden');
-
-      } catch (err) {
-        console.error("Error al procesar el pedido:", err);
-        alert("Ocurrió un error al procesar el pedido. Intenta nuevamente.");
-      } finally {
-        btnConfirmar.disabled = false;
-        btnConfirmar.classList.remove('opacity-50', 'cursor-not-allowed');
-        btnConfirmar.innerHTML = '<span>Confirmar y Generar Comanda 📋</span>';
-      }
-    }
-
-    function completarYEnviarWhatsApp() {
-      window.open(urlWhatsAppFinal, '_blank');
-      location.reload();
-    }
-
-    function cambiarPestana(p) {
-      const secInicio = document.getElementById('seccion-inicio');
-      const secMenu = document.getElementById('seccion-menu');
-      const carritoFlotante = document.getElementById('carrito-flotante');
-
-      const btnInicio = document.getElementById('btn-pestana-inicio');
-      const btnMenu = document.getElementById('btn-pestana-menu');
-
-      const estiloInactivo = "px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105";
-      const estiloActivo = "px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105";
-
-      btnInicio.className = estiloInactivo;
-      btnMenu.className = estiloInactivo;
-
-      if (p === 'inicio') {
-        secInicio.classList.remove('hidden');
-        secMenu.classList.add('hidden');
-        carritoFlotante.classList.add('hidden');
-        btnInicio.className = estiloActivo;
-      } else if (p === 'menu') {
-        secInicio.classList.add('hidden');
-        secMenu.classList.remove('hidden');
-        carritoFlotante.classList.remove('hidden');
-        btnMenu.className = estiloActivo;
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function cargarClientes() {
-      const container = document.getElementById('contenedor-clientes');
-      container.innerHTML = clientesFelices.map(c => `
-        <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
-          <img src="${c.foto}" alt="${c.nombre}" class="w-full h-48 object-cover">
-          <div class="p-3">
-            <h4 class="font-bold text-sm text-gray-900">${c.nombre}</h4>
-            <p class="text-xs text-gray-600 mt-1 italic">"${c.comentario}"</p>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    let indiceFotoActual = 0;
-    function actualizarCarrusel() {
-      document.getElementById('carrusel-img').src = fotosLocal[indiceFotoActual];
-      document.getElementById('carrusel-indicadores').innerHTML = fotosLocal.map((_, i) => `
-        <span class="w-2.5 h-2.5 rounded-full ${i === indiceFotoActual ? 'bg-white' : 'bg-white/50'}"></span>
-      `).join('');
-    }
-
-    function moverCarrusel(dir) {
-      indiceFotoActual = (indiceFotoActual + dir + fotosLocal.length) % fotosLocal.length;
-      actualizarCarrusel();
-    }
-
-    function cargarEquipo() {
-      const container = document.getElementById('contenedor-equipo');
-      container.innerHTML = equipo.map(member => `
-        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 text-center">
-          <img src="${member.foto}" alt="${member.nombre}" class="w-24 h-24 object-cover rounded-full mx-auto mb-3 border-2 border-emerald-800">
-          <h3 class="font-bold text-base text-gray-900">${member.nombre}</h3>
-          <p class="text-xs font-semibold text-emerald-700 mb-2">${member.cargo}</p>
-          <p class="text-xs text-gray-500">${member.bio}</p>
-        </div>
-      `).join('');
-    }
-
-    window.onclick = function(event) {
-      const modal = document.getElementById('modal-producto');
-      if (event.target === modal) {
-        cerrarModal();
-      }
-    }
-
-    // INICIALIZACIÓN
-    obtenerStockBD();
-    cargarEquipo();
-    cargarClientes();
-    actualizarCarrusel();
-  </script>
-</body>
-</html>
