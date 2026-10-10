@@ -263,7 +263,7 @@
   </div>
 
   <script>
-    // Configuración e Inicialización de Firebase
+    // Configuración e Inicialización de Firebase Realtime Database
     const firebaseConfig = {
       apiKey: "AIzaSyCI3CWPBGqBsq30CC3AouVu3p4uhkNOkrw",
       authDomain: "comandas-114cc.firebaseapp.com",
@@ -641,6 +641,7 @@
 
         let htmlItemsTicket = '';
         let totalPedido = 0;
+        let itemsParaCocina = [];
 
         let textoWA = `¡Hola Burger Kitchen! 🍔\nQuiero confirmar el siguiente pedido *${numPedido}*:\n\n`;
         textoWA += `👤 *Cliente:* ${nombre}\n`;
@@ -659,6 +660,7 @@
             let subtotal = p.precio * carrito[id];
             totalPedido += subtotal;
 
+            // Render para ticket local
             htmlItemsTicket += `
               <div class="flex justify-between py-0.5">
                 <span>${carrito[id]}x ${p.nombre}</span>
@@ -666,13 +668,39 @@
               </div>
             `;
 
+            // Objeto formateado para la cocina
+            itemsParaCocina.push({
+              id: p.id,
+              nombre: p.nombre,
+              cantidad: carrito[id],
+              precioUnitario: p.precio,
+              subtotal: subtotal
+            });
+
             textoWA += `• ${carrito[id]}x ${p.nombre} - $${subtotal.toLocaleString('es-CL')}\n`;
           }
         }
 
         textoWA += `\n💰 *TOTAL:* $${totalPedido.toLocaleString('es-CL')} CLP`;
 
-        // Llenar Modal de Comanda (Resumen Ticket)
+        // === ENVIAR PEDIDO A FIREBASE REALTIME DATABASE (PANTALLA DE COCINA) ===
+        const nuevoPedidoFirebase = {
+          numPedido: numPedido,
+          cliente: nombre,
+          telefono: telefono,
+          tipoEntrega: tipoEntrega,
+          direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local',
+          items: itemsParaCocina,
+          total: totalPedido,
+          estado: 'pendiente', // Estados posibles: 'pendiente', 'en_preparacion', 'listo', 'entregado'
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          fecha: fechaActual
+        };
+
+        // Guarda el pedido bajo el nodo "comandas"
+        await db.ref('comandas').push(nuevoPedidoFirebase);
+
+        // Llenar Modal de Comanda (Ticket)
         document.getElementById('ticket-num-pedido').innerText = numPedido;
         document.getElementById('ticket-fecha').innerText = fechaActual;
         document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
@@ -690,7 +718,7 @@
         document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
         document.getElementById('ticket-total').innerText = `$${totalPedido.toLocaleString('es-CL')} CLP`;
 
-        // Generar URL de WhatsApp Encoded
+        // Generar URL de WhatsApp
         urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
 
         // Cerrar modal carrito y mostrar modal comanda
@@ -698,6 +726,7 @@
         document.getElementById('modal-comanda').classList.remove('hidden');
 
       } catch (e) {
+        console.error("Error al registrar el pedido:", e);
         alert("Ocurrió un problema al procesar la comanda. Por favor intenta de nuevo.");
       } finally {
         btnConfirmar.disabled = false;
