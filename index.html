@@ -42,7 +42,7 @@
 
     <!-- Indicador de Carga de Stock -->
     <div id="loading-stock" class="text-center py-3 text-emerald-800 font-bold bg-emerald-50 rounded-lg mb-4 text-sm">
-      🔄 Sincronizando disponibilidad de stock desde Firebase...
+      🔄 Sincronizando disponibilidad de stock...
     </div>
 
     <!-- SECCIÓN 1: INICIO -->
@@ -148,7 +148,7 @@
       <div class="p-5 overflow-y-auto space-y-4 flex-grow">
         <div class="flex justify-between items-start">
           <h3 id="modal-titulo" class="text-2xl font-black text-gray-900 leading-tight"></h3>
-          <span id="modal-precio-dinamico" class="text-xl font-extrabold text-emerald-800 ml-2 whitespace-nowrap">$0 CLP</span>
+          <span id="modal-precio-cabecera" class="text-xl font-extrabold text-emerald-800 ml-2 whitespace-nowrap">$0 CLP</span>
         </div>
 
         <p id="modal-desc" class="text-sm text-gray-600"></p>
@@ -187,7 +187,10 @@
       </div>
 
       <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-3">
-        <span class="text-xs text-gray-500 font-semibold">Total a pagar por esta opción:</span>
+        <div>
+          <span class="text-[11px] text-gray-500 font-semibold block">Total a pagar por esta opción:</span>
+          <span id="modal-precio-dinamico" class="text-lg font-black text-emerald-800">$0 CLP</span>
+        </div>
         <button id="modal-btn-agregar" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
           <span>+ Agregar al Carrito</span>
         </button>
@@ -322,7 +325,6 @@
       { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas de cocina gourmet y plancha." }
     ];
 
-    // CATÁLOGO DE HAMBURGUESAS (CON PRECIOS Y STOCK INICIAL)
     let hamburguesas = [
       { 
         id: 1, 
@@ -533,7 +535,6 @@
       }
     }
 
-    // OPCIÓN B: SINCRONIZACIÓN DE STOCK DESDE FIREBASE USANDO NOMBRES DE CLAVE
     async function obtenerStockBD() {
       try {
         db.ref('stock').on('value', (snapshot) => {
@@ -688,13 +689,18 @@
         btnCSi.className = activoClass;
       }
 
+      // Cálculo del precio final según selección
       let precioFinal = 0;
       if (opcionCarnesModal === 1 && !opcionComboModal) precioFinal = productoSeleccionadoModal.p1Carne;
       if (opcionCarnesModal === 2 && !opcionComboModal) precioFinal = productoSeleccionadoModal.p2Carnes;
       if (opcionCarnesModal === 1 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo1C;
       if (opcionCarnesModal === 2 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo2C;
 
-      document.getElementById('modal-precio-dinamico').innerText = `$${precioFinal.toLocaleString('es-CL')} CLP`;
+      const textoPrecio = `$${precioFinal.toLocaleString('es-CL')} CLP`;
+      
+      // Actualizar el precio tanto en la cabecera como en la parte inferior
+      document.getElementById('modal-precio-cabecera').innerText = textoPrecio;
+      document.getElementById('modal-precio-dinamico').innerText = textoPrecio;
     }
 
     function cerrarModal() {
