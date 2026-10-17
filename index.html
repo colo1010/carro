@@ -42,7 +42,7 @@
 
     <!-- Indicador de Carga de Stock -->
     <div id="loading-stock" class="text-center py-3 text-emerald-800 font-bold bg-emerald-50 rounded-lg mb-4 text-sm">
-      🔄 Sincronizando disponibilidad de stock...
+      🔄 Sincronizando disponibilidad de stock desde Firebase...
     </div>
 
     <!-- SECCIÓN 1: INICIO -->
@@ -121,7 +121,7 @@
     <!-- SECCIÓN 2: MENÚ DE PRODUCTOS -->
     <section id="seccion-menu" class="hidden">
       <p class="text-xs text-gray-500 mb-4 bg-emerald-50 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
-        💡 <span><strong>Tip:</strong> Haz clic sobre la foto o el nombre de cualquier hamburguesa para elegir entre 1 o 2 carnes y opción de combo.</span>
+        💡 <span><strong>Tip:</strong> Haz clic sobre cualquier hamburguesa para elegir entre 1 o 2 carnes y opción de combo.</span>
       </p>
 
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas Gourmet</h2>
@@ -304,7 +304,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    const API_URL = "https://script.google.com/macros/s/AKfycbz12NbHeGFEmyodf6s5_KC5b5YB6T8jmchSE6GPh49v82T_ZZLdaTO2NQDParJ4MNg5vg/exec"; 
+    const API_URL = ""; 
     const TELEFONO_WHATSAPP = "56963762462"; 
 
     const clientesFelices = [
@@ -322,7 +322,7 @@
       { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas de cocina gourmet y plancha." }
     ];
 
-    // MENÚ COMPLETO CON PRECIOS EXACTOS DE CARTA_CARRO.XLSX (1 Carne, 2 Carnes y Combos)
+    // CATÁLOGO DE HAMBURGUESAS (CON PRECIOS Y STOCK INICIAL)
     let hamburguesas = [
       { 
         id: 1, 
@@ -339,7 +339,7 @@
         p1Carne: 7500, p2Carnes: 9000, combo1C: 10000, combo2C: 11500,
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, palta y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&q=80", 
-        stock: 8,
+        stock: 10,
         ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Palta", "Salsa Base / Mayo"]
       },
       { 
@@ -357,7 +357,7 @@
         p1Carne: 9000, p2Carnes: 10500, combo1C: 11500, combo2C: 13000,
         desc: "Pan de papa, carne artesanal, queso cheddar, palta, champiñón, cebolla crispy y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80", 
-        stock: 6,
+        stock: 10,
         ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Palta", "Champiñón", "Cebolla Crispy", "Salsa Base / Mayo"]
       },
       { 
@@ -366,7 +366,7 @@
         p1Carne: 7500, p2Carnes: 9000, combo1C: 10000, combo2C: 11500,
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, poroto verde, ají verde y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80", 
-        stock: 8,
+        stock: 10,
         ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Poroto Verde", "Ají Verde", "Salsa Base / Mayo"]
       },
       { 
@@ -375,7 +375,7 @@
         p1Carne: 9500, p2Carnes: 11000, combo1C: 12000, combo2C: 13000,
         desc: "Pan de papa, carne artesanal, queso cheddar, lechuga, camarón crispy, tocino, salsa acevichada y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=600&q=80", 
-        stock: 5,
+        stock: 10,
         ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Lechuga", "Camarón Crispy", "Tocino", "Salsa Acevichada", "Salsa Base"]
       },
       { 
@@ -384,7 +384,7 @@
         p1Carne: 10000, p2Carnes: 11500, combo1C: 12500, combo2C: 14000,
         desc: "Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=600&q=80", 
-        stock: 5,
+        stock: 10,
         ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Pimentón Asado", "Champiñón", "Aros de Cebolla", "Tocino", "Salsa Base"]
       },
       { 
@@ -393,7 +393,7 @@
         p1Carne: 8000, p2Carnes: 9500, combo1C: 10500, combo2C: 11000,
         desc: "Pan de papa, carne artesanal, queso cheddar, cebolla caramelizada, huevo frito, papas fritas y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1583160247917-d764724a30fa?w=600&q=80", 
-        stock: 7,
+        stock: 10,
         ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Cebolla Caramelizada", "Huevo Frito", "Papas Fritas", "Salsa Base"]
       }
     ];
@@ -401,30 +401,30 @@
     let extras = [
       { 
         id: 101, 
-        nombre: "Papas Fritas Artesanales", 
+        nombre: "Papas Fritas", 
         precio: 2500, 
         desc: "Papas rústicas cortadas a mano con sazón especial de la casa.", 
         imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80", 
-        stock: 15,
-        ingredientes: ["Papas nativas seleccionadas", "Sal de mar", "Especias rústicas", "Salsa a elección"]
+        stock: 10,
+        ingredientes: ["Papas nativas seleccionadas", "Sal de mar", "Especias rústicas"]
       },
       { 
         id: 102, 
-        nombre: "Aros de Cebolla (8 uds)", 
+        nombre: "Aros Cebolla", 
         precio: 3000, 
         desc: "Anillos de cebolla dulce empanizados con panko extra crujiente.", 
         imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Cebolla dulce", "Empanizado Panko", "Salsa BBQ para acompañar"]
+        ingredientes: ["Cebolla dulce", "Empanizado Panko", "Salsa BBQ"]
       },
       { 
         id: 103, 
-        nombre: "Nuggets de Pollo (6 uds)", 
+        nombre: "Nuggets de Pollo", 
         precio: 3200, 
         desc: "Bocados de pechuga de pollo 100% real sazonados y apanados.", 
         imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pechuga de pollo seleccionada", "Rebozado crujiente dorado", "Salsa Mostaza Miel"]
+        ingredientes: ["Pechuga de pollo seleccionada", "Rebozado crujiente", "Salsa Mostaza Miel"]
       }
     ];
 
@@ -433,10 +433,9 @@
     let urlWhatsAppFinal = '';
     let carruselIndex = 0;
 
-    // Variables temporales para la configuración en el Modal
     let productoSeleccionadoModal = null;
-    let opcionCarnesModal = 1; // 1 o 2
-    let opcionComboModal = false; // true o false
+    let opcionCarnesModal = 1; 
+    let opcionComboModal = false; 
 
     document.addEventListener("DOMContentLoaded", () => {
       cargarClientes();
@@ -534,21 +533,37 @@
       }
     }
 
+    // OPCIÓN B: SINCRONIZACIÓN DE STOCK DESDE FIREBASE USANDO NOMBRES DE CLAVE
     async function obtenerStockBD() {
       try {
-        if (!API_URL || API_URL.includes("PEGA_AQUI")) throw new Error("API no configurada");
-        const res = await fetch(API_URL);
-        const stockBD = await res.json();
+        db.ref('stock').on('value', (snapshot) => {
+          const stockBD = snapshot.val();
+          
+          if (stockBD) {
+            hamburguesas.forEach(p => {
+              if (stockBD[p.nombre] !== undefined) {
+                p.stock = typeof stockBD[p.nombre] === 'object' ? stockBD[p.nombre].stock : stockBD[p.nombre];
+              }
+            });
 
-        stockBD.forEach(item => {
-          let p = hamburguesas.find(x => x.id == item.id) || extras.find(x => x.id == item.id);
-          if (p) p.stock = item.stock;
+            extras.forEach(e => {
+              if (stockBD[e.nombre] !== undefined) {
+                e.stock = typeof stockBD[e.nombre] === 'object' ? stockBD[e.nombre].stock : stockBD[e.nombre];
+              }
+            });
+          }
+
+          document.getElementById('loading-stock').classList.add('hidden');
+          cargarMenu();
+        }, (error) => {
+          console.error("Error al leer stock de Firebase:", error);
+          document.getElementById('loading-stock').classList.add('hidden');
+          cargarMenu();
         });
-        document.getElementById('loading-stock').classList.add('hidden');
       } catch (err) {
-        document.getElementById('loading-stock').innerText = "ℹ️ Modo catálogo listo.";
+        document.getElementById('loading-stock').classList.add('hidden');
+        cargarMenu();
       }
-      cargarMenu();
     }
 
     function crearTarjetaProducto(p) {
@@ -589,11 +604,9 @@
     function abrirModal(id) {
       let p = hamburguesas.find(item => item.id == id);
       
-      // Si es un extra, se maneja simple
       if (!p) {
         let ex = extras.find(item => item.id == id);
         if (!ex) return;
-        // Para extras abrimos directo o simulamos
         agregarAlCarritoDirecto(ex.id, ex.nombre, ex.precio, 1);
         return;
       }
@@ -611,7 +624,7 @@
         badge.innerText = "Agotado";
         badge.className = "absolute bottom-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
       } else {
-        badge.innerText = `Disponible`;
+        badge.innerText = `Disponible (${p.stock})`;
         badge.className = "absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
       }
 
@@ -651,7 +664,6 @@
     function actualizarBotonesModalYPrecio() {
       if (!productoSeleccionadoModal) return;
 
-      // Estilos botones Carnes
       const btnC1 = document.getElementById('btn-carne-1');
       const btnC2 = document.getElementById('btn-carne-2');
       const activoClass = "py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition";
@@ -665,7 +677,6 @@
         btnC2.className = activoClass;
       }
 
-      // Estilos botones Combo
       const btnCNo = document.getElementById('btn-combo-no');
       const btnCSi = document.getElementById('btn-combo-si');
 
@@ -677,6 +688,233 @@
         btnCSi.className = activoClass;
       }
 
-      // Calcular precio según matriz del Excel
       let precioFinal = 0;
-      if (opcionCarnesModal === 1 && !opcionComboModal) precioFinal = productoSeleccion
+      if (opcionCarnesModal === 1 && !opcionComboModal) precioFinal = productoSeleccionadoModal.p1Carne;
+      if (opcionCarnesModal === 2 && !opcionComboModal) precioFinal = productoSeleccionadoModal.p2Carnes;
+      if (opcionCarnesModal === 1 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo1C;
+      if (opcionCarnesModal === 2 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo2C;
+
+      document.getElementById('modal-precio-dinamico').innerText = `$${precioFinal.toLocaleString('es-CL')} CLP`;
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-producto').classList.add('hidden');
+    }
+
+    function abrirModalCarrito() {
+      document.getElementById('modal-carrito').classList.remove('hidden');
+    }
+
+    function cerrarModalCarrito() {
+      document.getElementById('modal-carrito').classList.add('hidden');
+    }
+
+    function agregarHamburguesaConfiguradaAlCarrito() {
+      if (!productoSeleccionadoModal) return;
+
+      let precioFinal = 0;
+      if (opcionCarnesModal === 1 && !opcionComboModal) precioFinal = productoSeleccionadoModal.p1Carne;
+      if (opcionCarnesModal === 2 && !opcionComboModal) precioFinal = productoSeleccionadoModal.p2Carnes;
+      if (opcionCarnesModal === 1 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo1C;
+      if (opcionCarnesModal === 2 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo2C;
+
+      const cartKey = `${productoSeleccionadoModal.id}-${opcionCarnesModal}C-${opcionComboModal ? 'COMBO' : 'SOLO'}`;
+      let nombrePersonalizado = `${productoSeleccionadoModal.nombre} (${opcionCarnesModal} Carne${opcionCarnesModal === 2 ? 's' : ''}${opcionComboModal ? ' + Combo 🥤🍟' : ''})`;
+
+      if (!carrito[cartKey]) {
+        carrito[cartKey] = {
+          id: productoSeleccionadoModal.id,
+          nombre: nombrePersonalizado,
+          precio: precioFinal,
+          cantidad: 1
+        };
+      } else {
+        carrito[cartKey].cantidad++;
+      }
+
+      actualizarCarrito();
+    }
+
+    function agregarAlCarritoDirecto(id, nombre, precio, cant) {
+      const cartKey = `${id}-extra`;
+      if (!carrito[cartKey]) {
+        carrito[cartKey] = { id: id, nombre: nombre, precio: precio, cantidad: cant };
+      } else {
+        carrito[cartKey].cantidad += cant;
+      }
+      actualizarCarrito();
+    }
+
+    function modificarCantidadItem(cartKey, cambio) {
+      if (!carrito[cartKey]) return;
+      carrito[cartKey].cantidad += cambio;
+      if (carrito[cartKey].cantidad <= 0) {
+        delete carrito[cartKey];
+      }
+      actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+      let total = 0;
+      let cantidadTotal = 0;
+      let htmlLista = '';
+
+      for (let key in carrito) {
+        let item = carrito[key];
+        let subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        cantidadTotal += item.cantidad;
+
+        htmlLista += `
+          <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-100">
+            <div class="flex-grow pr-2">
+              <span class="font-bold text-gray-800">${item.nombre}</span>
+              <span class="text-gray-500 block">$${item.precio.toLocaleString('es-CL')} x ${item.cantidad}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-gray-900">$${subtotal.toLocaleString('es-CL')}</span>
+              <button onclick="modificarCantidadItem('${key}', -1)" class="text-red-500 hover:text-red-700 font-bold px-1.5 py-0.5 bg-red-50 rounded">✕</button>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('total-price').innerText = `$${total.toLocaleString('es-CL')} CLP`;
+      document.getElementById('cantidad-items').innerText = cantidadTotal;
+
+      const msjVacio = document.getElementById('carrito-vacio-msj');
+      const contenedorLista = document.getElementById('lista-items-carrito');
+      const flotante = document.getElementById('carrito-flotante');
+
+      if (cantidadTotal === 0) {
+        msjVacio.classList.remove('hidden');
+        contenedorLista.innerHTML = '';
+        flotante.classList.add('hidden');
+      } else {
+        msjVacio.classList.add('hidden');
+        contenedorLista.innerHTML = htmlLista;
+        flotante.classList.remove('hidden');
+      }
+    }
+
+    async function generarComandaYPedido() {
+      const btnConfirmar = document.getElementById('btn-confirmar');
+      if (btnConfirmar.disabled) return;
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const direccion = document.getElementById('direccion').value.trim();
+
+      if (Object.keys(carrito).length === 0) {
+        alert('Tu carrito está vacío.');
+        return;
+      }
+
+      if (!nombre || !telefono) {
+        alert('Por favor ingresa tu Nombre y Teléfono.');
+        return;
+      }
+
+      if (tipoEntrega === 'delivery' && !direccion) {
+        alert('Por favor ingresa tu Dirección de Envío.');
+        return;
+      }
+
+      btnConfirmar.disabled = true;
+      btnConfirmar.innerHTML = "<span>⏳ Procesando comanda...</span>";
+
+      const numPedido = obtenerSiguienteNumeroPedido();
+      const ahora = new Date();
+      const fechaStr = ahora.toLocaleString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      let itemsPedido = [];
+      let totalCalculado = 0;
+
+      for (let key in carrito) {
+        let item = carrito[key];
+        let subtotal = item.precio * item.cantidad;
+        totalCalculado += subtotal;
+        itemsPedido.push({
+          id: item.id,
+          nombre: item.nombre,
+          cantidad: item.cantidad,
+          precioUnitario: item.precio,
+          subtotal: subtotal
+        });
+      }
+
+      const pedidoData = {
+        numPedido: numPedido,
+        cliente: nombre,
+        telefono: telefono,
+        tipoEntrega: tipoEntrega,
+        direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local',
+        items: itemsPedido,
+        total: totalCalculado,
+        estado: 'pendiente',
+        fecha: fechaStr,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      };
+
+      try {
+        await db.ref('comandas').push(pedidoData);
+
+        document.getElementById('ticket-num-pedido').innerText = numPedido;
+        document.getElementById('ticket-fecha').innerText = fechaStr;
+        document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
+        document.getElementById('ticket-cliente').innerText = nombre;
+        document.getElementById('ticket-telefono').innerText = telefono;
+
+        const contDir = document.getElementById('ticket-direccion-contenedor');
+        if (tipoEntrega === 'delivery') {
+          document.getElementById('ticket-direccion').innerText = direccion;
+          contDir.classList.remove('hidden');
+        } else {
+          contDir.classList.add('hidden');
+        }
+
+        document.getElementById('ticket-items').innerHTML = itemsPedido.map(it => `
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span>${it.cantidad}x ${it.nombre}</span>
+            <span>$${it.subtotal.toLocaleString('es-CL')}</span>
+          </div>
+        `).join('');
+
+        document.getElementById('ticket-total').innerText = `$${totalCalculado.toLocaleString('es-CL')} CLP`;
+
+        let mensajeWA = `🍔 *NUEVO PEDIDO BURGER KITCHEN* 🍔\n`;
+        mensajeWA += `*Ticket:* ${numPedido}\n`;
+        mensajeWA += `*Cliente:* ${nombre}\n`;
+        mensajeWA += `*Teléfono:* ${telefono}\n`;
+        mensajeWA += `*Tipo:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
+        if (tipoEntrega === 'delivery') mensajeWA += `*Dirección:* ${direccion}\n`;
+        mensajeWA += `----------------------------------\n`;
+        mensajeWA += `*DETALLE DEL PEDIDO:*\n`;
+        itemsPedido.forEach(it => {
+          mensajeWA += `• ${it.cantidad}x ${it.nombre} ($${it.subtotal.toLocaleString('es-CL')})\n`;
+        });
+        mensajeWA += `----------------------------------\n`;
+        mensajeWA += `*TOTAL A PAGAR:* $${totalCalculado.toLocaleString('es-CL')} CLP`;
+
+        urlWhatsAppFinal = `https://api.whatsapp.com/send?phone=${TELEFONO_WHATSAPP}&text=${encodeURIComponent(mensajeWA)}`;
+
+        cerrarModalCarrito();
+        document.getElementById('modal-comanda').classList.remove('hidden');
+
+      } catch (err) {
+        alert('Hubo un error al guardar tu pedido. Intenta de nuevo.');
+      } finally {
+        btnConfirmar.disabled = false;
+        btnConfirmar.innerHTML = "<span>Confirmar y Generar Comanda 📋</span>";
+      }
+    }
+
+    function completarYEnviarWhatsApp() {
+      carrito = {};
+      actualizarCarrito();
+      document.getElementById('modal-comanda').classList.add('hidden');
+      window.open(urlWhatsAppFinal, '_blank');
+    }
+  </script>
+</body>
+</html>
