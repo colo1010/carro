@@ -67,7 +67,7 @@
           <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700" onclick="abrirModal(7)">Corte Casa</h3>
           <p class="text-sm text-gray-600 my-2">Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.</p>
           <div class="flex items-center justify-between mt-4">
-            <span class="text-xl font-extrabold text-emerald-800">$10.000 CLP</span>
+            <span class="text-xl font-extrabold text-emerald-800">Desde $10.000 CLP</span>
             <button onclick="cambiarPestana('menu')" class="bg-black hover:bg-gray-800 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition">
               Pedir en Menú
             </button>
@@ -121,7 +121,7 @@
     <!-- SECCIÓN 2: MENÚ DE PRODUCTOS -->
     <section id="seccion-menu" class="hidden">
       <p class="text-xs text-gray-500 mb-4 bg-emerald-50 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
-        💡 <span><strong>Tip:</strong> Haz clic sobre la foto o el nombre de cualquier producto para ver sus detalles e ingredientes completos.</span>
+        💡 <span><strong>Tip:</strong> Haz clic sobre la foto o el nombre de cualquier hamburguesa para elegir entre 1 o 2 carnes y opción de combo.</span>
       </p>
 
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas Gourmet</h2>
@@ -133,14 +133,14 @@
 
   </main>
 
-  <!-- VENTANA MODAL (DETALLE DE PRODUCTO) -->
+  <!-- VENTANA MODAL (DETALLE Y CONFIGURACIÓN DE HAMBURGUESA) -->
   <div id="modal-producto" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all relative max-h-[90vh] flex flex-col">
       <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg z-10 transition">
         ✕
       </button>
 
-      <div class="relative h-64 sm:h-72 w-full bg-gray-100 flex-shrink-0">
+      <div class="relative h-52 sm:h-60 w-full bg-gray-100 flex-shrink-0">
         <img id="modal-img" src="" alt="Detalle producto" class="w-full h-full object-cover">
         <span id="modal-badge" class="absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow"></span>
       </div>
@@ -148,19 +148,46 @@
       <div class="p-5 overflow-y-auto space-y-4 flex-grow">
         <div class="flex justify-between items-start">
           <h3 id="modal-titulo" class="text-2xl font-black text-gray-900 leading-tight"></h3>
-          <span id="modal-precio" class="text-xl font-extrabold text-emerald-800 ml-2 whitespace-nowrap"></span>
+          <span id="modal-precio-dinamico" class="text-xl font-extrabold text-emerald-800 ml-2 whitespace-nowrap">$0 CLP</span>
         </div>
 
         <p id="modal-desc" class="text-sm text-gray-600"></p>
 
-        <div class="border-t border-gray-100 pt-3">
-          <h4 class="text-xs uppercase font-extrabold tracking-wider text-gray-400 mb-2">🌿 Ingredientes Principales:</h4>
+        <!-- SELECTORES DE OPCIONES (CANTIDAD DE CARNES Y COMBO) -->
+        <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">🥩 Tipo de Medallones:</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="seleccionarCarnes(1)" id="btn-carne-1" class="py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition">
+                1 Carne (Simple)
+              </button>
+              <button type="button" onclick="seleccionarCarnes(2)" id="btn-carne-2" class="py-2 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition">
+                2 Carnes (Doble)
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">🍟 ¿Deseas pasarlo a Combo (+ Papas Fritas y Bebida)?</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="seleccionarCombo(false)" id="btn-combo-no" class="py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition">
+                Solo Sándwich
+              </button>
+              <button type="button" onclick="seleccionarCombo(true)" id="btn-combo-si" class="py-2 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition">
+                ¡Sí, en Combo! 🥤
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-100 pt-2">
+          <h4 class="text-xs uppercase font-extrabold tracking-wider text-gray-400 mb-1.5">🌿 Ingredientes Principales:</h4>
           <ul id="modal-ingredientes" class="grid grid-cols-2 gap-2 text-xs font-medium text-gray-700"></ul>
         </div>
       </div>
 
       <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-3">
-        <span class="text-xs text-gray-500 font-semibold">¿Te tienta? Agrégalo directo:</span>
+        <span class="text-xs text-gray-500 font-semibold">Total a pagar por esta opción:</span>
         <button id="modal-btn-agregar" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
           <span>+ Agregar al Carrito</span>
         </button>
@@ -263,7 +290,6 @@
   </div>
 
   <script>
-    // Configuración e Inicialización de Firebase Realtime Database
     const firebaseConfig = {
       apiKey: "AIzaSyCI3CWPBGqBsq30CC3AouVu3p4uhkNOkrw",
       authDomain: "comandas-114cc.firebaseapp.com",
@@ -296,12 +322,12 @@
       { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas de cocina gourmet y plancha." }
     ];
 
-    // NUEVO MENÚ EXTRAÍDO DE TU CARTA CARTA_CARRO.XLSX
+    // MENÚ COMPLETO CON PRECIOS EXACTOS DE CARTA_CARRO.XLSX (1 Carne, 2 Carnes y Combos)
     let hamburguesas = [
       { 
         id: 1, 
         nombre: "H. Gringa", 
-        precio: 8000, 
+        p1Carne: 8000, p2Carnes: 9500, combo1C: 10500, combo2C: 12000,
         desc: "Pan de papa, carne artesanal, queso cheddar, aros de cebolla, tocino y salsa barbecue.", 
         imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80", 
         stock: 10,
@@ -310,7 +336,7 @@
       { 
         id: 2, 
         nombre: "H. la de siempre", 
-        precio: 7500, 
+        p1Carne: 7500, p2Carnes: 9000, combo1C: 10000, combo2C: 11500,
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, palta y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&q=80", 
         stock: 8,
@@ -319,7 +345,7 @@
       { 
         id: 3, 
         nombre: "H. Criolla", 
-        precio: 7000, 
+        p1Carne: 7000, p2Carnes: 8500, combo1C: 9500, combo2C: 11000,
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, lechuga, cebolla morada y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80", 
         stock: 10,
@@ -328,7 +354,7 @@
       { 
         id: 4, 
         nombre: "Champiñón Crocante", 
-        precio: 9000, 
+        p1Carne: 9000, p2Carnes: 10500, combo1C: 11500, combo2C: 13000,
         desc: "Pan de papa, carne artesanal, queso cheddar, palta, champiñón, cebolla crispy y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80", 
         stock: 6,
@@ -337,7 +363,7 @@
       { 
         id: 5, 
         nombre: "Chacarezca", 
-        precio: 7500, 
+        p1Carne: 7500, p2Carnes: 9000, combo1C: 10000, combo2C: 11500,
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, poroto verde, ají verde y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80", 
         stock: 8,
@@ -346,7 +372,7 @@
       { 
         id: 6, 
         nombre: "Beach", 
-        precio: 9500, 
+        p1Carne: 9500, p2Carnes: 11000, combo1C: 12000, combo2C: 13000,
         desc: "Pan de papa, carne artesanal, queso cheddar, lechuga, camarón crispy, tocino, salsa acevichada y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=600&q=80", 
         stock: 5,
@@ -355,7 +381,7 @@
       { 
         id: 7, 
         nombre: "Corte Casa", 
-        precio: 10000, 
+        p1Carne: 10000, p2Carnes: 11500, combo1C: 12500, combo2C: 14000,
         desc: "Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=600&q=80", 
         stock: 5,
@@ -364,7 +390,7 @@
       { 
         id: 8, 
         nombre: "Not Money", 
-        precio: 8000, 
+        p1Carne: 8000, p2Carnes: 9500, combo1C: 10500, combo2C: 11000,
         desc: "Pan de papa, carne artesanal, queso cheddar, cebolla caramelizada, huevo frito, papas fritas y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1583160247917-d764724a30fa?w=600&q=80", 
         stock: 7,
@@ -407,7 +433,11 @@
     let urlWhatsAppFinal = '';
     let carruselIndex = 0;
 
-    // Cargar contenido dinámico al iniciar
+    // Variables temporales para la configuración en el Modal
+    let productoSeleccionadoModal = null;
+    let opcionCarnesModal = 1; // 1 o 2
+    let opcionComboModal = false; // true o false
+
     document.addEventListener("DOMContentLoaded", () => {
       cargarClientes();
       cargarEquipo();
@@ -464,9 +494,7 @@
     }
 
     function iniciarCarrusel() {
-      if (fotosLocal.length > 0) {
-        actualizarCarrusel();
-      }
+      if (fotosLocal.length > 0) actualizarCarrusel();
     }
 
     function moverCarrusel(dir) {
@@ -518,21 +546,15 @@
         });
         document.getElementById('loading-stock').classList.add('hidden');
       } catch (err) {
-        document.getElementById('loading-stock').innerText = "ℹ️ Modo catálogo listo (Conecta tu Google Sheet para sincronizar el stock real).";
+        document.getElementById('loading-stock').innerText = "ℹ️ Modo catálogo listo.";
       }
       cargarMenu();
     }
 
     function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
-      const critico = p.stock > 0 && p.stock <= 3;
-
-      let badgeStock = '';
-      if (agotado) {
-        badgeStock = `<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">Agotado</span>`;
-      } else if (critico) {
-        badgeStock = `<span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-bold animate-pulse">¡Últimas ${p.stock} unids!</span>`;
-      }
+      let badgeStock = agotado ? `<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">Agotado</span>` : '';
+      let precioMostrar = p.p1Carne ? `Desde $${p.p1Carne.toLocaleString('es-CL')} CLP` : `$${p.precio.toLocaleString('es-CL')} CLP`;
 
       return `
         <div class="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
@@ -547,13 +569,13 @@
               ${badgeStock}
             </div>
             <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
-            <span class="font-bold text-sm sm:text-base text-gray-800">$${p.precio.toLocaleString('es-CL')} CLP</span>
+            <span class="font-bold text-sm sm:text-base text-emerald-800">${precioMostrar}</span>
           </div>
 
-          <div class="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-2">
-            <button onclick="cambiarCantidad(${p.id}, -1)" ${agotado ? 'disabled' : ''} class="bg-gray-200 text-gray-700 px-3 py-1 rounded-lg font-bold hover:bg-gray-300 disabled:opacity-50">-</button>
-            <span id="cant-${p.id}" class="font-bold text-sm w-4 text-center">${carrito[p.id] || 0}</span>
-            <button onclick="cambiarCantidad(${p.id}, 1)" ${agotado ? 'disabled' : ''} class="bg-black text-white px-3 py-1 rounded-lg font-bold hover:bg-gray-800 disabled:opacity-50">+</button>
+          <div>
+            <button onclick="abrirModal(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow">
+              Personalizar 🍔
+            </button>
           </div>
         </div>
       `;
@@ -565,12 +587,23 @@
     }
 
     function abrirModal(id) {
-      let p = [...hamburguesas, ...extras].find(item => item.id == id);
-      if (!p) return;
+      let p = hamburguesas.find(item => item.id == id);
+      
+      // Si es un extra, se maneja simple
+      if (!p) {
+        let ex = extras.find(item => item.id == id);
+        if (!ex) return;
+        // Para extras abrimos directo o simulamos
+        agregarAlCarritoDirecto(ex.id, ex.nombre, ex.precio, 1);
+        return;
+      }
+
+      productoSeleccionadoModal = p;
+      opcionCarnesModal = 1;
+      opcionComboModal = false;
 
       document.getElementById('modal-img').src = p.imagen;
       document.getElementById('modal-titulo').innerText = p.nombre;
-      document.getElementById('modal-precio').innerText = `$${p.precio.toLocaleString('es-CL')} CLP`;
       document.getElementById('modal-desc').innerText = p.desc;
       
       const badge = document.getElementById('modal-badge');
@@ -578,16 +611,16 @@
         badge.innerText = "Agotado";
         badge.className = "absolute bottom-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
       } else {
-        badge.innerText = `Disponible (${p.stock} unids)`;
+        badge.innerText = `Disponible`;
         badge.className = "absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
       }
 
       const listaIng = document.getElementById('modal-ingredientes');
-      if (p.ingredientes && p.ingredientes.length > 0) {
+      if (p.ingredientes) {
         listaIng.innerHTML = p.ingredientes.map(ing => `<li class="flex items-center gap-1.5"><span class="text-emerald-600">✔</span> ${ing}</li>`).join('');
-      } else {
-        listaIng.innerHTML = `<li class="text-gray-400 italic col-span-2">No se detallan ingredientes específicos.</li>`;
       }
+
+      actualizarBotonesModalYPrecio();
 
       const btnAgregar = document.getElementById('modal-btn-agregar');
       if (p.stock <= 0) {
@@ -597,7 +630,7 @@
         btnAgregar.disabled = false;
         btnAgregar.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2 cursor-pointer";
         btnAgregar.onclick = function() {
-          cambiarCantidad(p.id, 1);
+          agregarHamburguesaConfiguradaAlCarrito();
           cerrarModal();
         };
       }
@@ -605,207 +638,45 @@
       document.getElementById('modal-producto').classList.remove('hidden');
     }
 
-    function cerrarModal() {
-      document.getElementById('modal-producto').classList.add('hidden');
+    function seleccionarCarnes(num) {
+      opcionCarnesModal = num;
+      actualizarBotonesModalYPrecio();
     }
 
-    function abrirModalCarrito() {
-      document.getElementById('modal-carrito').classList.remove('hidden');
+    function seleccionarCombo(esCombo) {
+      opcionComboModal = esCombo;
+      actualizarBotonesModalYPrecio();
     }
 
-    function cerrarModalCarrito() {
-      document.getElementById('modal-carrito').classList.add('hidden');
-    }
+    function actualizarBotonesModalYPrecio() {
+      if (!productoSeleccionadoModal) return;
 
-    function cambiarCantidad(id, cambio) {
-      let p = [...hamburguesas, ...extras].find(prod => prod.id == id);
-      let actual = carrito[id] || 0;
-      let nuevo = actual + cambio;
+      // Estilos botones Carnes
+      const btnC1 = document.getElementById('btn-carne-1');
+      const btnC2 = document.getElementById('btn-carne-2');
+      const activoClass = "py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition";
+      const inactivoClass = "py-2 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition";
 
-      if (nuevo > p.stock) {
-        alert(`Lo sentimos, solo quedan ${p.stock} unidades disponibles de ${p.nombre}.`);
-        return;
-      }
-
-      carrito[id] = nuevo;
-      if (carrito[id] <= 0) delete carrito[id];
-
-      const elemCant = document.getElementById(`cant-${id}`);
-      if (elemCant) elemCant.innerText = carrito[id] || 0;
-
-      actualizarCarrito();
-    }
-
-    function actualizarCarrito() {
-      let total = 0;
-      let cantidadTotal = 0;
-      let todos = [...hamburguesas, ...extras];
-      let htmlLista = '';
-
-      for (let id in carrito) {
-        let p = todos.find(prod => prod.id == id);
-        if (p) {
-          let subtotal = p.precio * carrito[id];
-          total += subtotal;
-          cantidadTotal += carrito[id];
-
-          htmlLista += `
-            <div class="flex justify-between items-center text-xs py-1">
-              <div class="flex-grow">
-                <span class="font-bold text-gray-800">${p.nombre}</span>
-                <span class="text-gray-500 block">$${p.precio.toLocaleString('es-CL')} x ${carrito[id]}</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-gray-900">$${subtotal.toLocaleString('es-CL')}</span>
-                <button onclick="cambiarCantidad(${p.id}, -1)" class="text-red-500 hover:text-red-700 font-bold px-1">✕</button>
-              </div>
-            </div>
-          `;
-        }
-      }
-
-      document.getElementById('total-price').innerText = `$${total.toLocaleString('es-CL')} CLP`;
-      document.getElementById('cantidad-items').innerText = cantidadTotal;
-
-      const msjVacio = document.getElementById('carrito-vacio-msj');
-      const contenedorLista = document.getElementById('lista-items-carrito');
-      const flotante = document.getElementById('carrito-flotante');
-
-      if (cantidadTotal === 0) {
-        msjVacio.classList.remove('hidden');
-        contenedorLista.innerHTML = '';
-        flotante.classList.add('hidden');
+      if (opcionCarnesModal === 1) {
+        btnC1.className = activoClass;
+        btnC2.className = inactivoClass;
       } else {
-        msjVacio.classList.add('hidden');
-        contenedorLista.innerHTML = htmlLista;
-        flotante.classList.remove('hidden');
-      }
-    }
-
-    async function generarComandaYPedido() {
-      const btnConfirmar = document.getElementById('btn-confirmar');
-      if (btnConfirmar.disabled) return;
-
-      const nombre = document.getElementById('nombre').value.trim();
-      const telefono = document.getElementById('telefono').value.trim();
-      const direccion = document.getElementById('direccion').value.trim();
-
-      if (Object.keys(carrito).length === 0) {
-        alert('Tu carrito está vacío. Agrega productos para realizar un pedido.');
-        return;
+        btnC1.className = inactivoClass;
+        btnC2.className = activoClass;
       }
 
-      if (!nombre || !telefono) {
-        alert('Por favor ingresa tu Nombre y Teléfono de contacto.');
-        return;
+      // Estilos botones Combo
+      const btnCNo = document.getElementById('btn-combo-no');
+      const btnCSi = document.getElementById('btn-combo-si');
+
+      if (!opcionComboModal) {
+        btnCNo.className = activoClass;
+        btnCSi.className = inactivoClass;
+      } else {
+        btnCNo.className = inactivoClass;
+        btnCSi.className = activoClass;
       }
 
-      if (tipoEntrega === 'delivery' && !direccion) {
-        alert('Por favor ingresa tu Dirección de Envío.');
-        return;
-      }
-
-      btnConfirmar.disabled = true;
-      btnConfirmar.innerHTML = "<span>⏳ Procesando comanda...</span>";
-
-      const numPedido = obtenerSiguienteNumeroPedido();
-      const ahora = new Date();
-      const fechaStr = ahora.toLocaleString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
-
-      let itemsPedido = [];
-      let totalCalculado = 0;
-      let todos = [...hamburguesas, ...extras];
-
-      for (let id in carrito) {
-        let p = todos.find(prod => prod.id == id);
-        if (p) {
-          let subtotal = p.precio * carrito[id];
-          totalCalculado += subtotal;
-          itemsPedido.push({
-            id: p.id,
-            nombre: p.nombre,
-            cantidad: carrito[id],
-            precioUnitario: p.precio,
-            subtotal: subtotal
-          });
-        }
-      }
-
-      const pedidoData = {
-        numPedido: numPedido,
-        cliente: nombre,
-        telefono: telefono,
-        tipoEntrega: tipoEntrega,
-        direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local',
-        items: itemsPedido,
-        total: totalCalculado,
-        estado: 'pendiente',
-        fecha: fechaStr,
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-      };
-
-      try {
-        // Guardar pedido en Firebase Realtime Database para la Cocina y Caja
-        await db.ref('comandas').push(pedidoData);
-
-        // Actualizar Ticket de resumen en pantalla
-        document.getElementById('ticket-num-pedido').innerText = numPedido;
-        document.getElementById('ticket-fecha').innerText = fechaStr;
-        document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
-        document.getElementById('ticket-cliente').innerText = nombre;
-        document.getElementById('ticket-telefono').innerText = telefono;
-
-        const contDir = document.getElementById('ticket-direccion-contenedor');
-        if (tipoEntrega === 'delivery') {
-          document.getElementById('ticket-direccion').innerText = direccion;
-          contDir.classList.remove('hidden');
-        } else {
-          contDir.classList.add('hidden');
-        }
-
-        document.getElementById('ticket-items').innerHTML = itemsPedido.map(it => `
-          <div class="flex justify-between border-b border-gray-100 py-1">
-            <span>${it.cantidad}x ${it.nombre}</span>
-            <span>$${it.subtotal.toLocaleString('es-CL')}</span>
-          </div>
-        `).join('');
-
-        document.getElementById('ticket-total').innerText = `$${totalCalculado.toLocaleString('es-CL')} CLP`;
-
-        // Generar texto para enviar por WhatsApp
-        let mensajeWA = `🍔 *NUEVO PEDIDO BURGER KITCHEN* 🍔\n`;
-        mensajeWA += `*Ticket:* ${numPedido}\n`;
-        mensajeWA += `*Cliente:* ${nombre}\n`;
-        mensajeWA += `*Teléfono:* ${telefono}\n`;
-        mensajeWA += `*Tipo:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
-        if (tipoEntrega === 'delivery') mensajeWA += `*Dirección:* ${direccion}\n`;
-        mensajeWA += `----------------------------------\n`;
-        mensajeWA += `*DETALLE DEL PEDIDO:*\n`;
-        itemsPedido.forEach(it => {
-          mensajeWA += `• ${it.cantidad}x ${it.nombre} ($${it.subtotal.toLocaleString('es-CL')})\n`;
-        });
-        mensajeWA += `----------------------------------\n`;
-        mensajeWA += `*TOTAL A PAGAR:* $${totalCalculado.toLocaleString('es-CL')} CLP`;
-
-        urlWhatsAppFinal = `https://api.whatsapp.com/send?phone=${TELEFONO_WHATSAPP}&text=${encodeURIComponent(mensajeWA)}`;
-
-        cerrarModalCarrito();
-        document.getElementById('modal-comanda').classList.remove('hidden');
-
-      } catch (err) {
-        alert('Hubo un error al guardar tu pedido en el sistema. Por favor intenta de nuevo.');
-      } finally {
-        btnConfirmar.disabled = false;
-        btnConfirmar.innerHTML = "<span>Confirmar y Generar Comanda 📋</span>";
-      }
-    }
-
-    function completarYEnviarWhatsApp() {
-      carrito = {};
-      actualizarCarrito();
-      document.getElementById('modal-comanda').classList.add('hidden');
-      window.open(urlWhatsAppFinal, '_blank');
-    }
-  </script>
-</body>
-</html>
+      // Calcular precio según matriz del Excel
+      let precioFinal = 0;
+      if (opcionCarnesModal === 1 && !opcionComboModal) precioFinal = productoSeleccion
