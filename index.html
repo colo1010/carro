@@ -48,7 +48,7 @@
     <!-- SECCIÓN 1: INICIO -->
     <section id="seccion-inicio" class="space-y-12">
       <div class="relative bg-black rounded-2xl overflow-hidden shadow-xl text-white">
-        <img src="hambur_portada.jpeg" alt="Hamburguesa gourmet" class="w-full h-72 sm:h-96 object-cover opacity-60">
+        <img src="hambur_portada.jpeg" alt="Hamburguesa gourmet" class="w-full h-72 sm:h-96 object-cover opacity-60" onerror="this.src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&q=80'">
         <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/80 via-black/30 to-transparent">
           <span class="bg-emerald-600 text-white text-xs uppercase font-bold tracking-widest px-3 py-1 rounded-full mb-3">Dark Kitchen Gourmet</span>
           <h2 class="text-3xl sm:text-5xl font-black mb-3 leading-tight">LAS MEJORES HAMBURGUESAS DE LA CIUDAD</h2>
@@ -61,13 +61,13 @@
 
       <!-- Tarjeta Destacada -->
       <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 flex flex-col sm:flex-row items-center gap-6">
-        <img src="SmashDobleQues.jpeg" alt="Especialidad" class="w-full sm:w-1/2 h-48 object-cover rounded-lg shadow cursor-pointer" onclick="abrirModal(1)" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80'">
+        <img src="https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=500&q=80" alt="Especialidad Corte Casa" class="w-full sm:w-1/2 h-48 object-cover rounded-lg shadow cursor-pointer" onclick="abrirModal(7)">
         <div class="sm:w-1/2 text-center sm:text-left">
           <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">La Favorita de la Casa</span>
-          <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700" onclick="abrirModal(1)">Doble Smash Burger</h3>
-          <p class="text-sm text-gray-600 my-2">Doble medallón de carne aplastada a la plancha, doble queso cheddar fundido y nuestra salsa especial de la casa.</p>
+          <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700" onclick="abrirModal(7)">Corte Casa</h3>
+          <p class="text-sm text-gray-600 my-2">Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.</p>
           <div class="flex items-center justify-between mt-4">
-            <span class="text-xl font-extrabold text-emerald-800">$5.500 CLP</span>
+            <span class="text-xl font-extrabold text-emerald-800">$10.000 CLP</span>
             <button onclick="cambiarPestana('menu')" class="bg-black hover:bg-gray-800 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition">
               Pedir en Menú
             </button>
@@ -124,7 +124,7 @@
         💡 <span><strong>Tip:</strong> Haz clic sobre la foto o el nombre de cualquier producto para ver sus detalles e ingredientes completos.</span>
       </p>
 
-      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas</h2>
+      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas Gourmet</h2>
       <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
 
       <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
@@ -282,7 +282,7 @@
     const TELEFONO_WHATSAPP = "56963762462"; 
 
     const clientesFelices = [
-      { nombre: "@camila_burgerlove", comentario: "¡La Doble Smash estuvo increíble! Llegó súper caliente.", foto: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80" },
+      { nombre: "@camila_burgerlove", comentario: "¡La H. Gringa estuvo increíble! Llegó súper caliente.", foto: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80" },
       { nombre: "Familia Silva", comentario: "Noche de hamburguesas en casa. ¡Las papas artesanales un 10/10!", foto: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&q=80" },
       { nombre: "@felipe.gourmet", comentario: "La mejor salsa de la ciudad. Totalmente recomendados.", foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" }
     ];
@@ -293,54 +293,82 @@
     ];
 
     const equipo = [
-      { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas smash y parrilla." }
+      { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas de cocina gourmet y plancha." }
     ];
 
+    // NUEVO MENÚ EXTRAÍDO DE TU CARTA CARTA_CARRO.XLSX
     let hamburguesas = [
       { 
         id: 1, 
-        nombre: "Hamburguesa Doble Smash", 
-        precio: 5500, 
-        desc: "Doble medallón de carne smash de vacuno, queso cheddar fundido y pepinillos.", 
-        imagen: "SmashDobleQues.jpeg", 
+        nombre: "H. Gringa", 
+        precio: 8000, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, aros de cebolla, tocino y salsa barbecue.", 
+        imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80", 
         stock: 10,
-        ingredientes: ["2 Medallones de carne vacuno (90g c/u)", "Doble Queso Cheddar fundido", "Pan Brioche tostado en mantequilla", "Salsa secreta BK", "Pepinillos artesanos"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Aros de Cebolla", "Tocino", "Salsa Barbecue"]
       },
       { 
         id: 2, 
-        nombre: "Hamburguesa Gourmet", 
+        nombre: "H. la de siempre", 
         precio: 7500, 
-        desc: "Carne Premium 180g, tocino crujiente, cebolla caramelizada y queso mantecoso.", 
-        imagen: "lechu_Toma_cebo.jpeg", 
+        desc: "Pan de papa, carne artesanal, queso cheddar, tomate, palta y salsa base / mayo.", 
+        imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&q=80", 
         stock: 8,
-        ingredientes: ["Medallón de carne vacuno (180g)", "Tocino ahumado en tiras", "Cebolla caramelizada al vino tinto", "Queso mantecoso artesanal", "Lechuga hidropónica", "Pan Brioche"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Palta", "Salsa Base / Mayo"]
       },
       { 
         id: 3, 
-        nombre: "Hamburguesa BBQ Bacon", 
-        precio: 6800, 
-        desc: "Jugosa carne con salsa BBQ ahumada, aros de cebolla empanizados y cheddar.", 
-        imagen: "BBQ_Toci_ACebo.jpeg", 
-        stock: 2,
-        ingredientes: ["Medallón de carne vacuno (150g)", "Salsa BBQ estilo Tejas", "Aros de cebolla crujientes", "Queso Cheddar", "Tocino ahumado"]
+        nombre: "H. Criolla", 
+        precio: 7000, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, tomate, lechuga, cebolla morada y salsa base / mayo.", 
+        imagen: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80", 
+        stock: 10,
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Lechuga", "Cebolla Morada", "Salsa Base / Mayo"]
       },
       { 
         id: 4, 
-        nombre: "Hamburguesa Veggie", 
-        precio: 6200, 
-        desc: "Medallón de lentejas y champiñones, palta fresca, tomate y lactonesa de ajo.", 
-        imagen: "https://images.unsplash.com/photo-1520072959219-c595dc870360?w=600&q=80", 
-        stock: 4,
-        ingredientes: ["Medallón vegetal (Lentejas + Champiñón)", "Palta hass laminada", "Tomate fresco", "Rúcula", "Lactonesa casera de ajo"]
+        nombre: "Champiñón Crocante", 
+        precio: 9000, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, palta, champiñón, cebolla crispy y salsa base / mayo.", 
+        imagen: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80", 
+        stock: 6,
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Palta", "Champiñón", "Cebolla Crispy", "Salsa Base / Mayo"]
       },
       { 
         id: 5, 
-        nombre: "Combo Smash Completo", 
-        precio: 8500, 
-        desc: "Nuestra clásica Smash Burger acompañada de papas fritas medianas y bebida 350ml.", 
+        nombre: "Chacarezca", 
+        precio: 7500, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, tomate, poroto verde, ají verde y salsa base / mayo.", 
+        imagen: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80", 
+        stock: 8,
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Poroto Verde", "Ají Verde", "Salsa Base / Mayo"]
+      },
+      { 
+        id: 6, 
+        nombre: "Beach", 
+        precio: 9500, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, lechuga, camarón crispy, tocino, salsa acevichada y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=600&q=80", 
-        stock: 12,
-        ingredientes: ["Doble Smash Burger", "Porción mediana de papas fritas", "Bebida en lata 350ml a elección"]
+        stock: 5,
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Lechuga", "Camarón Crispy", "Tocino", "Salsa Acevichada", "Salsa Base"]
+      },
+      { 
+        id: 7, 
+        nombre: "Corte Casa", 
+        precio: 10000, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.", 
+        imagen: "https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=600&q=80", 
+        stock: 5,
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Pimentón Asado", "Champiñón", "Aros de Cebolla", "Tocino", "Salsa Base"]
+      },
+      { 
+        id: 8, 
+        nombre: "Not Money", 
+        precio: 8000, 
+        desc: "Pan de papa, carne artesanal, queso cheddar, cebolla caramelizada, huevo frito, papas fritas y salsa base.", 
+        imagen: "https://images.unsplash.com/photo-1583160247917-d764724a30fa?w=600&q=80", 
+        stock: 7,
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Cebolla Caramelizada", "Huevo Frito", "Papas Fritas", "Salsa Base"]
       }
     ];
 
@@ -379,6 +407,14 @@
     let urlWhatsAppFinal = '';
     let carruselIndex = 0;
 
+    // Cargar contenido dinámico al iniciar
+    document.addEventListener("DOMContentLoaded", () => {
+      cargarClientes();
+      cargarEquipo();
+      iniciarCarrusel();
+      obtenerStockBD();
+    });
+
     function cambiarPestana(pestana) {
       const secInicio = document.getElementById('seccion-inicio');
       const secMenu = document.getElementById('seccion-menu');
@@ -396,6 +432,51 @@
         btnMenu.className = "px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-md transition transform hover:scale-105";
         btnInicio.className = "px-5 py-2 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105";
       }
+    }
+
+    function cargarClientes() {
+      const contenedor = document.getElementById('contenedor-clientes');
+      if (contenedor) {
+        contenedor.innerHTML = clientesFelices.map(c => `
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center">
+            <img src="${c.foto}" alt="${c.nombre}" class="w-16 h-16 rounded-full object-cover mb-2 border-2 border-emerald-600">
+            <h4 class="font-bold text-sm text-gray-900">${c.nombre}</h4>
+            <p class="text-xs text-gray-500 mt-1 italic">"${c.comentario}"</p>
+          </div>
+        `).join('');
+      }
+    }
+
+    function cargarEquipo() {
+      const contenedor = document.getElementById('contenedor-equipo');
+      if (contenedor) {
+        contenedor.innerHTML = equipo.map(e => `
+          <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">
+            <img src="${e.foto}" alt="${e.nombre}" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-600">
+            <div>
+              <h4 class="font-bold text-sm text-gray-900">${e.nombre}</h4>
+              <span class="text-xs text-emerald-700 font-semibold block">${e.cargo}</span>
+              <p class="text-xs text-gray-500 mt-1">${e.bio}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function iniciarCarrusel() {
+      if (fotosLocal.length > 0) {
+        actualizarCarrusel();
+      }
+    }
+
+    function moverCarrusel(dir) {
+      carruselIndex = (carruselIndex + dir + fotosLocal.length) % fotosLocal.length;
+      actualizarCarrusel();
+    }
+
+    function actualizarCarrusel() {
+      const img = document.getElementById('carrusel-img');
+      if (img) img.src = fotosLocal[carruselIndex];
     }
 
     function obtenerSiguienteNumeroPedido() {
@@ -603,7 +684,6 @@
 
     async function generarComandaYPedido() {
       const btnConfirmar = document.getElementById('btn-confirmar');
-
       if (btnConfirmar.disabled) return;
 
       const nombre = document.getElementById('nombre').value.trim();
@@ -611,102 +691,70 @@
       const direccion = document.getElementById('direccion').value.trim();
 
       if (Object.keys(carrito).length === 0) {
-        alert("Por favor selecciona al menos un producto.");
-        return;
-      }
-      if (!nombre) {
-        alert("Por favor ingresa tu nombre de contacto.");
+        alert('Tu carrito está vacío. Agrega productos para realizar un pedido.');
         return;
       }
 
-      const regexTelefono = /^\+?[0-9]{8,15}$/;
-      if (!regexTelefono.test(telefono.replace(/\s+/g, ''))) {
-        alert("Por favor ingresa un número de teléfono válido (mínimo 8 dígitos numéricos).");
+      if (!nombre || !telefono) {
+        alert('Por favor ingresa tu Nombre y Teléfono de contacto.');
         return;
       }
 
       if (tipoEntrega === 'delivery' && !direccion) {
-        alert("Por favor ingresa tu dirección de envío para el Delivery.");
+        alert('Por favor ingresa tu Dirección de Envío.');
         return;
       }
 
       btnConfirmar.disabled = true;
-      btnConfirmar.classList.add('opacity-50', 'cursor-not-allowed');
-      btnConfirmar.innerHTML = '<span>⏳ Generando comanda...</span>';
+      btnConfirmar.innerHTML = "<span>⏳ Procesando comanda...</span>";
+
+      const numPedido = obtenerSiguienteNumeroPedido();
+      const ahora = new Date();
+      const fechaStr = ahora.toLocaleString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+      let itemsPedido = [];
+      let totalCalculado = 0;
+      let todos = [...hamburguesas, ...extras];
+
+      for (let id in carrito) {
+        let p = todos.find(prod => prod.id == id);
+        if (p) {
+          let subtotal = p.precio * carrito[id];
+          totalCalculado += subtotal;
+          itemsPedido.push({
+            id: p.id,
+            nombre: p.nombre,
+            cantidad: carrito[id],
+            precioUnitario: p.precio,
+            subtotal: subtotal
+          });
+        }
+      }
+
+      const pedidoData = {
+        numPedido: numPedido,
+        cliente: nombre,
+        telefono: telefono,
+        tipoEntrega: tipoEntrega,
+        direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local',
+        items: itemsPedido,
+        total: totalCalculado,
+        estado: 'pendiente',
+        fecha: fechaStr,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      };
 
       try {
-        const numPedido = obtenerSiguienteNumeroPedido();
-        const fechaActual = new Date().toLocaleString('es-CL');
-        let todos = [...hamburguesas, ...extras];
+        // Guardar pedido en Firebase Realtime Database para la Cocina y Caja
+        await db.ref('comandas').push(pedidoData);
 
-        let htmlItemsTicket = '';
-        let totalPedido = 0;
-        let itemsParaCocina = [];
-
-        let textoWA = `¡Hola Burger Kitchen! 🍔\nQuiero confirmar el siguiente pedido *${numPedido}*:\n\n`;
-        textoWA += `👤 *Cliente:* ${nombre}\n`;
-        textoWA += `📞 *Teléfono:* ${telefono}\n`;
-        textoWA += `📍 *Modalidad:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
-        
-        if (tipoEntrega === 'delivery') {
-          textoWA += `🏠 *Dirección:* ${direccion}\n`;
-        }
-
-        textoWA += `\n📋 *Detalle del Pedido:*\n`;
-
-        for (let id in carrito) {
-          let p = todos.find(prod => prod.id == id);
-          if (p) {
-            let subtotal = p.precio * carrito[id];
-            totalPedido += subtotal;
-
-            // Render para ticket local
-            htmlItemsTicket += `
-              <div class="flex justify-between py-0.5">
-                <span>${carrito[id]}x ${p.nombre}</span>
-                <span>$${subtotal.toLocaleString('es-CL')}</span>
-              </div>
-            `;
-
-            // Objeto formateado para la cocina
-            itemsParaCocina.push({
-              id: p.id,
-              nombre: p.nombre,
-              cantidad: carrito[id],
-              precioUnitario: p.precio,
-              subtotal: subtotal
-            });
-
-            textoWA += `• ${carrito[id]}x ${p.nombre} - $${subtotal.toLocaleString('es-CL')}\n`;
-          }
-        }
-
-        textoWA += `\n💰 *TOTAL:* $${totalPedido.toLocaleString('es-CL')} CLP`;
-
-        // === ENVIAR PEDIDO A FIREBASE REALTIME DATABASE (PANTALLA DE COCINA) ===
-        const nuevoPedidoFirebase = {
-          numPedido: numPedido,
-          cliente: nombre,
-          telefono: telefono,
-          tipoEntrega: tipoEntrega,
-          direccion: tipoEntrega === 'delivery' ? direccion : 'Retiro en Local',
-          items: itemsParaCocina,
-          total: totalPedido,
-          estado: 'pendiente', // Estados posibles: 'pendiente', 'en_preparacion', 'listo', 'entregado'
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
-          fecha: fechaActual
-        };
-
-        // Guarda el pedido bajo el nodo "comandas"
-        await db.ref('comandas').push(nuevoPedidoFirebase);
-
-        // Llenar Modal de Comanda (Ticket)
+        // Actualizar Ticket de resumen en pantalla
         document.getElementById('ticket-num-pedido').innerText = numPedido;
-        document.getElementById('ticket-fecha').innerText = fechaActual;
+        document.getElementById('ticket-fecha').innerText = fechaStr;
         document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
         document.getElementById('ticket-cliente').innerText = nombre;
         document.getElementById('ticket-telefono').innerText = telefono;
-        
+
         const contDir = document.getElementById('ticket-direccion-contenedor');
         if (tipoEntrega === 'delivery') {
           document.getElementById('ticket-direccion').innerText = direccion;
@@ -715,80 +763,49 @@
           contDir.classList.add('hidden');
         }
 
-        document.getElementById('ticket-items').innerHTML = htmlItemsTicket;
-        document.getElementById('ticket-total').innerText = `$${totalPedido.toLocaleString('es-CL')} CLP`;
+        document.getElementById('ticket-items').innerHTML = itemsPedido.map(it => `
+          <div class="flex justify-between border-b border-gray-100 py-1">
+            <span>${it.cantidad}x ${it.nombre}</span>
+            <span>$${it.subtotal.toLocaleString('es-CL')}</span>
+          </div>
+        `).join('');
 
-        // Generar URL de WhatsApp
-        urlWhatsAppFinal = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(textoWA)}`;
+        document.getElementById('ticket-total').innerText = `$${totalCalculado.toLocaleString('es-CL')} CLP`;
 
-        // Cerrar modal carrito y mostrar modal comanda
+        // Generar texto para enviar por WhatsApp
+        let mensajeWA = `🍔 *NUEVO PEDIDO BURGER KITCHEN* 🍔\n`;
+        mensajeWA += `*Ticket:* ${numPedido}\n`;
+        mensajeWA += `*Cliente:* ${nombre}\n`;
+        mensajeWA += `*Teléfono:* ${telefono}\n`;
+        mensajeWA += `*Tipo:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
+        if (tipoEntrega === 'delivery') mensajeWA += `*Dirección:* ${direccion}\n`;
+        mensajeWA += `----------------------------------\n`;
+        mensajeWA += `*DETALLE DEL PEDIDO:*\n`;
+        itemsPedido.forEach(it => {
+          mensajeWA += `• ${it.cantidad}x ${it.nombre} ($${it.subtotal.toLocaleString('es-CL')})\n`;
+        });
+        mensajeWA += `----------------------------------\n`;
+        mensajeWA += `*TOTAL A PAGAR:* $${totalCalculado.toLocaleString('es-CL')} CLP`;
+
+        urlWhatsAppFinal = `https://api.whatsapp.com/send?phone=${TELEFONO_WHATSAPP}&text=${encodeURIComponent(mensajeWA)}`;
+
         cerrarModalCarrito();
         document.getElementById('modal-comanda').classList.remove('hidden');
 
-      } catch (e) {
-        console.error("Error al registrar el pedido:", e);
-        alert("Ocurrió un problema al procesar la comanda. Por favor intenta de nuevo.");
+      } catch (err) {
+        alert('Hubo un error al guardar tu pedido en el sistema. Por favor intenta de nuevo.');
       } finally {
         btnConfirmar.disabled = false;
-        btnConfirmar.classList.remove('opacity-50', 'cursor-not-allowed');
-        btnConfirmar.innerHTML = '<span>Confirmar y Generar Comanda 📋</span>';
+        btnConfirmar.innerHTML = "<span>Confirmar y Generar Comanda 📋</span>";
       }
     }
 
     function completarYEnviarWhatsApp() {
-      if (urlWhatsAppFinal) {
-        window.open(urlWhatsAppFinal, '_blank');
-      }
+      carrito = {};
+      actualizarCarrito();
+      document.getElementById('modal-comanda').classList.add('hidden');
+      window.open(urlWhatsAppFinal, '_blank');
     }
-
-    function renderizarSeccionesEstaticas() {
-      // Renderizar Clientes
-      document.getElementById('contenedor-clientes').innerHTML = clientesFelices.map(c => `
-        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col justify-between">
-          <p class="text-xs text-gray-600 italic mb-3">"${c.comentario}"</p>
-          <div class="flex items-center gap-3">
-            <img src="${c.foto}" class="w-10 h-10 rounded-full object-cover" alt="${c.nombre}">
-            <span class="text-xs font-bold text-gray-800">${c.nombre}</span>
-          </div>
-        </div>
-      `).join('');
-
-      // Renderizar Equipo
-      document.getElementById('contenedor-equipo').innerHTML = equipo.map(eq => `
-        <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
-          <img src="${eq.foto}" class="w-16 h-16 rounded-full object-cover shadow" alt="${eq.nombre}">
-          <div>
-            <h4 class="font-bold text-sm text-gray-900">${eq.nombre}</h4>
-            <span class="text-xs text-emerald-700 font-semibold block">${eq.cargo}</span>
-            <p class="text-xs text-gray-500 mt-1">${eq.bio}</p>
-          </div>
-        </div>
-      `).join('');
-
-      actualizarCarrusel();
-    }
-
-    function actualizarCarrusel() {
-      const img = document.getElementById('carrusel-img');
-      const ind = document.getElementById('carrusel-indicadores');
-      
-      if (img && fotosLocal.length > 0) {
-        img.src = fotosLocal[carruselIndex];
-        ind.innerHTML = fotosLocal.map((_, i) => `
-          <span class="w-2 h-2 rounded-full ${i === carruselIndex ? 'bg-white' : 'bg-white/50'}"></span>
-        `).join('');
-      }
-    }
-
-    function moverCarrusel(dir) {
-      carruselIndex = (carruselIndex + dir + fotosLocal.length) % fotosLocal.length;
-      actualizarCarrusel();
-    }
-
-    window.onload = function() {
-      renderizarSeccionesEstaticas();
-      obtenerStockBD();
-    };
   </script>
 </body>
 </html>
