@@ -11,27 +11,44 @@
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </head>
-<body class="bg-gray-100 text-gray-800 pb-28 sm:pb-32">
+<body class="bg-gray-100 text-gray-800 pb-28 sm:pb-32 font-sans antialiased">
 
-  <!-- Encabezado Principal Extendido -->
-  <header class="relative bg-[#0d2f1f] text-white py-16 sm:py-20 text-center shadow-2xl overflow-hidden sticky top-0 z-40">
-    <div class="absolute inset-0 opacity-60 pointer-events-none bg-center bg-cover bg-no-repeat" 
+  <!-- ENCABEZADO PRINCIPAL PROFESIONAL -->
+  <header class="relative bg-gray-950 text-white py-14 sm:py-20 text-center shadow-2xl overflow-hidden sticky top-0 z-40 border-b border-emerald-900/40">
+    
+    <!-- Imagen de fondo con ajuste perfecto -->
+    <div class="absolute inset-0 bg-center bg-cover bg-no-repeat transition-all duration-700 transform scale-105" 
          style="background-image: url('web-central-1.png');">
     </div>
 
-    <div class="relative z-10 max-w-2xl mx-auto px-4">
-      <h1 class="text-3xl sm:text-5xl font-black tracking-widest text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+    <!-- Filtro de degradado oscuro profesional para resaltar el texto -->
+    <div class="absolute inset-0 bg-gradient-to-b from-black/85 via-black/75 to-[#0d2f1f]/90 backdrop-blur-[2px]"></div>
+
+    <!-- Contenido del Header -->
+    <div class="relative z-10 max-w-3xl mx-auto px-4 flex flex-col items-center">
+      
+      <!-- Insignia de Marca -->
+      <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold uppercase tracking-widest mb-3 backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Dark Kitchen Gourmet
+      </span>
+
+      <!-- Título Principal con sombra tipográfica -->
+      <h1 class="text-3xl sm:text-5xl font-black tracking-widest text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)] uppercase">
         BURGER KITCHEN
       </h1>
-      <p class="text-emerald-100 text-sm sm:text-base mt-2 font-semibold tracking-wide drop-shadow-md">
-        Sabor Gourmet • Pedidos a Domicilio / Retiro
+
+      <!-- Bajada de título -->
+      <p class="text-emerald-100/90 text-xs sm:text-sm mt-2 font-medium tracking-wide drop-shadow-sm max-w-md">
+        Sabor Gourmet • Pedidos a Domicilio / Retiro en Local
       </p>
 
-      <nav class="flex justify-center gap-3 mt-6 px-2">
-        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-6 py-2.5 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-lg transition transform hover:scale-105">
+      <!-- Navegación Estilo App -->
+      <nav class="flex justify-center gap-3 mt-6 p-1.5 bg-black/40 backdrop-blur-md rounded-full border border-white/10 shadow-inner">
+        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-6 py-2 font-black text-xs sm:text-sm rounded-full bg-emerald-500 text-black shadow-lg transition transform hover:scale-105">
           🏠 Inicio
         </button>
-        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-6 py-2.5 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105">
+        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-6 py-2 font-bold text-xs sm:text-sm rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition transform hover:scale-105">
           🍔 Ver Menú
         </button>
       </nav>
@@ -41,34 +58,34 @@
   <main class="max-w-3xl mx-auto p-4">
 
     <!-- Indicador de Carga de Stock -->
-    <div id="loading-stock" class="text-center py-3 text-emerald-800 font-bold bg-emerald-50 rounded-lg mb-4 text-sm">
-      🔄 Sincronizando disponibilidad de stock desde Firebase...
+    <div id="loading-stock" class="text-center py-3 text-emerald-800 font-bold bg-emerald-50 rounded-lg mb-4 text-sm border border-emerald-200">
+      🔄 Sincronizando disponibilidad de stock...
     </div>
 
     <!-- SECCIÓN 1: INICIO -->
     <section id="seccion-inicio" class="space-y-12">
-      <div class="relative bg-black rounded-2xl overflow-hidden shadow-xl text-white">
+      <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl text-white">
         <img src="hambur_portada.jpeg" alt="Hamburguesa gourmet" class="w-full h-72 sm:h-96 object-cover opacity-60" onerror="this.src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&q=80'">
-        <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/80 via-black/30 to-transparent">
-          <span class="bg-emerald-600 text-white text-xs uppercase font-bold tracking-widest px-3 py-1 rounded-full mb-3">Dark Kitchen Gourmet</span>
-          <h2 class="text-3xl sm:text-5xl font-black mb-3 leading-tight">LAS MEJORES HAMBURGUESAS DE LA CIUDAD</h2>
-          <p class="text-sm sm:text-lg text-gray-200 mb-6 max-w-lg">Carne seleccionada, ingredientes frescos y preparadas al momento directo a tu mesa.</p>
-          <button onclick="cambiarPestana('menu')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-8 py-3 rounded-full shadow-lg transition transform hover:scale-105 text-base sm:text-lg">
-            ¡Haz tu Pedido Ahora! 🍔
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
+          <span class="bg-emerald-600 text-white text-xs uppercase font-bold tracking-widest px-3.5 py-1 rounded-full mb-3 shadow">Dark Kitchen Gourmet</span>
+          <h2 class="text-3xl sm:text-5xl font-black mb-3 leading-tight tracking-tight">LAS MEJORES HAMBURGUESAS DE LA CIUDAD</h2>
+          <p class="text-sm sm:text-lg text-gray-200 mb-6 max-w-lg font-normal">Carne seleccionada, ingredientes frescos y preparadas al momento directo a tu mesa.</p>
+          <button onclick="cambiarPestana('menu')" class="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-8 py-3.5 rounded-full shadow-xl transition transform hover:scale-105 text-base sm:text-lg flex items-center gap-2">
+            <span>¡Haz tu Pedido Ahora!</span> 🍔
           </button>
         </div>
       </div>
 
       <!-- Tarjeta Destacada -->
-      <div class="bg-white rounded-xl p-6 shadow-md border border-gray-200 flex flex-col sm:flex-row items-center gap-6">
-        <img src="https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=500&q=80" alt="Especialidad Corte Casa" class="w-full sm:w-1/2 h-48 object-cover rounded-lg shadow cursor-pointer" onclick="abrirModal(7)">
+      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-200/80 flex flex-col sm:flex-row items-center gap-6">
+        <img src="https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=500&q=80" alt="Especialidad Corte Casa" class="w-full sm:w-1/2 h-48 object-cover rounded-xl shadow cursor-pointer" onclick="abrirModal(7)">
         <div class="sm:w-1/2 text-center sm:text-left">
-          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-md">La Favorita de la Casa</span>
-          <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700" onclick="abrirModal(7)">Corte Casa</h3>
-          <p class="text-sm text-gray-600 my-2">Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.</p>
-          <div class="flex items-center justify-between mt-4">
-            <span class="text-xl font-extrabold text-emerald-800">Desde $10.000 CLP</span>
-            <button onclick="cambiarPestana('menu')" class="bg-black hover:bg-gray-800 text-white font-bold text-xs px-4 py-2.5 rounded-lg transition">
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-md">La Favorita de la Casa</span>
+          <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700 transition" onclick="abrirModal(7)">Corte Casa</h3>
+          <p class="text-xs sm:text-sm text-gray-600 my-2.5 leading-relaxed">Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.</p>
+          <div class="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
+            <span class="text-xl font-black text-emerald-800">Desde $10.000 CLP</span>
+            <button onclick="cambiarPestana('menu')" class="bg-gray-900 hover:bg-black text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow">
               Pedir en Menú
             </button>
           </div>
@@ -77,17 +94,17 @@
 
       <!-- Propuesta de Valor -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 text-center">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200/80 text-center">
           <div class="text-3xl mb-2">🥩</div>
           <h4 class="font-bold text-gray-900 text-base">Ingredientes Premium</h4>
           <p class="text-xs text-gray-500 mt-1">Carne 100% de calidad y pan recién horneado cada jornada.</p>
         </div>
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 text-center">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200/80 text-center">
           <div class="text-3xl mb-2">🔥</div>
           <h4 class="font-bold text-gray-900 text-base">Preparación al Instante</h4>
           <p class="text-xs text-gray-500 mt-1">Cocinamos cada pedido al momento de recibirlo para máxima frescura.</p>
         </div>
-        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 text-center">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200/80 text-center">
           <div class="text-3xl mb-2">🚀</div>
           <h4 class="font-bold text-gray-900 text-base">Envío Rápido</h4>
           <p class="text-xs text-gray-500 mt-1">Entrega eficiente para que disfrutes tu comida siempre caliente.</p>
@@ -97,7 +114,7 @@
       <!-- CLIENTES FELICES -->
       <div class="pt-8 border-t border-gray-200">
         <h2 class="text-2xl font-black mb-2 text-gray-900 text-center">Comunidad Burger Kitchen 📸</h2>
-        <p class="text-sm text-gray-600 mb-6 text-center">
+        <p class="text-xs sm:text-sm text-gray-600 mb-6 text-center">
           ¡Gracias por elegirnos! Aquí compartimos algunos momentos de nuestros clientes disfrutando sus pedidos.
         </p>
         <div id="contenedor-clientes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
@@ -106,10 +123,10 @@
       <!-- LOCAL Y EQUIPO -->
       <div class="pt-8 border-t border-gray-200">
         <h2 class="text-2xl font-black mb-4 text-gray-900 text-center">Conoce Nuestro Local 🏬</h2>
-        <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-xl shadow-md mb-8 bg-black">
+        <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-2xl shadow-md mb-8 bg-black">
           <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
-          <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/80">❮</button>
-          <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/80">❯</button>
+          <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2 rounded-full hover:bg-black/90">❮</button>
+          <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2 rounded-full hover:bg-black/90">❯</button>
           <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
         </div>
 
@@ -120,23 +137,27 @@
 
     <!-- SECCIÓN 2: MENÚ DE PRODUCTOS -->
     <section id="seccion-menu" class="hidden">
-      <p class="text-xs text-gray-500 mb-4 bg-emerald-50 p-2.5 rounded-lg border border-emerald-100 flex items-center gap-1.5">
+      <p class="text-xs text-gray-600 mb-4 bg-emerald-50/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2 shadow-sm">
         💡 <span><strong>Tip:</strong> Haz clic sobre cualquier hamburguesa para elegir entre 1 o 2 carnes y opción de combo.</span>
       </p>
 
-      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Hamburguesas Gourmet</h2>
+      <h2 class="text-xl font-black mb-4 border-b border-gray-200 pb-2 text-gray-800 flex items-center gap-2">
+        <span>🍔</span> Hamburguesas Gourmet
+      </h2>
       <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
 
-      <h2 class="text-xl font-bold mb-4 border-b pb-2 text-gray-700">Extras & Acompañamientos</h2>
+      <h2 class="text-xl font-black mb-4 border-b border-gray-200 pb-2 text-gray-800 flex items-center gap-2">
+        <span>🍟</span> Extras & Acompañamientos
+      </h2>
       <div id="menu-extras" class="space-y-4 mb-12"></div>
     </section>
 
   </main>
 
   <!-- VENTANA MODAL (DETALLE Y CONFIGURACIÓN DE HAMBURGUESA) -->
-  <div id="modal-producto" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div id="modal-producto" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all relative max-h-[90vh] flex flex-col">
-      <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-black/60 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg z-10 transition">
+      <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-black/70 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg z-10 transition">
         ✕
       </button>
 
@@ -154,9 +175,9 @@
         <p id="modal-desc" class="text-sm text-gray-600"></p>
 
         <!-- SELECTORES DE OPCIONES (CANTIDAD DE CARNES Y COMBO) -->
-        <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 space-y-3">
+        <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 space-y-3">
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">🥩 Tipo de Medallones:</label>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">🥩 Tipo de Medallones:</label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" onclick="seleccionarCarnes(1)" id="btn-carne-1" class="py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition">
                 1 Carne (Simple)
@@ -168,7 +189,7 @@
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1">🍟 ¿Deseas pasarlo a Combo (+ Papas Fritas y Bebida)?</label>
+            <label class="block text-xs font-bold text-gray-700 mb-1.5">🍟 ¿Deseas pasarlo a Combo (+ Papas Fritas y Bebida)?</label>
             <div class="grid grid-cols-2 gap-2">
               <button type="button" onclick="seleccionarCombo(false)" id="btn-combo-no" class="py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition">
                 Solo Sándwich
@@ -215,7 +236,7 @@
   </div>
 
   <!-- MODAL EMERGENTE DEL CARRITO DE COMPRA -->
-  <div id="modal-carrito" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <div id="modal-carrito" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] flex flex-col">
       <button onclick="cerrarModalCarrito()" class="absolute top-3 right-3 bg-gray-100 hover:bg-gray-200 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">
         ✕
@@ -455,13 +476,13 @@
       if (pestana === 'inicio') {
         secInicio.classList.remove('hidden');
         secMenu.classList.add('hidden');
-        btnInicio.className = "px-6 py-2.5 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-lg transition transform hover:scale-105";
-        btnMenu.className = "px-6 py-2.5 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105";
+        btnInicio.className = "px-6 py-2 font-black text-xs sm:text-sm rounded-full bg-emerald-500 text-black shadow-lg transition transform hover:scale-105";
+        btnMenu.className = "px-6 py-2 font-bold text-xs sm:text-sm rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition transform hover:scale-105";
       } else {
         secInicio.classList.add('hidden');
         secMenu.classList.remove('hidden');
-        btnMenu.className = "px-6 py-2.5 font-extrabold text-xs sm:text-sm rounded-full bg-white text-emerald-950 shadow-lg transition transform hover:scale-105";
-        btnInicio.className = "px-6 py-2.5 font-extrabold text-xs sm:text-sm rounded-full bg-emerald-950/80 backdrop-blur-md text-emerald-100 border border-emerald-700/50 hover:bg-emerald-800 transition transform hover:scale-105";
+        btnMenu.className = "px-6 py-2 font-black text-xs sm:text-sm rounded-full bg-emerald-500 text-black shadow-lg transition transform hover:scale-105";
+        btnInicio.className = "px-6 py-2 font-bold text-xs sm:text-sm rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition transform hover:scale-105";
       }
     }
 
@@ -573,8 +594,8 @@
       let precioMostrar = p.p1Carne ? `Desde $${p.p1Carne.toLocaleString('es-CL')} CLP` : `$${p.precio.toLocaleString('es-CL')} CLP`;
 
       return `
-        <div class="bg-white p-3 sm:p-4 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between gap-3 ${agotado ? 'opacity-60' : ''}">
-          <div class="relative cursor-pointer overflow-hidden rounded-lg group flex-shrink-0" onclick="abrirModal(${p.id})">
+        <div class="bg-white p-3.5 sm:p-4 rounded-2xl shadow-sm border border-gray-200/80 flex items-center justify-between gap-3 hover:shadow-md transition ${agotado ? 'opacity-60' : ''}">
+          <div class="relative cursor-pointer overflow-hidden rounded-xl group flex-shrink-0" onclick="abrirModal(${p.id})">
             <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover transform transition duration-300 group-hover:scale-110" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'">
             <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold">🔍 Ver</div>
           </div>
@@ -585,12 +606,12 @@
               ${badgeStock}
             </div>
             <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
-            <span class="font-bold text-sm sm:text-base text-emerald-800">${precioMostrar}</span>
+            <span class="font-extrabold text-sm sm:text-base text-emerald-800">${precioMostrar}</span>
           </div>
 
           <div>
-            <button onclick="abrirModal(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow">
-              Personalizar 🍔
+            <button onclick="abrirModal(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1">
+              <span>Personalizar</span> 🍔
             </button>
           </div>
         </div>
