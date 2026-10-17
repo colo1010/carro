@@ -3,309 +3,293 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Burger Kitchen | Sabor Gourmet a Domicilio</title>
+  <title>Burger Kitchen | Sabor Gourmet</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fuente Google Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
 
-  <!-- SDKs de Firebase Realtime Database -->
+  <!-- SDKs de Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800 pb-28 sm:pb-32 font-sans antialiased">
+<body class="bg-gray-950 text-gray-100 pb-28 sm:pb-32 antialiased">
 
-  <!-- ENCABEZADO PRINCIPAL CON PROTAGONISMO DEL LOGOTIPO -->
-  <header class="relative bg-black text-white py-8 sm:py-12 text-center shadow-2xl overflow-hidden sticky top-0 z-40 border-b border-emerald-900/60">
-    
-    <!-- Fondo texturizado elegante -->
-    <div class="absolute inset-0 bg-center bg-cover bg-no-repeat opacity-25 filter blur-[1px]" 
-         style="background-image: url('web-central-1.png');">
-    </div>
-
-    <!-- Degradado cinematográfico para profundidad -->
-    <div class="absolute inset-0 bg-gradient-to-b from-black/95 via-black/85 to-[#081a11]/95"></div>
-
-    <!-- Contenido Principal del Header -->
-    <div class="relative z-10 max-w-3xl mx-auto px-4 flex flex-col items-center">
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR FLOTANTE Y ELEGANTE -->
+  <header class="sticky top-0 z-40 bg-gray-950/90 backdrop-blur-md border-b border-gray-800/80 px-4 py-3">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
       
-      <!-- LOGOTIPO "NOT GRILL" COMO CENTRO DE ATENCIÓN -->
-      <div class="mb-4 p-2 bg-black/60 rounded-2xl border border-emerald-500/30 shadow-[0_0_25px_rgba(16,185,129,0.15)] backdrop-blur-md transition transform hover:scale-105 duration-300">
-        <img src="web-central-1.png" alt="Not Grill Logo" class="h-20 sm:h-28 w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]" onerror="this.style.display='none'">
+      <!-- Logo de la marca -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="cambiarPestana('inicio')">
+        <img src="web-central-1.png" alt="Not Grill Logo" class="h-10 w-auto object-contain drop-shadow" onerror="this.style.display='none'">
+        <div>
+          <span class="text-base sm:text-lg font-black tracking-wider text-white block leading-none">BURGER KITCHEN</span>
+          <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest block mt-0.5">Dark Kitchen Gourmet</span>
+        </div>
       </div>
 
-      <!-- Título de Marca -->
-      <h1 class="text-2xl sm:text-4xl font-black tracking-widest text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] uppercase">
-        BURGER KITCHEN
-      </h1>
-
-      <p class="text-emerald-400 text-xs sm:text-sm mt-1 font-semibold tracking-wider uppercase drop-shadow">
-        Sabor Gourmet • Pedidos a Domicilio / Retiro en Local
-      </p>
-
-      <!-- Navegación Estilo App -->
-      <nav class="flex justify-center gap-3 mt-5 p-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 shadow-xl">
-        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-6 py-2 font-black text-xs sm:text-sm rounded-full bg-emerald-500 text-black shadow-lg transition transform hover:scale-105">
+      <!-- Navegación estilo App -->
+      <nav class="flex items-center gap-1.5 bg-gray-900/90 p-1 rounded-full border border-gray-800">
+        <button onclick="cambiarPestana('inicio')" id="btn-pestana-inicio" class="px-4 py-1.5 font-bold text-xs rounded-full bg-emerald-500 text-black shadow transition">
           🏠 Inicio
         </button>
-        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-6 py-2 font-bold text-xs sm:text-sm rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition transform hover:scale-105">
+        <button onclick="cambiarPestana('menu')" id="btn-pestana-menu" class="px-4 py-1.5 font-bold text-xs rounded-full text-gray-300 hover:text-white transition">
           🍔 Ver Menú
         </button>
       </nav>
     </div>
   </header>
 
-  <main class="max-w-3xl mx-auto p-4">
+  <main class="max-w-3xl mx-auto p-4 sm:p-6">
 
     <!-- Indicador de Carga de Stock -->
-    <div id="loading-stock" class="text-center py-3 text-emerald-800 font-bold bg-emerald-50 rounded-lg mb-4 text-sm border border-emerald-200">
-      🔄 Sincronizando disponibilidad de stock...
+    <div id="loading-stock" class="text-center py-2.5 text-emerald-400 font-semibold bg-emerald-950/50 rounded-xl mb-4 text-xs border border-emerald-800/40">
+      🔄 Sincronizando disponibilidad de menú...
     </div>
 
-    <!-- SECCIÓN 1: INICIO -->
-    <section id="seccion-inicio" class="space-y-12">
-      <div class="relative bg-black rounded-2xl overflow-hidden shadow-2xl text-white">
-        <img src="hambur_portada.jpeg" alt="Hamburguesa gourmet" class="w-full h-72 sm:h-96 object-cover opacity-60" onerror="this.src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=800&q=80'">
-        <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent">
-          <span class="bg-emerald-600 text-white text-xs uppercase font-bold tracking-widest px-3.5 py-1 rounded-full mb-3 shadow">Dark Kitchen Gourmet</span>
-          <h2 class="text-3xl sm:text-5xl font-black mb-3 leading-tight tracking-tight">LAS MEJORES HAMBURGUESAS DE LA CIUDAD</h2>
-          <p class="text-sm sm:text-lg text-gray-200 mb-6 max-w-lg font-normal">Carne seleccionada, ingredientes frescos y preparadas al momento directo a tu mesa.</p>
-          <button onclick="cambiarPestana('menu')" class="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-8 py-3.5 rounded-full shadow-xl transition transform hover:scale-105 text-base sm:text-lg flex items-center gap-2">
-            <span>¡Haz tu Pedido Ahora!</span> 🍔
-          </button>
-        </div>
-      </div>
-
-      <!-- Tarjeta Destacada -->
-      <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-200/80 flex flex-col sm:flex-row items-center gap-6">
-        <img src="https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=500&q=80" alt="Especialidad Corte Casa" class="w-full sm:w-1/2 h-48 object-cover rounded-xl shadow cursor-pointer" onclick="abrirModal(7)">
-        <div class="sm:w-1/2 text-center sm:text-left">
-          <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-3 py-1 rounded-md">La Favorita de la Casa</span>
-          <h3 class="text-2xl font-black mt-2 text-gray-900 cursor-pointer hover:text-emerald-700 transition" onclick="abrirModal(7)">Corte Casa</h3>
-          <p class="text-xs sm:text-sm text-gray-600 my-2.5 leading-relaxed">Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.</p>
-          <div class="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
-            <span class="text-xl font-black text-emerald-800">Desde $10.000 CLP</span>
-            <button onclick="cambiarPestana('menu')" class="bg-gray-900 hover:bg-black text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow">
-              Pedir en Menú
+    <!-- SECCIÓN 1: PORTADA PRINCIPAL (HERO) -->
+    <section id="seccion-inicio" class="space-y-10">
+      
+      <!-- BANNER HERO IMPACTANTE -->
+      <div class="relative rounded-3xl overflow-hidden shadow-2xl border border-gray-800 bg-gray-900 min-h-[360px] sm:min-h-[420px] flex items-end">
+        <img src="hambur_portada.jpeg" alt="Hamburguesa gourmet" class="absolute inset-0 w-full h-full object-cover opacity-50" onerror="this.src='https://images.unsplash.com/photo-1550547660-d9450f859349?w=1000&q=80'">
+        <div class="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/40 to-transparent"></div>
+        
+        <div class="relative z-10 p-6 sm:p-10 space-y-3 max-w-xl">
+          <span class="inline-block bg-emerald-500/20 text-emerald-400 text-[11px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-emerald-500/30">
+            • NOT GRILL •
+          </span>
+          <h2 class="text-3xl sm:text-5xl font-black text-white leading-none tracking-tight">
+            HAMBURGUESAS CON ACTITUD
+          </h2>
+          <p class="text-xs sm:text-sm text-gray-300 font-medium leading-relaxed">
+            Carne 100% artesanal, queso cheddar fundido y pan de papa recién horneado.
+          </p>
+          <div class="pt-2">
+            <button onclick="cambiarPestana('menu')" class="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-7 py-3 rounded-2xl shadow-lg transition transform hover:scale-105 text-sm flex items-center gap-2">
+              <span>EXPLORAR MENÚ</span> ➔
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Propuesta de Valor -->
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200/80 text-center">
-          <div class="text-3xl mb-2">🥩</div>
-          <h4 class="font-bold text-gray-900 text-base">Ingredientes Premium</h4>
-          <p class="text-xs text-gray-500 mt-1">Carne 100% de calidad y pan recién horneado cada jornada.</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200/80 text-center">
-          <div class="text-3xl mb-2">🔥</div>
-          <h4 class="font-bold text-gray-900 text-base">Preparación al Instante</h4>
-          <p class="text-xs text-gray-500 mt-1">Cocinamos cada pedido al momento de recibirlo para máxima frescura.</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-200/80 text-center">
-          <div class="text-3xl mb-2">🚀</div>
-          <h4 class="font-bold text-gray-900 text-base">Envío Rápido</h4>
-          <p class="text-xs text-gray-500 mt-1">Entrega eficiente para que disfrutes tu comida siempre caliente.</p>
+      <!-- TARJETA RECOMENDADA -->
+      <div class="bg-gray-900/80 rounded-2xl p-5 border border-gray-800/80 shadow-lg flex flex-col sm:flex-row items-center gap-5">
+        <img src="https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=500&q=80" alt="Especialidad Corte Casa" class="w-full sm:w-44 h-40 object-cover rounded-xl shadow cursor-pointer" onclick="abrirModal(7)">
+        <div class="flex-grow text-center sm:text-left">
+          <span class="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950 px-2.5 py-1 rounded-md border border-emerald-800/50">Especialidad Recomendada</span>
+          <h3 class="text-xl font-black mt-2 text-white cursor-pointer hover:text-emerald-400 transition" onclick="abrirModal(7)">Corte Casa</h3>
+          <p class="text-xs text-gray-400 my-1.5 leading-relaxed">Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla y tocino.</p>
+          <div class="flex items-center justify-between mt-3 pt-2 border-t border-gray-800">
+            <span class="text-lg font-black text-emerald-400">Desde $10.000 CLP</span>
+            <button onclick="cambiarPestana('menu')" class="bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs px-4 py-2 rounded-xl transition">
+              Pedir
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- CLIENTES FELICES -->
-      <div class="pt-8 border-t border-gray-200">
-        <h2 class="text-2xl font-black mb-2 text-gray-900 text-center">Comunidad Burger Kitchen 📸</h2>
-        <p class="text-xs sm:text-sm text-gray-600 mb-6 text-center">
-          ¡Gracias por elegirnos! Aquí compartimos algunos momentos de nuestros clientes disfrutando sus pedidos.
-        </p>
-        <div id="contenedor-clientes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
-      </div>
-
-      <!-- LOCAL Y EQUIPO -->
-      <div class="pt-8 border-t border-gray-200">
-        <h2 class="text-2xl font-black mb-4 text-gray-900 text-center">Conoce Nuestro Local 🏬</h2>
-        <div class="relative w-full h-56 sm:h-72 overflow-hidden rounded-2xl shadow-md mb-8 bg-black">
-          <img id="carrusel-img" src="" alt="Foto del local" class="w-full h-full object-cover transition-all duration-500">
-          <button onclick="moverCarrusel(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2 rounded-full hover:bg-black/90">❮</button>
-          <button onclick="moverCarrusel(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/60 text-white p-2 rounded-full hover:bg-black/90">❯</button>
-          <div id="carrusel-indicadores" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5"></div>
+      <!-- PROPUESTA DE VALOR -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="bg-gray-900/60 p-4 rounded-2xl border border-gray-800/80 text-center">
+          <div class="text-2xl mb-1">🥩</div>
+          <h4 class="font-bold text-white text-sm">100% Artesanal</h4>
+          <p class="text-[11px] text-gray-400 mt-0.5">Cortes seleccionados preparados diariamente.</p>
         </div>
-
-        <h3 class="text-xl font-bold mb-4 text-gray-800 text-center">Nuestro Equipo de Trabajo 👥</h3>
-        <div id="contenedor-equipo" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        <div class="bg-gray-900/60 p-4 rounded-2xl border border-gray-800/80 text-center">
+          <div class="text-2xl mb-1">🔥</div>
+          <h4 class="font-bold text-white text-sm">Al Instante</h4>
+          <p class="text-[11px] text-gray-400 mt-0.5">Cocinadas al momento de tu pedido.</p>
+        </div>
+        <div class="bg-gray-900/60 p-4 rounded-2xl border border-gray-800/80 text-center">
+          <div class="text-2xl mb-1">🚀</div>
+          <h4 class="font-bold text-white text-sm">Envío Caliente</h4>
+          <p class="text-[11px] text-gray-400 mt-0.5">Empaque térmico para máxima frescura.</p>
+        </div>
       </div>
+
     </section>
 
     <!-- SECCIÓN 2: MENÚ DE PRODUCTOS -->
-    <section id="seccion-menu" class="hidden">
-      <p class="text-xs text-gray-600 mb-4 bg-emerald-50/80 p-3 rounded-xl border border-emerald-200 flex items-center gap-2 shadow-sm">
-        💡 <span><strong>Tip:</strong> Haz clic sobre cualquier hamburguesa para elegir entre 1 o 2 carnes y opción de combo.</span>
-      </p>
+    <section id="seccion-menu" class="hidden space-y-6">
+      <div class="bg-gray-900/80 p-3 rounded-2xl border border-gray-800 text-xs text-gray-300 flex items-center gap-2">
+        <span>💡</span>
+        <span>Haz clic en cualquier opción para personalizar tu hamburguesa (Simple, Doble o Combo).</span>
+      </div>
 
-      <h2 class="text-xl font-black mb-4 border-b border-gray-200 pb-2 text-gray-800 flex items-center gap-2">
-        <span>🍔</span> Hamburguesas Gourmet
-      </h2>
-      <div id="menu-hamburguesas" class="space-y-4 mb-8"></div>
+      <div>
+        <h2 class="text-lg font-black mb-3 text-white flex items-center gap-2 border-b border-gray-800 pb-2">
+          <span>🍔</span> Hamburguesas
+        </h2>
+        <div id="menu-hamburguesas" class="space-y-3"></div>
+      </div>
 
-      <h2 class="text-xl font-black mb-4 border-b border-gray-200 pb-2 text-gray-800 flex items-center gap-2">
-        <span>🍟</span> Extras & Acompañamientos
-      </h2>
-      <div id="menu-extras" class="space-y-4 mb-12"></div>
+      <div>
+        <h2 class="text-lg font-black mb-3 text-white flex items-center gap-2 border-b border-gray-800 pb-2">
+          <span>🍟</span> Acompañamientos
+        </h2>
+        <div id="menu-extras" class="space-y-3"></div>
+      </div>
     </section>
 
   </main>
 
-  <!-- VENTANA MODAL (DETALLE Y CONFIGURACIÓN DE HAMBURGUESA) -->
-  <div id="modal-producto" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform transition-all relative max-h-[90vh] flex flex-col">
-      <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-black/70 hover:bg-black text-white w-9 h-9 rounded-full flex items-center justify-center font-bold text-lg z-10 transition">
+  <!-- VENTANA MODAL (DETALLE Y CONFIGURACIÓN) -->
+  <div id="modal-producto" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-gray-900 rounded-3xl max-w-md w-full overflow-hidden shadow-2xl border border-gray-800 relative max-h-[90vh] flex flex-col text-gray-100">
+      <button onclick="cerrarModal()" class="absolute top-3 right-3 bg-gray-950/80 hover:bg-black text-white w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm z-10 transition">
         ✕
       </button>
 
-      <div class="relative h-52 sm:h-60 w-full bg-gray-100 flex-shrink-0">
-        <img id="modal-img" src="" alt="Detalle producto" class="w-full h-full object-cover">
-        <span id="modal-badge" class="absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow"></span>
+      <div class="relative h-48 w-full bg-gray-950 flex-shrink-0">
+        <img id="modal-img" src="" alt="Detalle" class="w-full h-full object-cover">
+        <span id="modal-badge" class="absolute bottom-3 left-3 bg-emerald-950 border border-emerald-700 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full shadow"></span>
       </div>
 
       <div class="p-5 overflow-y-auto space-y-4 flex-grow">
         <div class="flex justify-between items-start">
-          <h3 id="modal-titulo" class="text-2xl font-black text-gray-900 leading-tight"></h3>
-          <span id="modal-precio-cabecera" class="text-xl font-extrabold text-emerald-800 ml-2 whitespace-nowrap">$0 CLP</span>
+          <h3 id="modal-titulo" class="text-xl font-black text-white leading-tight"></h3>
+          <span id="modal-precio-cabecera" class="text-lg font-black text-emerald-400 ml-2 whitespace-nowrap">$0 CLP</span>
         </div>
 
-        <p id="modal-desc" class="text-sm text-gray-600"></p>
+        <p id="modal-desc" class="text-xs text-gray-400"></p>
 
-        <!-- SELECTORES DE OPCIONES (CANTIDAD DE CARNES Y COMBO) -->
-        <div class="bg-gray-50 p-3.5 rounded-xl border border-gray-200 space-y-3">
+        <!-- CONFIGURADOR -->
+        <div class="bg-gray-950 p-3.5 rounded-2xl border border-gray-800 space-y-3">
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1.5">🥩 Tipo de Medallones:</label>
+            <label class="block text-xs font-bold text-gray-300 mb-1.5">🥩 Medallones de Carne:</label>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="seleccionarCarnes(1)" id="btn-carne-1" class="py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition">
+              <button type="button" onclick="seleccionarCarnes(1)" id="btn-carne-1" class="py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500 text-black transition">
                 1 Carne (Simple)
               </button>
-              <button type="button" onclick="seleccionarCarnes(2)" id="btn-carne-2" class="py-2 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition">
+              <button type="button" onclick="seleccionarCarnes(2)" id="btn-carne-2" class="py-2 text-xs font-bold rounded-xl border border-gray-800 bg-gray-900 text-gray-300 hover:bg-gray-800 transition">
                 2 Carnes (Doble)
               </button>
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-gray-700 mb-1.5">🍟 ¿Deseas pasarlo a Combo (+ Papas Fritas y Bebida)?</label>
+            <label class="block text-xs font-bold text-gray-300 mb-1.5">🍟 ¿Agregar Combo (+ Papas y Bebida)?</label>
             <div class="grid grid-cols-2 gap-2">
-              <button type="button" onclick="seleccionarCombo(false)" id="btn-combo-no" class="py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition">
-                Solo Sándwich
+              <button type="button" onclick="seleccionarCombo(false)" id="btn-combo-no" class="py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500 text-black transition">
+                Solo Hamburguesa
               </button>
-              <button type="button" onclick="seleccionarCombo(true)" id="btn-combo-si" class="py-2 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition">
+              <button type="button" onclick="seleccionarCombo(true)" id="btn-combo-si" class="py-2 text-xs font-bold rounded-xl border border-gray-800 bg-gray-900 text-gray-300 hover:bg-gray-800 transition">
                 ¡Sí, en Combo! 🥤
               </button>
             </div>
           </div>
         </div>
 
-        <div class="border-t border-gray-100 pt-2">
-          <h4 class="text-xs uppercase font-extrabold tracking-wider text-gray-400 mb-1.5">🌿 Ingredientes Principales:</h4>
-          <ul id="modal-ingredientes" class="grid grid-cols-2 gap-2 text-xs font-medium text-gray-700"></ul>
+        <div class="border-t border-gray-800 pt-2">
+          <h4 class="text-[11px] uppercase font-bold text-gray-500 mb-1">Ingredientes:</h4>
+          <ul id="modal-ingredientes" class="grid grid-cols-2 gap-1.5 text-xs text-gray-300"></ul>
         </div>
       </div>
 
-      <div class="p-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between gap-3">
+      <div class="p-4 bg-gray-950 border-t border-gray-800 flex items-center justify-between gap-3">
         <div>
-          <span class="text-[11px] text-gray-500 font-semibold block">Total a pagar por esta opción:</span>
-          <span id="modal-precio-dinamico" class="text-lg font-black text-emerald-800">$0 CLP</span>
+          <span class="text-[10px] text-gray-400 block font-semibold">Total opción:</span>
+          <span id="modal-precio-dinamico" class="text-base font-black text-emerald-400">$0 CLP</span>
         </div>
-        <button id="modal-btn-agregar" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
-          <span>+ Agregar al Carrito</span>
+        <button id="modal-btn-agregar" class="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-5 py-2.5 rounded-xl shadow transition text-xs flex items-center gap-1.5">
+          <span>+ Agregar</span>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- BARRA COMPACTA DEL CARRITO (FIJA ABAJO) -->
-  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-2xl p-3 z-30 hidden">
+  <!-- CARRITO FLOTANTE ABAJO -->
+  <div id="carrito-flotante" class="fixed bottom-0 left-0 right-0 bg-gray-900/95 border-t border-gray-800 shadow-2xl p-3 z-30 hidden backdrop-blur-md">
     <div class="max-w-xl mx-auto flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2.5">
         <span class="text-2xl">🛒</span>
         <div>
-          <span class="text-xs text-gray-500 block font-semibold"><span id="cantidad-items">0</span> productos</span>
-          <span id="total-price" class="font-extrabold text-lg text-emerald-800">$0 CLP</span>
+          <span class="text-[11px] text-gray-400 block font-bold"><span id="cantidad-items">0</span> productos</span>
+          <span id="total-price" class="font-black text-base text-emerald-400">$0 CLP</span>
         </div>
       </div>
-      <button onclick="abrirModalCarrito()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2">
-        <span>Ver Carrito / Pedir 📋</span>
+      <button onclick="abrirModalCarrito()" class="bg-emerald-500 hover:bg-emerald-400 text-black font-black px-5 py-2.5 rounded-xl shadow transition text-xs">
+        Ver Carrito / Pedir 📋
       </button>
     </div>
   </div>
 
-  <!-- MODAL EMERGENTE DEL CARRITO DE COMPRA -->
-  <div id="modal-carrito" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl relative max-h-[90vh] flex flex-col">
-      <button onclick="cerrarModalCarrito()" class="absolute top-3 right-3 bg-gray-100 hover:bg-gray-200 text-gray-700 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition">
+  <!-- MODAL CARRITO -->
+  <div id="modal-carrito" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-gray-900 rounded-3xl max-w-md w-full p-5 shadow-2xl border border-gray-800 relative max-h-[90vh] flex flex-col text-gray-100">
+      <button onclick="cerrarModalCarrito()" class="absolute top-3 right-3 bg-gray-800 hover:bg-gray-700 text-gray-300 w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition">
         ✕
       </button>
 
-      <h2 class="text-xl font-black text-gray-900 mb-3 flex items-center gap-2 border-b pb-2">
-        <span>🛒</span> Mi Carrito de Pedido
+      <h2 class="text-lg font-black mb-3 flex items-center gap-2 border-b border-gray-800 pb-2">
+        <span>🛒</span> Carrito de Compra
       </h2>
 
-      <div class="overflow-y-auto my-2 max-h-48 border-b border-gray-100 pb-2 divide-y divide-gray-100">
-        <p id="carrito-vacio-msj" class="text-xs text-gray-400 italic text-center py-4">Tu carrito está vacío</p>
+      <div class="overflow-y-auto my-2 max-h-48 border-b border-gray-800 pb-2 divide-y divide-gray-800/50">
+        <p id="carrito-vacio-msj" class="text-xs text-gray-500 italic text-center py-4">Tu carrito está vacío</p>
         <div id="lista-items-carrito" class="space-y-2"></div>
       </div>
 
       <div class="my-3">
-        <span class="text-xs font-bold text-gray-600 mb-1.5 block">Tipo de Entrega:</span>
+        <span class="text-xs font-bold text-gray-400 mb-1.5 block">Tipo de Entrega:</span>
         <div class="grid grid-cols-2 gap-2">
-          <button type="button" onclick="seleccionarTipoEntrega('retiro')" id="btn-tipo-retiro" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition flex items-center justify-center gap-1">
-            🛍️ Retiro en Local
+          <button type="button" onclick="seleccionarTipoEntrega('retiro')" id="btn-tipo-retiro" class="py-2 px-3 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500 text-black transition">
+            🛍️ Retiro
           </button>
-          <button type="button" onclick="seleccionarTipoEntrega('delivery')" id="btn-tipo-delivery" class="py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center justify-center gap-1">
+          <button type="button" onclick="seleccionarTipoEntrega('delivery')" id="btn-tipo-delivery" class="py-2 px-3 text-xs font-bold rounded-xl border border-gray-800 bg-gray-950 text-gray-300 transition">
             🛵 Delivery
           </button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
-        <input type="text" id="nombre" placeholder="Tu Nombre" class="border p-2.5 rounded-lg w-full text-sm">
-        <input type="tel" id="telefono" placeholder="Ej: +56912345678" class="border p-2.5 rounded-lg w-full text-sm">
-        <input type="text" id="direccion" placeholder="Dirección de Envío / Sector" class="border p-2.5 rounded-lg w-full text-sm sm:col-span-2 hidden">
+        <input type="text" id="nombre" placeholder="Tu Nombre" class="bg-gray-950 border border-gray-800 p-2.5 rounded-xl w-full text-xs text-white">
+        <input type="tel" id="telefono" placeholder="Ej: +56912345678" class="bg-gray-950 border border-gray-800 p-2.5 rounded-xl w-full text-xs text-white">
+        <input type="text" id="direccion" placeholder="Dirección de Envío" class="bg-gray-950 border border-gray-800 p-2.5 rounded-xl w-full text-xs text-white sm:col-span-2 hidden">
       </div>
 
-      <button onclick="generarComandaYPedido()" id="btn-confirmar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition flex justify-center items-center gap-2 text-sm">
-        <span>Confirmar y Generar Comanda 📋</span>
+      <button onclick="generarComandaYPedido()" id="btn-confirmar" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black py-3 rounded-xl shadow transition text-xs">
+        Confirmar y Generar Comanda 📋
       </button>
     </div>
   </div>
 
-  <!-- MODAL DE RESUMEN DE PEDIDO / COMANDA -->
-  <div id="modal-comanda" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-xl max-w-sm w-full p-6 shadow-2xl border border-gray-300 relative text-gray-900">
-      <div class="font-mono text-xs leading-tight space-y-3">
-        <div class="text-center border-b pb-2">
-          <h2 class="text-xl font-black uppercase tracking-wider">BURGER KITCHEN</h2>
-          <p class="text-xs font-bold text-gray-700 mt-1">RESUMEN DEL PEDIDO</p>
-          <div class="mt-2 text-base font-extrabold bg-black text-white py-1 px-2 rounded inline-block" id="ticket-num-pedido">
-            #BK-1001
-          </div>
-        </div>
-
-        <div class="border-b pb-2 space-y-1">
-          <p><strong>Fecha/Hora:</strong> <span id="ticket-fecha"></span></p>
-          <p><strong>Tipo:</strong> <span id="ticket-tipo" class="uppercase font-bold"></span></p>
-          <p><strong>Cliente:</strong> <span id="ticket-cliente"></span></p>
-          <p><strong>Teléfono:</strong> <span id="ticket-telefono"></span></p>
-          <p id="ticket-direccion-contenedor" class="hidden"><strong>Dirección:</strong> <span id="ticket-direccion"></span></p>
-        </div>
-
-        <div>
-          <p class="font-bold border-b pb-1 mb-2">DETALLE DEL PEDIDO:</p>
-          <div id="ticket-items" class="space-y-1 text-sm font-bold"></div>
-        </div>
-
-        <div class="border-t pt-2 text-right text-sm">
-          <p><strong>TOTAL:</strong> <span id="ticket-total" class="font-extrabold"></span></p>
+  <!-- MODAL COMANDA -->
+  <div id="modal-comanda" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl relative text-gray-900 font-mono text-xs space-y-3">
+      <div class="text-center border-b pb-2">
+        <h2 class="text-xl font-black uppercase tracking-wider">BURGER KITCHEN</h2>
+        <p class="text-[10px] font-bold text-gray-600">RESUMEN DEL PEDIDO</p>
+        <div class="mt-2 text-sm font-black bg-black text-white py-1 px-3 rounded inline-block" id="ticket-num-pedido">
+          #BK-1001
         </div>
       </div>
 
-      <div class="mt-6 flex flex-col gap-2">
-        <button onclick="completarYEnviarWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg shadow transition flex items-center justify-center gap-2 text-sm">
-          <span>📲 Continuar a WhatsApp</span>
+      <div class="border-b pb-2 space-y-1 text-[11px]">
+        <p><strong>Fecha/Hora:</strong> <span id="ticket-fecha"></span></p>
+        <p><strong>Tipo:</strong> <span id="ticket-tipo" class="uppercase font-bold"></span></p>
+        <p><strong>Cliente:</strong> <span id="ticket-cliente"></span></p>
+        <p><strong>Teléfono:</strong> <span id="ticket-telefono"></span></p>
+        <p id="ticket-direccion-contenedor" class="hidden"><strong>Dirección:</strong> <span id="ticket-direccion"></span></p>
+      </div>
+
+      <div>
+        <p class="font-bold border-b pb-1 mb-2">DETALLE:</p>
+        <div id="ticket-items" class="space-y-1"></div>
+      </div>
+
+      <div class="border-t pt-2 text-right">
+        <p><strong>TOTAL:</strong> <span id="ticket-total" class="font-black text-sm"></span></p>
+      </div>
+
+      <div class="pt-3">
+        <button onclick="completarYEnviarWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl shadow transition text-xs">
+          📲 Continuar a WhatsApp
         </button>
       </div>
     </div>
@@ -326,23 +310,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     
-    const API_URL = ""; 
     const TELEFONO_WHATSAPP = "56963762462"; 
-
-    const clientesFelices = [
-      { nombre: "@camila_burgerlove", comentario: "¡La H. Gringa estuvo increíble! Llegó súper caliente.", foto: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=500&q=80" },
-      { nombre: "Familia Silva", comentario: "Noche de hamburguesas en casa. ¡Las papas artesanales un 10/10!", foto: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=500&q=80" },
-      { nombre: "@felipe.gourmet", comentario: "La mejor salsa de la ciudad. Totalmente recomendados.", foto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" }
-    ];
-
-    const fotosLocal = [
-      "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80",
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80"
-    ];
-
-    const equipo = [
-      { nombre: "Carlos Gómez", cargo: "Chef Principal", foto: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=300&q=80", bio: "Especialista en técnicas de cocina gourmet y plancha." }
-    ];
 
     let hamburguesas = [
       { 
@@ -352,7 +320,7 @@
         desc: "Pan de papa, carne artesanal, queso cheddar, aros de cebolla, tocino y salsa barbecue.", 
         imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Aros de Cebolla", "Tocino", "Salsa Barbecue"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Aros de Cebolla", "Tocino", "Salsa BBQ"]
       },
       { 
         id: 2, 
@@ -361,7 +329,7 @@
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, palta y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Palta", "Salsa Base / Mayo"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Palta", "Mayo Base"]
       },
       { 
         id: 3, 
@@ -370,7 +338,7 @@
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, lechuga, cebolla morada y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1550547660-d9450f859349?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Lechuga", "Cebolla Morada", "Salsa Base / Mayo"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Lechuga", "Cebolla Morada"]
       },
       { 
         id: 4, 
@@ -379,7 +347,7 @@
         desc: "Pan de papa, carne artesanal, queso cheddar, palta, champiñón, cebolla crispy y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Palta", "Champiñón", "Cebolla Crispy", "Salsa Base / Mayo"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Palta", "Champiñón", "Cebolla Crispy"]
       },
       { 
         id: 5, 
@@ -388,25 +356,25 @@
         desc: "Pan de papa, carne artesanal, queso cheddar, tomate, poroto verde, ají verde y salsa base / mayo.", 
         imagen: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Poroto Verde", "Ají Verde", "Salsa Base / Mayo"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Tomate", "Poroto Verde", "Ají Verde"]
       },
       { 
         id: 6, 
         nombre: "Beach", 
         p1Carne: 9500, p2Carnes: 11000, combo1C: 12000, combo2C: 13000,
-        desc: "Pan de papa, carne artesanal, queso cheddar, lechuga, camarón crispy, tocino, salsa acevichada y salsa base.", 
+        desc: "Pan de papa, carne artesanal, queso cheddar, lechuga, camarón crispy, tocino y salsa acevichada.", 
         imagen: "https://images.unsplash.com/photo-1610440042657-612c34d95e9f?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Lechuga", "Camarón Crispy", "Tocino", "Salsa Acevichada", "Salsa Base"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Lechuga", "Camarón Crispy", "Tocino"]
       },
       { 
         id: 7, 
         nombre: "Corte Casa", 
         p1Carne: 10000, p2Carnes: 11500, combo1C: 12500, combo2C: 14000,
-        desc: "Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla, tocino y salsa base.", 
+        desc: "Pan de papa, carne artesanal, queso cheddar, pimentón asado, champiñón, aros de cebolla y tocino.", 
         imagen: "https://images.unsplash.com/photo-1542572569-2bbe33ed1fef?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Pimentón Asado", "Champiñón", "Aros de Cebolla", "Tocino", "Salsa Base"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Pimentón Asado", "Champiñón", "Aros Cebolla", "Tocino"]
       },
       { 
         id: 8, 
@@ -415,53 +383,25 @@
         desc: "Pan de papa, carne artesanal, queso cheddar, cebolla caramelizada, huevo frito, papas fritas y salsa base.", 
         imagen: "https://images.unsplash.com/photo-1583160247917-d764724a30fa?w=600&q=80", 
         stock: 10,
-        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Cebolla Caramelizada", "Huevo Frito", "Papas Fritas", "Salsa Base"]
+        ingredientes: ["Pan de Papa", "Carne Artesanal", "Queso Cheddar", "Cebolla Caramelizada", "Huevo Frito", "Papas Fritas"]
       }
     ];
 
     let extras = [
-      { 
-        id: 101, 
-        nombre: "Papas Fritas", 
-        precio: 2500, 
-        desc: "Papas rústicas cortadas a mano con sazón especial de la casa.", 
-        imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80", 
-        stock: 10,
-        ingredientes: ["Papas nativas seleccionadas", "Sal de mar", "Especias rústicas"]
-      },
-      { 
-        id: 102, 
-        nombre: "Aros Cebolla", 
-        precio: 3000, 
-        desc: "Anillos de cebolla dulce empanizados con panko extra crujiente.", 
-        imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=600&q=80", 
-        stock: 10,
-        ingredientes: ["Cebolla dulce", "Empanizado Panko", "Salsa BBQ"]
-      },
-      { 
-        id: 103, 
-        nombre: "Nuggets de Pollo", 
-        precio: 3200, 
-        desc: "Bocados de pechuga de pollo 100% real sazonados y apanados.", 
-        imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80", 
-        stock: 10,
-        ingredientes: ["Pechuga de pollo seleccionada", "Rebozado crujiente", "Salsa Mostaza Miel"]
-      }
+      { id: 101, nombre: "Papas Fritas", precio: 2500, desc: "Papas rústicas cortadas a mano con sazón especial.", imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=600&q=80", stock: 10 },
+      { id: 102, nombre: "Aros Cebolla", precio: 3000, desc: "Anillos empanizados con panko crujiente.", imagen: "https://images.unsplash.com/photo-1639024471283-03518883512d?w=600&q=80", stock: 10 },
+      { id: 103, nombre: "Nuggets de Pollo", precio: 3200, desc: "Bocados de pechuga de pollo empanizados.", imagen: "https://images.unsplash.com/photo-1562967914-608f82629710?w=600&q=80", stock: 10 }
     ];
 
     let carrito = {};
     let tipoEntrega = 'retiro';
     let urlWhatsAppFinal = '';
-    let carruselIndex = 0;
 
     let productoSeleccionadoModal = null;
     let opcionCarnesModal = 1; 
     let opcionComboModal = false; 
 
     document.addEventListener("DOMContentLoaded", () => {
-      cargarClientes();
-      cargarEquipo();
-      iniciarCarrusel();
       obtenerStockBD();
     });
 
@@ -474,57 +414,14 @@
       if (pestana === 'inicio') {
         secInicio.classList.remove('hidden');
         secMenu.classList.add('hidden');
-        btnInicio.className = "px-6 py-2 font-black text-xs sm:text-sm rounded-full bg-emerald-500 text-black shadow-lg transition transform hover:scale-105";
-        btnMenu.className = "px-6 py-2 font-bold text-xs sm:text-sm rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition transform hover:scale-105";
+        btnInicio.className = "px-4 py-1.5 font-bold text-xs rounded-full bg-emerald-500 text-black shadow transition";
+        btnMenu.className = "px-4 py-1.5 font-bold text-xs rounded-full text-gray-300 hover:text-white transition";
       } else {
         secInicio.classList.add('hidden');
         secMenu.classList.remove('hidden');
-        btnMenu.className = "px-6 py-2 font-black text-xs sm:text-sm rounded-full bg-emerald-500 text-black shadow-lg transition transform hover:scale-105";
-        btnInicio.className = "px-6 py-2 font-bold text-xs sm:text-sm rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition transform hover:scale-105";
+        btnMenu.className = "px-4 py-1.5 font-bold text-xs rounded-full bg-emerald-500 text-black shadow transition";
+        btnInicio.className = "px-4 py-1.5 font-bold text-xs rounded-full text-gray-300 hover:text-white transition";
       }
-    }
-
-    function cargarClientes() {
-      const contenedor = document.getElementById('contenedor-clientes');
-      if (contenedor) {
-        contenedor.innerHTML = clientesFelices.map(c => `
-          <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col items-center text-center">
-            <img src="${c.foto}" alt="${c.nombre}" class="w-16 h-16 rounded-full object-cover mb-2 border-2 border-emerald-600">
-            <h4 class="font-bold text-sm text-gray-900">${c.nombre}</h4>
-            <p class="text-xs text-gray-500 mt-1 italic">"${c.comentario}"</p>
-          </div>
-        `).join('');
-      }
-    }
-
-    function cargarEquipo() {
-      const contenedor = document.getElementById('contenedor-equipo');
-      if (contenedor) {
-        contenedor.innerHTML = equipo.map(e => `
-          <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4">
-            <img src="${e.foto}" alt="${e.nombre}" class="w-16 h-16 rounded-full object-cover border-2 border-emerald-600">
-            <div>
-              <h4 class="font-bold text-sm text-gray-900">${e.nombre}</h4>
-              <span class="text-xs text-emerald-700 font-semibold block">${e.cargo}</span>
-              <p class="text-xs text-gray-500 mt-1">${e.bio}</p>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    function iniciarCarrusel() {
-      if (fotosLocal.length > 0) actualizarCarrusel();
-    }
-
-    function moverCarrusel(dir) {
-      carruselIndex = (carruselIndex + dir + fotosLocal.length) % fotosLocal.length;
-      actualizarCarrusel();
-    }
-
-    function actualizarCarrusel() {
-      const img = document.getElementById('carrusel-img');
-      if (img) img.src = fotosLocal[carruselIndex];
     }
 
     function obtenerSiguienteNumeroPedido() {
@@ -540,16 +437,16 @@
       const btnDelivery = document.getElementById('btn-tipo-delivery');
       const inputDireccion = document.getElementById('direccion');
 
-      const estiloActivo = "py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition flex items-center justify-center gap-1";
-      const estiloInactivo = "py-2 px-3 text-xs sm:text-sm font-bold rounded-lg border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 transition flex items-center justify-center gap-1";
+      const activo = "py-2 px-3 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500 text-black transition";
+      const inactivo = "py-2 px-3 text-xs font-bold rounded-xl border border-gray-800 bg-gray-950 text-gray-300 transition";
 
       if (tipo === 'retiro') {
-        btnRetiro.className = estiloActivo;
-        btnDelivery.className = estiloInactivo;
+        btnRetiro.className = activo;
+        btnDelivery.className = inactivo;
         inputDireccion.classList.add('hidden');
       } else {
-        btnRetiro.className = estiloInactivo;
-        btnDelivery.className = estiloActivo;
+        btnRetiro.className = inactivo;
+        btnDelivery.className = activo;
         inputDireccion.classList.remove('hidden');
       }
     }
@@ -558,25 +455,21 @@
       try {
         db.ref('stock').on('value', (snapshot) => {
           const stockBD = snapshot.val();
-          
           if (stockBD) {
             hamburguesas.forEach(p => {
               if (stockBD[p.nombre] !== undefined) {
                 p.stock = typeof stockBD[p.nombre] === 'object' ? stockBD[p.nombre].stock : stockBD[p.nombre];
               }
             });
-
             extras.forEach(e => {
               if (stockBD[e.nombre] !== undefined) {
                 e.stock = typeof stockBD[e.nombre] === 'object' ? stockBD[e.nombre].stock : stockBD[e.nombre];
               }
             });
           }
-
           document.getElementById('loading-stock').classList.add('hidden');
           cargarMenu();
-        }, (error) => {
-          console.error("Error al leer stock de Firebase:", error);
+        }, () => {
           document.getElementById('loading-stock').classList.add('hidden');
           cargarMenu();
         });
@@ -588,28 +481,27 @@
 
     function crearTarjetaProducto(p) {
       const agotado = p.stock <= 0;
-      let badgeStock = agotado ? `<span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">Agotado</span>` : '';
+      let badgeStock = agotado ? `<span class="text-[10px] bg-red-950 text-red-400 border border-red-800 px-1.5 py-0.5 rounded font-bold">Agotado</span>` : '';
       let precioMostrar = p.p1Carne ? `Desde $${p.p1Carne.toLocaleString('es-CL')} CLP` : `$${p.precio.toLocaleString('es-CL')} CLP`;
 
       return `
-        <div class="bg-white p-3.5 sm:p-4 rounded-2xl shadow-sm border border-gray-200/80 flex items-center justify-between gap-3 hover:shadow-md transition ${agotado ? 'opacity-60' : ''}">
-          <div class="relative cursor-pointer overflow-hidden rounded-xl group flex-shrink-0" onclick="abrirModal(${p.id})">
-            <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover transform transition duration-300 group-hover:scale-110" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'">
-            <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs font-bold">🔍 Ver</div>
+        <div class="bg-gray-900/70 p-3 sm:p-4 rounded-2xl border border-gray-800/80 flex items-center justify-between gap-3 hover:border-gray-700 transition ${agotado ? 'opacity-50' : ''}">
+          <div class="relative cursor-pointer overflow-hidden rounded-xl flex-shrink-0" onclick="abrirModal(${p.id})">
+            <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 sm:w-24 sm:h-24 object-cover hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=80'">
           </div>
 
-          <div class="flex-grow pr-2 cursor-pointer" onclick="abrirModal(${p.id})">
+          <div class="flex-grow pr-1 cursor-pointer" onclick="abrirModal(${p.id})">
             <div class="flex items-center gap-2 mb-1">
-              <h3 class="font-bold text-sm sm:text-base text-gray-900 hover:text-emerald-700 transition">${p.nombre}</h3>
+              <h3 class="font-bold text-sm sm:text-base text-white hover:text-emerald-400 transition">${p.nombre}</h3>
               ${badgeStock}
             </div>
-            <p class="text-xs text-gray-500 mb-1 line-clamp-2">${p.desc}</p>
-            <span class="font-extrabold text-sm sm:text-base text-emerald-800">${precioMostrar}</span>
+            <p class="text-[11px] text-gray-400 mb-1 line-clamp-2 leading-tight">${p.desc}</p>
+            <span class="font-black text-xs sm:text-sm text-emerald-400">${precioMostrar}</span>
           </div>
 
           <div>
-            <button onclick="abrirModal(${p.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1">
-              <span>Personalizar</span> 🍔
+            <button onclick="abrirModal(${p.id})" class="bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-black px-3.5 py-2 rounded-xl transition shadow">
+              Pedir 🍔
             </button>
           </div>
         </div>
@@ -623,7 +515,6 @@
 
     function abrirModal(id) {
       let p = hamburguesas.find(item => item.id == id);
-      
       if (!p) {
         let ex = extras.find(item => item.id == id);
         if (!ex) return;
@@ -642,15 +533,15 @@
       const badge = document.getElementById('modal-badge');
       if (p.stock <= 0) {
         badge.innerText = "Agotado";
-        badge.className = "absolute bottom-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
+        badge.className = "absolute bottom-3 left-3 bg-red-950 border border-red-700 text-red-400 text-[11px] font-bold px-3 py-1 rounded-full shadow";
       } else {
         badge.innerText = `Disponible (${p.stock})`;
-        badge.className = "absolute bottom-3 left-3 bg-emerald-800 text-white text-xs font-bold px-3 py-1 rounded-full shadow";
+        badge.className = "absolute bottom-3 left-3 bg-emerald-950 border border-emerald-700 text-emerald-400 text-[11px] font-bold px-3 py-1 rounded-full shadow";
       }
 
       const listaIng = document.getElementById('modal-ingredientes');
       if (p.ingredientes) {
-        listaIng.innerHTML = p.ingredientes.map(ing => `<li class="flex items-center gap-1.5"><span class="text-emerald-600">✔</span> ${ing}</li>`).join('');
+        listaIng.innerHTML = p.ingredientes.map(ing => `<li class="flex items-center gap-1"><span class="text-emerald-400">✓</span> ${ing}</li>`).join('');
       }
 
       actualizarBotonesModalYPrecio();
@@ -658,10 +549,10 @@
       const btnAgregar = document.getElementById('modal-btn-agregar');
       if (p.stock <= 0) {
         btnAgregar.disabled = true;
-        btnAgregar.className = "bg-gray-400 text-white font-bold px-5 py-2.5 rounded-xl cursor-not-allowed text-sm";
+        btnAgregar.className = "bg-gray-800 text-gray-500 font-bold px-5 py-2.5 rounded-xl cursor-not-allowed text-xs";
       } else {
         btnAgregar.disabled = false;
-        btnAgregar.className = "bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2.5 rounded-xl shadow transition text-sm flex items-center gap-2 cursor-pointer";
+        btnAgregar.className = "bg-emerald-500 hover:bg-emerald-400 text-black font-black px-5 py-2.5 rounded-xl shadow transition text-xs flex items-center gap-1 cursor-pointer";
         btnAgregar.onclick = function() {
           agregarHamburguesaConfiguradaAlCarrito();
           cerrarModal();
@@ -686,26 +577,26 @@
 
       const btnC1 = document.getElementById('btn-carne-1');
       const btnC2 = document.getElementById('btn-carne-2');
-      const activoClass = "py-2 text-xs font-bold rounded-lg border border-emerald-800 bg-emerald-800 text-white transition";
-      const inactivoClass = "py-2 text-xs font-bold rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition";
+      const activo = "py-2 text-xs font-bold rounded-xl border border-emerald-500 bg-emerald-500 text-black transition";
+      const inactivo = "py-2 text-xs font-bold rounded-xl border border-gray-800 bg-gray-900 text-gray-300 hover:bg-gray-800 transition";
 
       if (opcionCarnesModal === 1) {
-        btnC1.className = activoClass;
-        btnC2.className = inactivoClass;
+        btnC1.className = activo;
+        btnC2.className = inactivo;
       } else {
-        btnC1.className = inactivoClass;
-        btnC2.className = activoClass;
+        btnC1.className = inactivo;
+        btnC2.className = activo;
       }
 
       const btnCNo = document.getElementById('btn-combo-no');
       const btnCSi = document.getElementById('btn-combo-si');
 
       if (!opcionComboModal) {
-        btnCNo.className = activoClass;
-        btnCSi.className = inactivoClass;
+        btnCNo.className = activo;
+        btnCSi.className = inactivo;
       } else {
-        btnCNo.className = inactivoClass;
-        btnCSi.className = activoClass;
+        btnCNo.className = inactivo;
+        btnCSi.className = activo;
       }
 
       let precioFinal = 0;
@@ -715,7 +606,6 @@
       if (opcionCarnesModal === 2 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo2C;
 
       const textoPrecio = `$${precioFinal.toLocaleString('es-CL')} CLP`;
-      
       document.getElementById('modal-precio-cabecera').innerText = textoPrecio;
       document.getElementById('modal-precio-dinamico').innerText = textoPrecio;
     }
@@ -742,19 +632,13 @@
       if (opcionCarnesModal === 2 && opcionComboModal) precioFinal = productoSeleccionadoModal.combo2C;
 
       const cartKey = `${productoSeleccionadoModal.id}-${opcionCarnesModal}C-${opcionComboModal ? 'COMBO' : 'SOLO'}`;
-      let nombrePersonalizado = `${productoSeleccionadoModal.nombre} (${opcionCarnesModal} Carne${opcionCarnesModal === 2 ? 's' : ''}${opcionComboModal ? ' + Combo 🥤🍟' : ''})`;
+      let nombrePersonalizado = `${productoSeleccionadoModal.nombre} (${opcionCarnesModal} Carne${opcionCarnesModal === 2 ? 's' : ''}${opcionComboModal ? ' + Combo' : ''})`;
 
       if (!carrito[cartKey]) {
-        carrito[cartKey] = {
-          id: productoSeleccionadoModal.id,
-          nombre: nombrePersonalizado,
-          precio: precioFinal,
-          cantidad: 1
-        };
+        carrito[cartKey] = { id: productoSeleccionadoModal.id, nombre: nombrePersonalizado, precio: precioFinal, cantidad: 1 };
       } else {
         carrito[cartKey].cantidad++;
       }
-
       actualizarCarrito();
     }
 
@@ -789,14 +673,14 @@
         cantidadTotal += item.cantidad;
 
         htmlLista += `
-          <div class="flex justify-between items-center text-xs py-1.5 border-b border-gray-100">
+          <div class="flex justify-between items-center text-xs py-1.5">
             <div class="flex-grow pr-2">
-              <span class="font-bold text-gray-800">${item.nombre}</span>
-              <span class="text-gray-500 block">$${item.precio.toLocaleString('es-CL')} x ${item.cantidad}</span>
+              <span class="font-bold text-gray-200">${item.nombre}</span>
+              <span class="text-gray-500 block text-[10px]">$${item.precio.toLocaleString('es-CL')} x ${item.cantidad}</span>
             </div>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-gray-900">$${subtotal.toLocaleString('es-CL')}</span>
-              <button onclick="modificarCantidadItem('${key}', -1)" class="text-red-500 hover:text-red-700 font-bold px-1.5 py-0.5 bg-red-50 rounded">✕</button>
+              <span class="font-bold text-emerald-400">$${subtotal.toLocaleString('es-CL')}</span>
+              <button onclick="modificarCantidadItem('${key}', -1)" class="text-red-400 hover:text-red-300 font-bold px-1.5 py-0.5 bg-red-950 rounded">✕</button>
             </div>
           </div>
         `;
@@ -844,11 +728,11 @@
       }
 
       btnConfirmar.disabled = true;
-      btnConfirmar.innerHTML = "<span>⏳ Procesando comanda...</span>";
+      btnConfirmar.innerText = "Procesando...";
 
       const numPedido = obtenerSiguienteNumeroPedido();
       const ahora = new Date();
-      const fechaStr = ahora.toLocaleString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      const fechaStr = ahora.toLocaleString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
       let itemsPedido = [];
       let totalCalculado = 0;
@@ -857,13 +741,7 @@
         let item = carrito[key];
         let subtotal = item.precio * item.cantidad;
         totalCalculado += subtotal;
-        itemsPedido.push({
-          id: item.id,
-          nombre: item.nombre,
-          cantidad: item.cantidad,
-          precioUnitario: item.precio,
-          subtotal: subtotal
-        });
+        itemsPedido.push({ id: item.id, nombre: item.nombre, cantidad: item.cantidad, precioUnitario: item.precio, subtotal: subtotal });
       }
 
       const pedidoData = {
@@ -884,7 +762,7 @@
 
         document.getElementById('ticket-num-pedido').innerText = numPedido;
         document.getElementById('ticket-fecha').innerText = fechaStr;
-        document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local';
+        document.getElementById('ticket-tipo').innerText = tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro';
         document.getElementById('ticket-cliente').innerText = nombre;
         document.getElementById('ticket-telefono').innerText = telefono;
 
@@ -909,15 +787,15 @@
         mensajeWA += `*Ticket:* ${numPedido}\n`;
         mensajeWA += `*Cliente:* ${nombre}\n`;
         mensajeWA += `*Teléfono:* ${telefono}\n`;
-        mensajeWA += `*Tipo:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro en Local'}\n`;
+        mensajeWA += `*Tipo:* ${tipoEntrega === 'delivery' ? '🛵 Delivery' : '🛍️ Retiro'}\n`;
         if (tipoEntrega === 'delivery') mensajeWA += `*Dirección:* ${direccion}\n`;
         mensajeWA += `----------------------------------\n`;
-        mensajeWA += `*DETALLE DEL PEDIDO:*\n`;
+        mensajeWA += `*DETALLE:* \n`;
         itemsPedido.forEach(it => {
           mensajeWA += `• ${it.cantidad}x ${it.nombre} ($${it.subtotal.toLocaleString('es-CL')})\n`;
         });
         mensajeWA += `----------------------------------\n`;
-        mensajeWA += `*TOTAL A PAGAR:* $${totalCalculado.toLocaleString('es-CL')} CLP`;
+        mensajeWA += `*TOTAL:* $${totalCalculado.toLocaleString('es-CL')} CLP`;
 
         urlWhatsAppFinal = `https://api.whatsapp.com/send?phone=${TELEFONO_WHATSAPP}&text=${encodeURIComponent(mensajeWA)}`;
 
@@ -925,10 +803,10 @@
         document.getElementById('modal-comanda').classList.remove('hidden');
 
       } catch (err) {
-        alert('Hubo un error al guardar tu pedido. Intenta de nuevo.');
+        alert('Error al procesar el pedido.');
       } finally {
         btnConfirmar.disabled = false;
-        btnConfirmar.innerHTML = "<span>Confirmar y Generar Comanda 📋</span>";
+        btnConfirmar.innerText = "Confirmar y Generar Comanda 📋";
       }
     }
 
